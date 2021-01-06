@@ -1,4 +1,4 @@
-# vue-base-redo
+# vue-base
 
 ## Project setup
 ```
