@@ -30,15 +30,13 @@ export default {
     },
     computed: {
         authorization() {
-            const auth = "Basic " + btoa(this.enteredEmail + ':' + this.enteredPassword)
-            return auth
+            return "Basic " + btoa(this.enteredEmail + ':' + this.enteredPassword)
         }
     },
     methods: {
         login() {
             fetch('http://localhost:8080/auth/login', {
                 method: 'POST',
-                mode: 'cors',
                 headers: {
                     'Authorization': this.authorization
                 }
