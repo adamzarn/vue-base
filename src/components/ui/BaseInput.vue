@@ -13,11 +13,23 @@
 
 <script>
 export default {
-    props: ['name', 'type', 'label', 'modelValue'],
+    props: {
+        validate: {
+            type: Function,
+            required: false
+        },
+        name: String,
+        type: String,
+        label: String,
+        modelValue: String
+    },
     emits: ['update:modelValue'],
     methods: {
         updateModelValue() {
             this.$emit('update:modelValue', event.target.value);
+            if (this.validate) {
+                this.validate()
+            }
         }
     }
 }
@@ -25,12 +37,11 @@ export default {
 
 <style scoped>
 .form-control {
-    margin: 0.5rem 0;
+    margin-top: 0.5rem;
 }
 input {
     display: block;
     width: 100%;
-    margin-top: 0.5rem;
     border-width: 2px;
     border-radius: 2px;
 }

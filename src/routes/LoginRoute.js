@@ -1,9 +1,9 @@
-import LoginForm from '../components/LoginForm.vue';
+import LoginPage from '../components/pages/LoginPage.vue';
 
 const LoginRoute = {
     name: 'login',
     path: '/login',
-    component: LoginForm
+    component: LoginPage
 }
 
 export default LoginRoute;

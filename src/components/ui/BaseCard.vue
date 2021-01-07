@@ -17,5 +17,6 @@ div {
   padding: 1rem;
   width: 50%;
   max-width: 20rem;
+  min-width: 20rem;
 }
 </style>
