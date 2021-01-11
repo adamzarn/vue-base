@@ -1,10 +1,21 @@
 <template>
     <the-header></the-header>
-    <h1>Welcome to the Home Page!</h1>
+    <h1>Welcome to the Home Page {{ fullName }}!</h1>
+    <user-list></user-list>
 </template>
 
 <script>
-export default {    
+import UserList from '../UserList.vue';
+
+export default {
+    components: {
+        UserList
+    },
+    computed: {
+        fullName() {
+            return localStorage.firstName + ' ' + localStorage.lastName;
+        }
+    }    
 }
 </script>
 

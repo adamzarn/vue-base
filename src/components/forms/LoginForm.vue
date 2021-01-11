@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import api from '../../constants/api.js';
+import network from '../../layers/network.js';
 
 export default {
     data() {
@@ -35,25 +35,18 @@ export default {
             emailIsInvalid: false
         }
     },
-    computed: {
-        authorization() {
-            return "Basic " + btoa(this.enteredEmail + ':' + this.enteredPassword)
-        }
-    },
     methods: {
         login() {
-            fetch(api.baseUrl + '/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Authorization': this.authorization
+            let viewModel = this;
+            network.login({
+                email: this.enteredEmail,
+                password: this.enteredPassword,
+                onSuccess: () => {
+                    viewModel.$router.push('/home');
+                },
+                onFailure: error => {
+                    alert(error);
                 }
-            }).then(response => {
-                return response.json();
-            }).then(data => {
-                localStorage.token = data.token;
-                localStorage.firstName = data.user.firstName;
-                localStorage.lastName = data.user.lastName;
-                this.$router.push('/home');
             })
         },
         validateEmail() {

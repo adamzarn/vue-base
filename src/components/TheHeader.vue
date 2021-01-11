@@ -3,34 +3,33 @@
         <div class="wrapper site-header__wrapper">
             <a href="/home" class="brand"><img src="logo.svg" alt="brand"></a>
             <nav class="nav">
-                <base-button v-if="$route.name!=='login'" @click="logout">Logout</base-button>
+                <base-button class="header-button" v-if="shouldShowAccountButton">Account</base-button>
+                <base-button class="header-button" v-if="shouldShowLogoutButton" @click="logout">Logout</base-button>
             </nav>
         </div>
     </header>
 </template>
 
 <script>
-import api from '../constants/api.js';
+import network from '../layers/network.js';
 
 export default {
     computed: {
-        authorization() {
-            return "Bearer " + localStorage.token;
+        shouldShowLogoutButton() {
+            return this.$route.name !== 'login' && this.$route.name !== 'register'
+        },
+        shouldShowAccountButton() {
+            return this.$route.name !== 'login' && this.$route.name !== 'register'
         }
     },
     methods: {
         logout() {
-            fetch(api.baseUrl + '/auth/logout', {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': this.authorization
-                }
-            }).then(response => {
-                if (response.ok) {
-                    localStorage.clear();
+            network.logout({
+                onSuccess: () => {
                     this.$router.push('/login');
-                } else {
-                    console.log(response);
+                },
+                onFailure: error => {
+                    alert(error);
                 }
             })
         },
@@ -55,5 +54,8 @@ button {
     background-color: var(--theme-light-color);
     margin-right: 16px;
     color: white;
+}
+.header-button {
+    padding: 0.5rem;
 }
 </style>

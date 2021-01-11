@@ -7,6 +7,7 @@
             :name="name" 
             :value="modelValue" 
             @input="updateModelValue"
+            @blur="confirm"
         />
     </div>
 </template>
@@ -15,6 +16,10 @@
 export default {
     props: {
         validate: {
+            type: Function,
+            required: false
+        },
+        confirm: {
             type: Function,
             required: false
         },

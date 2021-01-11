@@ -23,9 +23,11 @@
                 name="email"
                 label="Email"
                 :validate="validateEmail"
+                :confirm="checkIfUserAlreadyExists"
                 v-model.trim="enteredEmail">
             </base-input>
             <p class="validation" v-if="emailIsInvalid">You must provide a valid email</p>
+            <p class="validation" v-if="emailAlreadyExists">A user with that email already exists</p>
             <base-input 
                 type="password"
                 name="password"
@@ -52,7 +54,7 @@
 </template>
 
 <script>
-import api from '../../constants/api.js';
+import network from '../../layers/network.js';
 
 export default {
     data() {
@@ -67,7 +69,8 @@ export default {
             emailIsInvalid: false,
             passwordIsInvalid: false,
             confirmedPasswordIsInvalid: false,
-            minPasswordLength: 6
+            minPasswordLength: 6,
+            emailAlreadyExists: false
         }
     },
     computed: {
@@ -80,24 +83,20 @@ export default {
     },
     methods: {
         register() {
-            const formData = new FormData();
-            formData.append("firstName", this.enteredFirstName);
-            formData.append("lastName", this.enteredLastName);
-            formData.append("email", this.enteredEmail);
-            formData.append("password", this.enteredPassword);
-            fetch(api.baseUrl + '/auth/register', {
-                method: 'POST',
-                body: formData
-            }).then(response => {
-                return response.json();
-            }).then(data => {
-                localStorage.token = data.token;
-                localStorage.firstName = data.user.firstName;
-                localStorage.lastName = data.user.lastName;
-                this.$router.push('/home');
+            const viewModel = this;
+            network.register({
+                firstName: this.enteredFirstName,
+                lastName: this.enteredLastName,
+                email: this.enteredEmail,
+                password: this.enteredPassword, 
+                onSuccess: () => { // onSuccess
+                    viewModel.$router.push('/home');
+                }, 
+                onFailure: error => { // onFailure
+                    alert(error);
+                } 
             })
         },
-
         validateFirstName() {
             this.firstNameIsInvalid = this.enteredFirstName === '';
         },
@@ -107,6 +106,7 @@ export default {
         validateEmail() {
             const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
             this.emailIsInvalid = !regex.test(this.enteredEmail)
+            this.emailAlreadyExists = false
         },
         validatePassword() {
             this.passwordIsInvalid = this.enteredPassword.length < this.minPasswordLength
@@ -114,6 +114,18 @@ export default {
         validateConfirmedPassword() {
             this.confirmedPasswordIsInvalid = this.enteredConfirmedPassword.length < this.minPasswordLength
         },
+        checkIfUserAlreadyExists() {
+            const viewModel = this;
+            network.getUserStatus({
+                email: this.enteredEmail, 
+                onSuccess: userStatus => {
+                    viewModel.emailAlreadyExists = userStatus.exists;
+                },
+                onFailure: error => {
+                    alert(error);
+                }
+            })    
+        }
     }
 }
 </script>
