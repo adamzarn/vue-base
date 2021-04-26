@@ -91,7 +91,7 @@ export default {
                 email: this.enteredEmail,
                 password: this.enteredPassword, 
                 onSuccess: () => { // onSuccess
-                    viewModel.$router.push('/home');
+                    viewModel.$router.push({ name: 'home' });
                 }, 
                 onFailure: error => { // onFailure
                     alert(error);

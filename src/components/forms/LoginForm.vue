@@ -42,7 +42,7 @@ export default {
                 email: viewModel.enteredEmail,
                 password: viewModel.enteredPassword,
                 onSuccess: () => {
-                    viewModel.$router.push('/home');
+                    viewModel.$router.push({ name: 'home' });
                 },
                 onFailure: error => {
                     alert(error);

@@ -3,7 +3,7 @@
         <div class="wrapper site-header__wrapper">
             <a href="/home" class="brand"><img src="logo.svg" alt="brand"></a>
             <nav class="nav">
-                <base-button class="header-button" v-if="shouldShowAccountButton">Account</base-button>
+                <base-button class="header-button" v-if="shouldShowAccountButton" @click="account">Account</base-button>
                 <base-button class="header-button" v-if="shouldShowLogoutButton" @click="logout">Logout</base-button>
             </nav>
         </div>
@@ -27,12 +27,15 @@ export default {
         logout() {
             network.logout({
                 onSuccess: () => {
-                    this.$router.push('/login');
+                    this.$router.push({ name: 'login' });
                 },
                 onFailure: error => {
                     alert(error);
                 }
             })
+        },
+        account() {
+            this.$router.push({ name: 'account' });
         },
         validateEmail() {
             const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
