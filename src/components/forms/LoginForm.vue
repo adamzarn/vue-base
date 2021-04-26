@@ -37,10 +37,10 @@ export default {
     },
     methods: {
         login() {
-            let viewModel = this;
+            const viewModel = this;
             network.login({
-                email: this.enteredEmail,
-                password: this.enteredPassword,
+                email: viewModel.enteredEmail,
+                password: viewModel.enteredPassword,
                 onSuccess: () => {
                     viewModel.$router.push('/home');
                 },

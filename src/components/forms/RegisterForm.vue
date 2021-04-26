@@ -84,6 +84,7 @@ export default {
     methods: {
         register() {
             const viewModel = this;
+            console.log(this.enteredEmail)
             network.register({
                 firstName: this.enteredFirstName,
                 lastName: this.enteredLastName,

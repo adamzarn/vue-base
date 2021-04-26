@@ -8,33 +8,39 @@ function getBearerAuthorizationValue() {
     return "Bearer " + localStorage.token;
 }
 
-function handleAuthenticationResult(data, onSuccess, onFailure) {
-    if (data.error) {
-        onFailure(data.reason);
+function handleAuthenticationResult(params) {
+    if (params.data.error) {
+        params.onFailure(params.data.reason);
     } else {
-        localStorage.token = data.token;
-        localStorage.firstName = data.user.firstName;
-        localStorage.lastName = data.user.lastName;
-        onSuccess(data)
+        localStorage.token = params.data.token;
+        localStorage.firstName = params.data.user.firstName;
+        localStorage.lastName = params.data.user.lastName;
+        params.onSuccess(params.data)
     }
 }
 
-function login(email, password, onSuccess, onFailure) {
+function login(params) {
+    console.log(params);
     fetch(api.baseUrl + '/auth/login', {
     method: 'POST',
     headers: {
-        'Authorization': getBasicAuthorizationValue(email, password)
+        'Authorization': getBasicAuthorizationValue(params.email, params.password)
     }
     }).then(response => {
+        console.log(response)
         return response.json();
     }).then(data => {
-        handleAuthenticationResult(data, onSuccess, onFailure)
+        handleAuthenticationResult({
+            data,
+            onSuccess: params.onSuccess,
+            onFailure: params.onFailure
+        })
     }).catch(error => {
-        onFailure(error)
+        params.onFailure(error)
     })
 }
 
-function logout(onSuccess, onFailure) {
+function logout(params) {
     fetch(api.baseUrl + '/auth/logout', {
         method: 'DELETE',
         headers: {
@@ -43,22 +49,21 @@ function logout(onSuccess, onFailure) {
     }).then(response => {
         if (response.ok || response.status === 401) {
             localStorage.clear();
-            onSuccess(response);
+            params.onSuccess(response);
         } else {
-            onFailure(response);
+            params.onFailure(response);
         }
     }).catch(error => {
-        onFailure(error);
+        params.onFailure(error);
     })
 }
 
-function register(firstName, lastName, email, password, onSuccess, onFailure) {
-
+function register(params) {
     const formData = new FormData();
-    formData.append("firstName", firstName);
-    formData.append("lastName", lastName);
-    formData.append("email", email);
-    formData.append("password", password);
+    formData.append("firstName", params.firstName);
+    formData.append("lastName", params.lastName);
+    formData.append("email", params.email);
+    formData.append("password", params.password);
 
     fetch(api.baseUrl + '/auth/register', {
         method: 'POST',
@@ -66,29 +71,29 @@ function register(firstName, lastName, email, password, onSuccess, onFailure) {
     }).then(response => {
         return response.json();
     }).then(data => {
-        handleAuthenticationResult(data, onSuccess, onFailure)
+        handleAuthenticationResult(data, params.onSuccess, params.onFailure)
     }).catch(error => {
-        onFailure(error)
+        params.onFailure(error)
     })
 }
 
-function getUserStatus(email, onSuccess, onFailure) {
-    fetch(api.baseUrl + '/users/status?email=' + email, {
+function getUserStatus(params) {
+    fetch(api.baseUrl + '/users/status?email=' + params.email, {
         method: 'GET',
     }).then(response => {
         return response.json();
     }).then(data => {
         if (data.error) {
-            onFailure(data.reason);
+            params.onFailure(data.reason);
         } else {
-            onSuccess(data);
+            params.onSuccess(data);
         }
     }).catch(error => {
-        onFailure(error)
+        params.onFailure(error)
     })
 }
 
-function getUsers(onSuccess, onFailure) {
+function getUsers(params) {
     fetch(api.baseUrl + '/users', {
         method: 'GET',
         headers: {
@@ -98,12 +103,12 @@ function getUsers(onSuccess, onFailure) {
         if (response.ok) {
             return response.json()
         } else {
-            onFailure("There was a problem retrieving the list of users")
+            params.onFailure("There was a problem retrieving the list of users")
         }
     }).then(users => {
-        onSuccess(users)
+        params.onSuccess(users)
     }).catch(error => {
-        onFailure(error)
+        params.onFailure(error)
     })
 }
 

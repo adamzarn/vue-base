@@ -7,6 +7,7 @@
                 <base-button class="header-button" v-if="shouldShowLogoutButton" @click="logout">Logout</base-button>
             </nav>
         </div>
+        <div class="separator"></div>
     </header>
 </template>
 
@@ -47,7 +48,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    background-color: var(--theme-dark-color);
 }
 button {
     color: var(--theme-light-color);
@@ -57,5 +57,9 @@ button {
 }
 .header-button {
     padding: 0.5rem;
+}
+.separator {
+    background-color: var(--light-gray-color);
+    height: 1px;
 }
 </style>

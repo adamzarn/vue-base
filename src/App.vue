@@ -14,6 +14,7 @@ export default {
   --theme-dark-color: #360032;
   --theme-light-color: #5c0556;
   --invalid-color: red;
+  --light-gray-color: #d3d3d3;
 }
 
 * {
