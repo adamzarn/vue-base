@@ -1,18 +1,70 @@
 <template>
-    <the-header></the-header>
     <login-form class="centered-card"></login-form>
+    <div class="centered-link">
+        <a @click="showForgotPasswordModal">Forgot Password?</a>
+    </div>
+    <base-modal v-if="shouldShowForgotPasswordModal" title="Password Reset" @close="confirmError">
+        <template #default>
+            <p>Enter your email and we'll send you a password reset link.</p>
+            <base-input
+                v-model.trim="passwordResetEmail"
+            ></base-input>
+        </template>
+        <template #actions>
+            <base-button @click="dismissForgotPasswordModal">Cancel</base-button>
+            <div style="width:10px;"></div>
+            <base-button @click="sendForgotPasswordEmail">Send</base-button>
+        </template>
+    </base-modal>
 </template>
 
 <script>
 import LoginForm from '../forms/LoginForm.vue';
-import TheHeader from '../TheHeader.vue';
+import network from '../../layers/network.js';
+
 export default {
-    components: { LoginForm, TheHeader }
+    components: { LoginForm },
+    data() {
+        return {
+            passwordResetEmail: '',
+            shouldShowForgotPasswordModal: false
+        }
+    },
+    methods: {
+        showForgotPasswordModal() {
+            this.shouldShowForgotPasswordModal = true;
+        },
+        dismissForgotPasswordModal() {
+            this.shouldShowForgotPasswordModal = false;
+        },
+        sendForgotPasswordEmail() {
+            this.shouldShowForgotPasswordModal = false;
+            network.sendPasswordResetEmail({
+                email: this.passwordResetEmail,
+                onSuccess: () => {
+                    alert("A password reset email was sent to " + this.passwordResetEmail);
+                },
+                onFailure: error => {
+                    alert(error);
+                }
+            })
+        }
+    }, 
+    mounted() {
+        if (localStorage.token != null) {
+            this.$router.push({ name: 'home' });
+        }
+    }
 }
 </script>
 
 <style scoped>
 .centered-card {
     margin: 48px auto;
+    max-width: 400px;
+}
+.centered-link {
+    margin: 48px auto;
+    text-align: center;
 }
 </style>

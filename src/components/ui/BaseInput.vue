@@ -1,6 +1,6 @@
 <template>
     <div class="form-control">
-        <label :for="name">{{ label }}</label>
+        <label class="light" :for="name">{{ label }}</label>
         <input 
             :type="type" 
             :id="name" 
@@ -47,7 +47,14 @@ export default {
 input {
     display: block;
     width: 100%;
-    border-width: 2px;
-    border-radius: 2px;
+    border-width: 1px;
+    border-radius: 4px;
+    height: 32px;
+    border-color: var(--light-gray-color);
+    font-size: 16px;
+    padding: 8px;
+}
+.light {
+    font-weight: lighter;
 }
 </style>

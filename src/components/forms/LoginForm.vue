@@ -1,5 +1,5 @@
 <template>
-    <base-card class="centered-horizontally">
+    <base-card>
         <form @submit.prevent="login">
             <h2>Login</h2>
             <base-input
@@ -32,7 +32,7 @@ export default {
         return {
             enteredEmail: '',
             enteredPassword: '',
-            emailIsInvalid: false
+            emailIsInvalid: false,
         }
     },
     methods: {
@@ -71,5 +71,4 @@ h2 {
     flex-direction: row;
     justify-content: flex-end;
 };
-
 </style>

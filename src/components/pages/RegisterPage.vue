@@ -1,17 +1,23 @@
 <template>
-    <the-header></the-header>
     <register-form class="centered-card"></register-form>
 </template>
 
 <script>
 import RegisterForm from '../forms/RegisterForm.vue';
+
 export default {
-    components: { RegisterForm }
+    components: { RegisterForm },
+    mounted() {
+        if (localStorage.token != null) {
+            this.$router.push({ name: 'home' });
+        }
+    }
 }
 </script>
 
 <style scoped>
 .centered-card {
     margin: 48px auto;
+    max-width: 400px;
 }
 </style>

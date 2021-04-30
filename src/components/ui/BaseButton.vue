@@ -10,7 +10,11 @@ button {
     border: 1px solid var(--theme-dark-color);
     background-color: var(--theme-dark-color);
     color: white;
-    padding: 0.5rem 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    text-align: center;
     cursor: pointer;
     border-radius: 8px;
 }

@@ -1,45 +1,31 @@
 <template>
-    <base-card class="centered-horizontally">
-        <h2>Users</h2>
-        <div :v-if="users.length > 0">
-            <user-list-item 
-                v-for="user in users"
-                :key="user.id"
-                :name="user.firstName + ' ' + user.lastName"
-                :email="user.email">
-            </user-list-item>
-        </div>
+    <base-card v-if="users.length > 0" class="centered-horizontally">
+        <user-list-item 
+            v-for="(user, index) in users"
+            :key="user.id"
+            :user="user"
+            :isLast="index==users.length-1"
+            :refresh="refresh">
+        </user-list-item>
     </base-card>
 </template>
 
 <script>
-import network from '../layers/network.js';
 import UserListItem from '../components/UserListItem.vue';
 
 export default {
     components: {
         UserListItem
     },
-    data() {
-        return {
-            users: []
+    props: {
+        users: {
+            type: Array,
+            required: true
+        },
+        refresh: {
+            type: Function,
+            required: true
         }
-    },
-    methods: {
-        getUsers() {
-            const viewModel = this;
-            network.getUsers({
-                onSuccess: users => {
-                    viewModel.users = users;
-                },
-                onFailure: error => {
-                    alert(error);
-                }
-            })
-        }
-    },
-    mounted() {
-        this.getUsers()
     }
 }
 </script>
