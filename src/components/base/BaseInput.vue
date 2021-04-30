@@ -50,7 +50,7 @@ input {
     border-radius: 4px;
     height: 32px;
     border-color: var(--light-gray-color);
-    font-size: 16px;
+    font-size: var(--default-spacing);
     padding: 8px;
 }
 .light {

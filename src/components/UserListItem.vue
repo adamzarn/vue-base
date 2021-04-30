@@ -22,13 +22,13 @@ export default {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    row-gap: 16px;
+    row-gap: var(--default-spacing);
 }
 .separator {
     height: 1px;
     background-color: var(--light-gray-color);
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-top: var(--default-spacing);
+    margin-bottom: var(--default-spacing);
 }
 @media only screen and (max-width: 480px) {
     .container {

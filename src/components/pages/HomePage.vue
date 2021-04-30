@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1 style="padding-left:1rem">Users</h1>
+        <page-title text="Users"></page-title>
         <user-list :users="users" :refresh="getData"></user-list>
     </div>
 </template>
@@ -8,10 +8,12 @@
 <script>
 import UserList from '../UserList.vue';
 import network from '../../layers/network.js';
+import PageTitle from '../base/PageTitle.vue';
 
 export default {
     components: {
-        UserList
+        UserList,
+        PageTitle
     },
     computed: {
         fullName() {
@@ -49,7 +51,7 @@ export default {
 
 <style scoped>
 .container {
-    padding: 16px;
+    padding: var(--default-spacing);
 }
 h3 {
     text-align: center;

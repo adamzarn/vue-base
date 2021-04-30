@@ -22,6 +22,7 @@ export default {
   --theme-light-color: #5c0556;
   --invalid-color: red;
   --light-gray-color: #d3d3d3;
+  --default-spacing: 16px;
 }
 
 * {

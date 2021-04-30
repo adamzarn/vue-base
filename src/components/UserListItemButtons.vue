@@ -55,8 +55,8 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    row-gap: 16px;
-    column-gap: 16px;
+    row-gap: var(--default-spacing);
+    column-gap: var(--default-spacing);
 }
 .follow-button, .admin-button {
     cursor: pointer;
@@ -74,7 +74,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    column-gap: 16px;
+    column-gap: var(--default-spacing);
 }
 @media only screen and (max-width: 480px) {
     .buttons-container {

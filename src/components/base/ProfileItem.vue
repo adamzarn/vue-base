@@ -31,7 +31,7 @@ export default {
 .separator {
     height: 1px;
     background-color: var(--light-gray-color);
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-top: var(--default-spacing);
+    margin-bottom: var(--default-spacing);
 }
 </style>

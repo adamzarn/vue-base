@@ -11,9 +11,10 @@
             ></base-input>
         </template>
         <template #actions>
-            <base-button @click="dismissForgotPasswordModal">Cancel</base-button>
-            <div style="width:16px;"></div>
-            <base-button @click="sendForgotPasswordEmail">Send</base-button>
+            <div class="buttons-container">
+                <base-button @click="dismissForgotPasswordModal">Cancel</base-button>
+                <base-button @click="sendForgotPasswordEmail">Send</base-button>
+            </div>
         </template>
     </base-modal>
 </template>
@@ -66,5 +67,9 @@ export default {
 .centered-link {
     margin: 48px auto;
     text-align: center;
+}
+.buttons-container {
+    display: flex;
+    column-gap: var(--default-spacing);
 }
 </style>

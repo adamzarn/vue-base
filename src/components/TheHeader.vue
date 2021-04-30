@@ -48,7 +48,7 @@ export default {
 
 <style scoped>
 .site-header__wrapper {
-    margin: 16px;
+    margin: var(--default-spacing);
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
@@ -57,7 +57,7 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    column-gap: 16px;
+    column-gap: var(--default-spacing);
 }
 button {
     color: var(--theme-light-color);
@@ -73,7 +73,7 @@ button {
         flex-flow: column;
         align-items: stretch;
         justify-content: center;
-        row-gap: 16px;
+        row-gap: var(--default-spacing);
     }
     .buttons-container {
         flex-flow: column;
