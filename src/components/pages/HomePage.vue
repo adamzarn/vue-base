@@ -15,7 +15,7 @@ export default {
     },
     computed: {
         fullName() {
-            return localStorage.getObject('user').firstName + ' ' + localStorage.getObject('user').lastName;
+            return localStorage.user().firstName + ' ' + localStorage.user().lastName;
         }
     },
     data() {

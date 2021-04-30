@@ -8,6 +8,10 @@ Storage.prototype.getObject = function(key) {
     return JSON.parse(this.getItem(key));
 }
 
+Storage.prototype.user = function() {
+    return this.getObject('user');
+}
+
 function getBasicAuthorizationValue(email, password) {
     return "Basic " + btoa(email + ':' + password);
 }
@@ -121,7 +125,7 @@ function getUsers(params) {
 }
 
 function getFollows(params) {
-    fetch(api.baseUrl + '/users/' + localStorage.getObject('user').id + '/' + params.followsType, {
+    fetch(api.baseUrl + '/users/' + localStorage.user().id + '/' + params.followsType, {
         method: 'GET',
         headers: getBearerHeaders()
     }).then(response => {
@@ -139,11 +143,11 @@ function getFollows(params) {
 
 function getUsersAndFollows(params) {
     Promise.all([
-        fetch(api.baseUrl + '/users/' + localStorage.getObject('user').id + '/followers', {
+        fetch(api.baseUrl + '/users/' + localStorage.user().id + '/followers', {
             method: 'GET',
             headers: getBearerHeaders()
         }),
-        fetch(api.baseUrl + '/users/' + localStorage.getObject('user').id + '/following', {
+        fetch(api.baseUrl + '/users/' + localStorage.user().id + '/following', {
             method: 'GET',
             headers: getBearerHeaders()
         }),
@@ -161,7 +165,7 @@ function getUsersAndFollows(params) {
         var users = data[2]
         var updatedUsers = users.map(user => {
             var updatedUser = user;
-            updatedUser.you = localStorage.getObject('user').id == user.id;
+            updatedUser.you = localStorage.user().id == user.id;
             updatedUser.followingYou = followerIds.includes(user.id);
             updatedUser.following = followingIds.includes(user.id);
             return updatedUser;
@@ -181,7 +185,7 @@ function toggleFollowingStatus(params) {
     formData.append("otherUserId", params.otherUser.id);
     formData.append("follow", !params.otherUser.following);
 
-    fetch(api.baseUrl + '/users/' + localStorage.getObject('user').id + '/setFollowingStatus', {
+    fetch(api.baseUrl + '/users/' + localStorage.user().id + '/setFollowingStatus', {
         method: 'POST',
         headers: getBearerHeaders(),
         body: formData

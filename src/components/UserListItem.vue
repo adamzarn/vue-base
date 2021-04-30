@@ -23,7 +23,7 @@ export default {
     props: ['user', 'isLast', 'refresh'],
     computed: {
         loggedInUserIsAdmin() {
-            return localStorage.getObject('user').isAdmin;
+            return localStorage.user().isAdmin;
         },
         fullName() {
             return this.user.firstName + " " + this.user.lastName;
