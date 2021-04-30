@@ -3,11 +3,11 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router.js';
 
-import BaseCard from './components/ui/BaseCard.vue';
-import BaseInput from './components/ui/BaseInput.vue';
-import BaseButton from './components/ui/BaseButton.vue';
+import BaseCard from './components/base/BaseCard.vue';
+import BaseInput from './components/base/BaseInput.vue';
+import BaseButton from './components/base/BaseButton.vue';
 import TheHeader from './components/TheHeader.vue';
-import BaseModal from './components/ui/BaseModal.vue';
+import BaseModal from './components/base/BaseModal.vue';
 
 const app = createApp(App);
 

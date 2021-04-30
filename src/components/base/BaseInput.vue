@@ -45,7 +45,6 @@ export default {
     margin-top: 0.5rem;
 }
 input {
-    display: block;
     width: 100%;
     border-width: 1px;
     border-radius: 4px;

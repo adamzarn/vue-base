@@ -49,7 +49,6 @@ export default {
 
 <style scoped>
 .container {
-    display: block;
     padding: 16px;
 }
 h3 {

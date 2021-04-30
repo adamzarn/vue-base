@@ -281,4 +281,25 @@ function resetPassword(params) {
     })
 }
 
-export default { login, logout, register, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword };
+function deleteUser(params) {
+    fetch(api.baseUrl + '/users/' + params.userId, {
+        method: 'DELETE',
+        headers: getBearerHeaders()
+    }).then(response => {
+        if (response.ok) {
+            return params.onSuccess();
+        } else {
+            return response.json().then(data => {
+                if (data.error) {
+                    params.onFailure(data.reason);
+                } else {
+                    params.onSuccess();
+                }
+            }).catch(error => {
+                params.onFailure(error)
+            })
+        }
+    })
+}
+
+export default { login, logout, register, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword, deleteUser };

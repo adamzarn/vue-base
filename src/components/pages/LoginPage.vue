@@ -12,7 +12,7 @@
         </template>
         <template #actions>
             <base-button @click="dismissForgotPasswordModal">Cancel</base-button>
-            <div style="width:10px;"></div>
+            <div style="width:16px;"></div>
             <base-button @click="sendForgotPasswordEmail">Send</base-button>
         </template>
     </base-modal>
