@@ -33,20 +33,20 @@ export default {
     flex-direction: column;
 }
 .text {
-    margin: 0px;
+    margin: 0;
     text-align: 'center'
 }
 .following-status {
     color: var(--theme-dark-color);
 }
 .admin-badge {
-    font-size: 12px;
+    font-size: var(--default-font-size);
     font-weight: bold;
     color: var(--theme-dark-color);
 }
 @media only screen and (max-width: 480px) {
     .admin-badge {
-        margin: 0px;
+        margin: 0;
     }
     .text {
         width: 100%;

@@ -81,14 +81,14 @@ export default {
 
 <style scoped>
 h2 {
-    margin: 0px;
-    margin-bottom: 30px;
+    margin: 0;
+    margin-bottom: calc(var(--default-spacing)*2);
 }
 .login-button {
-    padding: 0.5rem 1rem;
+    padding: calc(var(--default-spacing)/2) var(--default-spacing);
 }
 .buttons {
-    margin-top: 30px;
+    margin-top: calc(var(--default-spacing)*2);
     display: flex;
     flex-direction: row;
     justify-content: flex-end;

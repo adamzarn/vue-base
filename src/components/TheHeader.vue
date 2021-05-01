@@ -66,7 +66,7 @@ button {
 }
 .separator {
     background-color: var(--light-gray-color);
-    height: 1px;
+    height: calc(var(--default-spacing)/16);
 }
 @media only screen and (max-width: 480px) {
     .site-header__wrapper, img, .buttons-container, button {

@@ -12,7 +12,7 @@ export default {
 
 <style scoped>
 .centered-card {
-    margin: 48px auto;
-    max-width: 400px;
+    margin: calc(var(--default-spacing)*3) auto;
+    max-width: calc(var(--default-spacing)*24);
 }
 </style>

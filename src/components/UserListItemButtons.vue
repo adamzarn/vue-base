@@ -1,9 +1,9 @@
 <template>
     <div class="buttons-container">
-        <base-button v-show="showFollowButton" class="follow-button" @click="toggleFollowingStatus()">{{ toggleFollowingStatusButtonText }}</base-button>
+        <base-button v-show="showFollowButton" class="follow-button" @click.stop="toggleFollowingStatus()">{{ toggleFollowingStatusButtonText }}</base-button>
         <div v-show="loggedInUserIsAdmin" class="admin-buttons">
-            <base-button mode="light" class="admin-button" @click="toggleAdminStatus()">{{ toggleAdminStatusButtonText }}</base-button>
-            <img class="svg delete-button" src="/delete.svg" @click="deleteUser()">
+            <base-button mode="light" class="admin-button" @click.stop="toggleAdminStatus()">{{ toggleAdminStatusButtonText }}</base-button>
+            <img class="svg delete-button" src="/delete.svg" @click.stop="deleteUser()">
         </div>
     </div>
 </template>
@@ -67,8 +67,8 @@ export default {
 }
 .delete-button {
     cursor: pointer;
-    width: 32x;
-    height: 32px;
+    width: calc(var(--default-spacing)*2);
+    height: calc(var(--default-spacing)*2);
     filter: invert(9%) sepia(82%) saturate(1981%) hue-rotate(282deg) brightness(89%) contrast(120%);
 }
 .delete-button:hover {

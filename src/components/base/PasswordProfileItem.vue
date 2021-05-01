@@ -64,16 +64,15 @@ export default {
     justify-content: flex-end;
     align-items: center;
     column-gap: var(--default-spacing);
+    row-gap: var(--default-spacing);
+    padding: var(--default-spacing);
 }
 .text-container {
     flex: 1;
-    min-width: 200px;
 }
 .buttons-container {
     display: flex;
     column-gap: var(--default-spacing);
-    margin-top: var(--default-spacing);
-    margin-bottom: var(--default-spacing);
 }
 .bold {
     font-weight: bold;
@@ -82,10 +81,10 @@ export default {
     font-weight: lighter;
 }
 .content {
-    margin: 0px;
+    margin: 0;
 }
 .separator {
-    height: 1px;
+    height: calc(var(--default-spacing)/16);
     background-color: var(--light-gray-color);
     margin-top: var(--default-spacing);
     margin-bottom: var(--default-spacing);
@@ -101,7 +100,7 @@ export default {
     }
     .buttons-container {
         flex-direction: column;
-        column-gap: 0px;
+        column-gap: 0;
     }
     .change-password-button {
         margin-top: var(--default-spacing);

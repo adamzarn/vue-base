@@ -12,11 +12,11 @@
     </div>
     <div class="container follows">
         <div class="col-6">
-            <page-title text="Followers"></page-title>
+            <page-title class="title" text="Followers"></page-title>
             <user-list :users="followers" :refresh="getData" :showFollowButton="isYou"></user-list>
         </div>
         <div class="col-6">
-            <page-title text="Following"></page-title>
+            <page-title class="title" text="Following"></page-title>
             <user-list :users="following" :refresh="getData" :showFollowButton="isYou"></user-list>
         </div>
     </div>
@@ -107,7 +107,10 @@ export default {
 
 <style scoped>
 .container {
-    padding: 1rem;
+    padding: var(--default-spacing);
+}
+.title {
+    margin-bottom: var(--default-spacing);
 }
 .follows {
     display: flex;
@@ -120,8 +123,8 @@ export default {
 }
 .delete-button {
     cursor: pointer;
-    width: 32x;
-    height: 32px;
+    width: calc(var(--default-spacing)*2);
+    height: calc(var(--default-spacing)*2);
     filter: invert(9%) sepia(82%) saturate(1981%) hue-rotate(282deg) brightness(89%) contrast(120%);
 }
 .delete-button:hover {

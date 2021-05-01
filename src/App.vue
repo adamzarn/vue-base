@@ -22,7 +22,9 @@ export default {
   --theme-light-color: #5c0556;
   --invalid-color: red;
   --light-gray-color: #d3d3d3;
-  --default-spacing: 16px;
+  --default-font-size: 0.75rem;
+  --default-spacing: 1rem;
+  --default-corner-radius: 0.75rem;
 }
 
 * {
@@ -66,8 +68,8 @@ a:active {
   text-decoration: underline;
 }
 .validation {
-    margin: 0px;
-    font-size: 12px;
+    margin: 0;
+    font-size: var(--default-font-size);
     color: var(--invalid-color);
 }
 

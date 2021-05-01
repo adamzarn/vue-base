@@ -47,9 +47,9 @@ dialog {
   left: 10%;
   width: 80%;
   z-index: 100;
-  border-radius: 12px;
+  border-radius: var(--default-corner-radius);
   border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  box-shadow: 0 calc(var(--default-corner-radius)/6) calc(var(--default-corner-radius)*2/3) rgba(0, 0, 0, 0.26);
   padding: 0;
   margin: 0;
   overflow: hidden;
@@ -58,24 +58,24 @@ header {
   background-color: var(--theme-dark-color);
   color: white;
   width: 100%;
-  padding: 1rem;
+  padding: var(--default-spacing);
 }
 header h2 {
   margin: 0;
 }
 section {
-  padding: 1rem;
+  padding: var(--default-spacing);
 }
 menu {
-  padding: 1rem;
+  padding: var(--default-spacing);
   display: flex;
   justify-content: flex-end;
   margin: 0;
 }
 @media (min-width: 768px) {
   dialog {
-    left: calc(50% - 20rem);
-    width: 40rem;
+    left: calc(50% - 20*var(--default-spacing));
+    width: calc(var(--default-spacing)*40);
   }
 }
 </style>

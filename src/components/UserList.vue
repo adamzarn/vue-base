@@ -4,6 +4,7 @@
             v-for="(user, index) in users"
             :key="user.id"
             :user="user"
+            :isFirst="index==0"
             :isLast="index==users.length-1"
             :refresh="refresh"
             :showFollowButton="showFollowButton">

@@ -11,8 +11,7 @@ export default {
 
 <style scoped>
 div {
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  padding: 1rem;
+  border-radius: var(--default-corner-radius);
+  box-shadow: 0 calc(var(--default-corner-radius)/6) calc(var(--default-corner-radius)*2/3) rgba(0, 0, 0, 0.26);
 }
 </style>

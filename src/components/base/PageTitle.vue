@@ -1,5 +1,5 @@
 <template>
-    <h1 class="title">{{ text }}</h1>
+    <h1 class="page-title">{{ text }}</h1>
 </template>
 
 <script>
@@ -9,9 +9,9 @@ export default {
 </script>
 
 <style scoped>
-.title {
-    padding-left: 1rem;
+.page-title {
+    padding-left: var(--default-spacing);
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
 }
 </style>

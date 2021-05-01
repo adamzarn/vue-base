@@ -1,6 +1,8 @@
 <template>
-    <p class="content light">{{ label }}</p>
-    <p class="content bold">{{ value }}</p>
+    <div class="profile-item-container">
+        <p class="content light">{{ label }}</p>
+        <p class="content bold">{{ value }}</p>
+    </div>
     <div v-show="showSeparator" class="separator"></div>
 </template>
 
@@ -19,6 +21,9 @@ export default {
 </script>
 
 <style scoped>
+.profile-item-container {
+    padding: var(--default-spacing);
+}
 .bold {
     font-weight: bold;
 }
@@ -26,12 +31,10 @@ export default {
     font-weight: lighter;
 }
 .content {
-    margin: 0px;
+    margin: 0;
 }
 .separator {
-    height: 1px;
+    height: calc(var(--default-spacing)/16);
     background-color: var(--light-gray-color);
-    margin-top: var(--default-spacing);
-    margin-bottom: var(--default-spacing);
 }
 </style>

@@ -42,16 +42,16 @@ export default {
 
 <style scoped>
 .form-control {
-    margin-top: 0.5rem;
+    margin-top: calc(var(--default-spacing)/2);
 }
 input {
     width: 100%;
-    border-width: 1px;
-    border-radius: 4px;
-    height: 32px;
+    border-width: calc(var(--default-spacing)/16);
+    border-radius: calc(var(--default-corner-radius)*2/3);
+    height: calc(var(--default-spacing)*2);
     border-color: var(--light-gray-color);
-    font-size: var(--default-spacing);
-    padding: 8px;
+    font-size: var(--default-font-size);
+    padding: var(--default-spacing);
 }
 .light {
     font-weight: lighter;
