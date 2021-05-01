@@ -73,6 +73,7 @@ export default {
 .buttons-container {
     display: flex;
     column-gap: var(--default-spacing);
+    row-gap: var(--default-spacing);
 }
 .bold {
     font-weight: bold;
@@ -101,9 +102,6 @@ export default {
     .buttons-container {
         flex-direction: column;
         column-gap: 0;
-    }
-    .change-password-button {
-        margin-top: var(--default-spacing);
     }
 }
 </style>
