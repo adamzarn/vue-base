@@ -1,7 +1,7 @@
 <template>
-    <div class="container col-12">
+    <div class="container col-12" @click="profile">
         <user-list-item-text :user="user"></user-list-item-text>
-        <user-list-item-buttons :user="user" :refresh="refresh"></user-list-item-buttons>
+        <user-list-item-buttons :user="user" :refresh="refresh" :showFollowButton="showFollowButton"></user-list-item-buttons>
     </div>
     <div v-if="isLast==false" class="separator"></div>
 </template>
@@ -12,7 +12,12 @@ import UserListItemButtons from '../components/UserListItemButtons';
 
 export default {
     components: { UserListItemText, UserListItemButtons },
-    props: ['user', 'isLast', 'refresh']
+    props: ['user', 'isLast', 'refresh', 'showFollowButton'],
+    methods: {
+        profile() {
+            this.$router.push({ name: "profile", params: { userId: this.user.id }})
+        }
+    }
 }
 </script>
 
@@ -23,6 +28,7 @@ export default {
     flex-wrap: wrap;
     justify-content: space-between;
     row-gap: var(--default-spacing);
+    cursor: pointer;
 }
 .separator {
     height: 1px;

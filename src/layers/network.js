@@ -142,12 +142,13 @@ function getFollows(params) {
 }
 
 function getUsersAndFollows(params) {
+    if (params.userId == null) { return }
     Promise.all([
-        fetch(api.baseUrl + '/users/' + localStorage.user().id + '/followers', {
+        fetch(api.baseUrl + '/users/' + params.userId + '/followers', {
             method: 'GET',
             headers: getBearerHeaders()
         }),
-        fetch(api.baseUrl + '/users/' + localStorage.user().id + '/following', {
+        fetch(api.baseUrl + '/users/' + params.userId + '/following', {
             method: 'GET',
             headers: getBearerHeaders()
         }),

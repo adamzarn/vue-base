@@ -1,6 +1,6 @@
 <template>
     <div class="buttons-container">
-        <base-button class="follow-button" @click="toggleFollowingStatus()">{{ toggleFollowingStatusButtonText }}</base-button>
+        <base-button v-show="showFollowButton" class="follow-button" @click="toggleFollowingStatus()">{{ toggleFollowingStatusButtonText }}</base-button>
         <div v-show="loggedInUserIsAdmin" class="admin-buttons">
             <base-button mode="light" class="admin-button" @click="toggleAdminStatus()">{{ toggleAdminStatusButtonText }}</base-button>
             <img class="svg delete-button" src="/delete.svg" @click="deleteUser()">
@@ -12,7 +12,11 @@
 import network from '../layers/network.js';
 
 export default {
-    props: ['user', 'refresh'],
+    props: {
+        user: Object,
+        refresh: Function,
+        showFollowButton: Boolean
+    },
     computed: {
         loggedInUserIsAdmin() {
             return localStorage.user().isAdmin;

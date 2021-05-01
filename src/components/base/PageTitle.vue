@@ -12,6 +12,6 @@ export default {
 .title {
     padding-left: 1rem;
     font-weight: bold;
-    margin: 0px 0px 20px 0px;
+    margin: 0px;
 }
 </style>

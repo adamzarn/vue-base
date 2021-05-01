@@ -4,7 +4,7 @@
             <a href="/home" class="brand"><img src="/logo.svg" alt="brandy"></a>
             <nav v-if="shouldShowButtons" class="buttons-container">
                 <base-button @click="home">Home</base-button>
-                <base-button @click="profile">Profile</base-button>
+                <base-button @click="profile">My Profile</base-button>
                 <base-button @click="logout">Logout</base-button>
             </nav>
         </div>

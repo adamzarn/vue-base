@@ -1,7 +1,7 @@
 <template>
     <div class="container">
-        <page-title text="Users"></page-title>
-        <user-list :users="users" :refresh="getData"></user-list>
+        <page-title class="title" text="Users"></page-title>
+        <user-list :users="users" :refresh="getData" :showFollowButton="true"></user-list>
     </div>
 </template>
 
@@ -18,6 +18,9 @@ export default {
     computed: {
         fullName() {
             return localStorage.user().firstName + ' ' + localStorage.user().lastName;
+        },
+        userId() {
+            return localStorage.user().id;
         }
     },
     data() {
@@ -28,6 +31,7 @@ export default {
     methods: {
         getData() {
             network.getUsersAndFollows({
+                userId: this.userId,
                 onSuccess: users => {
                     this.users = users.filter(user => {
                         return user.you == false;
@@ -40,7 +44,7 @@ export default {
         }
     },
     mounted() {
-        if (localStorage.token != null) {
+        if (localStorage.token != null && this.userId != null) {
             this.getData();
         } else {
             this.$router.push({ name: 'login' });
@@ -52,6 +56,9 @@ export default {
 <style scoped>
 .container {
     padding: var(--default-spacing);
+}
+.title {
+    margin-bottom: var(--default-spacing);
 }
 h3 {
     text-align: center;
