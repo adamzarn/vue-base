@@ -83,16 +83,15 @@ export default {
     },
     methods: {
         register() {
-            const viewModel = this;
             network.register({
                 firstName: this.enteredFirstName,
                 lastName: this.enteredLastName,
                 email: this.enteredEmail,
                 password: this.enteredPassword, 
-                onSuccess: () => { // onSuccess
-                    viewModel.$router.push({ name: 'home' });
-                }, 
-                onFailure: error => { // onFailure
+                onSuccess: () => {
+                    this.$router.push({ name: 'home' });
+                },
+                onFailure: error => {
                     alert(error);
                 } 
             })

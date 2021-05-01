@@ -29,6 +29,7 @@ function getBearerHeaders() {
 }
 
 function handleAuthenticationResult(params) {
+    console.log(params);
     if (params.data.error) {
         params.onFailure(params.data.reason);
     } else {
@@ -85,7 +86,11 @@ function register(params) {
     }).then(response => {
         return response.json();
     }).then(data => {
-        handleAuthenticationResult(data, params.onSuccess, params.onFailure)
+        handleAuthenticationResult({
+            data, 
+            onSuccess: params.onSuccess,
+            onFailure: params.onFailure
+        });
     }).catch(error => {
         params.onFailure(error)
     })

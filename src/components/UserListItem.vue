@@ -30,6 +30,9 @@ export default {
     row-gap: var(--default-spacing);
     cursor: pointer;
 }
+.container:hover {
+    background-color: var(--light-gray-color);
+}
 .separator {
     height: 1px;
     background-color: var(--light-gray-color);

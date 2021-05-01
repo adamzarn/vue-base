@@ -1,5 +1,4 @@
 <template>
-
     <div class="col-12 container">
         <div class="title-container">
             <page-title text="Profile"></page-title>
