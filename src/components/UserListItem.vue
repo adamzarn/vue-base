@@ -51,7 +51,7 @@ export default {
     border-bottom-right-radius: var(--default-corner-radius);
 }
 .separator {
-    height: var(--default-spacing)/16;
+    height: calc(var(--default-spacing)/16);
     background-color: var(--light-gray-color);
 }
 @media only screen and (max-width: 480px) {
