@@ -98,7 +98,7 @@ export default {
                 onFailure: error => { alert(error) }
             });
         },
-        updateu(field, value) {
+        updateUser(field, value) {
             network.updateUser({
                 [field]: value,
                 onSuccess: () => {
