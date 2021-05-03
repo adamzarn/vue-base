@@ -4,10 +4,12 @@
             <page-title text="Profile"></page-title>
             <img class="svg delete-button" src="/delete.svg" @click="deleteUser()">
         </div>
-        <base-card>
-            <profile-item label="Name" :value="fullName"></profile-item>
-            <profile-item label="Email" :value="email" :showSeparator="isYou"></profile-item>
-            <password-profile-item v-if="isYou"></password-profile-item>
+        <base-card v-if="user">
+            <profile-item label="Email" :currentValue="email" :editable="false"></profile-item>
+            <profile-item field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="isYou"></profile-item>
+            <profile-item field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="isYou"></profile-item>
+            <profile-item field="username" label="Username" :currentValue="username" :update="updateUser" :editable="isYou"></profile-item>
+            <profile-item v-if="isYou" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="isYou"></profile-item>
         </base-card>
     </div>
     <div class="container follows">
@@ -26,26 +28,33 @@
 import network from '../../layers/network.js';
 import UserList from '../UserList.vue';
 import ProfileItem from '../base/ProfileItem.vue';
-import PasswordProfileItem from '../base/PasswordProfileItem.vue';
 import PageTitle from '../base/PageTitle.vue';
 
 export default {
-    components: { UserList, ProfileItem, PasswordProfileItem, PageTitle },
+    components: { UserList, ProfileItem, PageTitle },
     data() {
         return {
             followers: [],
             following: [],
-            user: null,
+            user: null
         }
     },
     computed: {
-        fullName() {
-            if (this.user == null) { return ''; }
-            return this.user.firstName + ' ' + this.user.lastName;
-        },
         email() {
             if (this.user == null) { return ''; }
             return this.user.email;
+        },
+        firstName() {
+            if (this.user == null) { return ''; }
+            return this.user.firstName
+        },
+        lastName() {
+            if (this.user == null) { return ''; }
+            return this.user.lastName
+        },
+        username() {
+            if (this.user == null) { return ''; }
+            return this.user.username;
         },
         isYou() {
             if (this.user == null) { return false; }
@@ -88,10 +97,36 @@ export default {
                 },
                 onFailure: error => { alert(error) }
             });
+        },
+        updateu(field, value) {
+            network.updateUser({
+                [field]: value,
+                onSuccess: () => {
+                    alert("Success");
+                    this.getData();
+                },
+                onFailure: error => {
+                    alert(error);
+                }
+            })
+        },
+        changePassword(field, value) {
+            network.resetPassword({
+                [field]: value,
+                tokenId: localStorage.tokenId,
+                onSuccess: () => {
+                    alert("Your password was changed successfully!")
+                    this.getData();
+                },
+                onFailure: error => {
+                    alert(error);
+                }
+            })
         }
     },
     mounted() {
         if (localStorage.token != null) {
+            console.log(localStorage.user())
             this.getData();
         } else {
             this.$router.push({ name: 'login' });

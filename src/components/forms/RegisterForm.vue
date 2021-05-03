@@ -20,6 +20,12 @@
             <p class="validation" v-if="lastNameIsInvalid">You must provide a last name</p>
             <base-input
                 type="text"
+                name="username"
+                label="Username"
+                v-model.trim="enteredUsername">
+            </base-input>
+            <base-input
+                type="text"
                 name="email"
                 label="Email"
                 :validate="validateEmail"
@@ -61,6 +67,7 @@ export default {
         return {
             enteredFirstName: '',
             enteredLastName: '',
+            enteredUsername: '',
             enteredEmail: '',
             enteredPassword: '',
             enteredConfirmedPassword: '',
@@ -86,6 +93,7 @@ export default {
             network.register({
                 firstName: this.enteredFirstName,
                 lastName: this.enteredLastName,
+                username: this.enteredUsername,
                 email: this.enteredEmail,
                 password: this.enteredPassword, 
                 onSuccess: () => {

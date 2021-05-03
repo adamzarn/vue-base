@@ -75,8 +75,17 @@ function logout(params) {
 
 function register(params) {
     const formData = new FormData();
-    formData.append("firstName", params.firstName);
+    if (params.firstName != '') {
+        formData.append("firstName", params.firstName);
+    }
+    if (params.lastName != '') {
+        formData.append("lastName", params.lastName);
+    }
+    if (params.username != '') {
+        formData.append("username", params.username);
+    }
     formData.append("lastName", params.lastName);
+    formData.append("username", params.username);
     formData.append("email", params.email);
     formData.append("password", params.password);
 
@@ -308,4 +317,40 @@ function deleteUser(params) {
     })
 }
 
-export default { login, logout, register, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword, deleteUser };
+function updateUser(params) {
+    const formData = new FormData();
+    if (params.firstName != null) {
+        formData.append("firstName", params.firstName);
+    }
+    if (params.lastName != null) {
+        formData.append("lastName", params.lastName);
+    }
+    if (params.username != null) {
+        formData.append("username", params.username);
+    }
+    if (params.isAdmin != null) {
+        formData.append("isAdmin", params.isAdmin);
+    }
+
+    fetch(api.baseUrl + '/users', {
+        method: 'PUT',
+        headers: getBearerHeaders(),
+        body: formData
+    }).then(response => {
+        if (response.ok) {
+            return params.onSuccess();
+        } else {
+            return response.json().then(data => {
+                if (data.error) {
+                    params.onFailure(data.reason);
+                } else {
+                    params.onSuccess();
+                }
+            }).catch(error => {
+                params.onFailure(error)
+            })
+        }
+    })
+}
+
+export default { login, logout, register, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword, deleteUser, updateUser };

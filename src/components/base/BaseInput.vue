@@ -30,7 +30,7 @@ export default {
     },
     emits: ['update:modelValue'],
     methods: {
-        updateModelValue() {
+        updateModelValue(event) {
             this.$emit('update:modelValue', event.target.value);
             if (this.validate) {
                 this.validate()
