@@ -29,7 +29,6 @@ function getBearerHeaders() {
 }
 
 function handleAuthenticationResult(params) {
-    console.log(params);
     if (params.data.error) {
         params.onFailure(params.data.reason);
     } else {
@@ -40,10 +39,48 @@ function handleAuthenticationResult(params) {
     }
 }
 
+function handleData(data, params) {
+    if (data.error) {
+        params.onFailure(data.reason);
+    } else {
+        params.onSuccess(data);
+    }
+}
+
+function handleResponse(response, params) {
+    if (response.ok) {
+        return params.onSuccess();
+    } else {
+        return response.json().then(data => {
+            handleData(data, params)
+        }).catch(error => {
+            params.onFailure(error)
+        })
+    }
+}
+
+function makeDataRequest(params, url, method, headers) {
+    fetch(url, { method, headers })
+    .then(response => {
+        return response.json();
+    }).then(data => {
+        handleData(data, params);
+    }).catch(error => {
+        params.onFailure(error)
+    })
+}
+
+function makeResponseRequest(params, url, method, headers, body) {
+    fetch(url, { method, headers, body })
+    .then(response => {
+        handleResponse(response, params)
+    })
+}
+
 function login(params) {
     fetch(api.baseUrl + '/auth/login', {
-    method: 'POST',
-    headers: getBasicHeaders(params.email, params.password),
+        method: 'POST',
+        headers: getBasicHeaders(params.email, params.password)
     }).then(response => {
         return response.json();
     }).then(data => {
@@ -106,53 +143,18 @@ function register(params) {
 }
 
 function getUserStatus(params) {
-    fetch(api.baseUrl + '/users/status?email=' + params.email, {
-        method: 'GET',
-    }).then(response => {
-        return response.json();
-    }).then(data => {
-        if (data.error) {
-            params.onFailure(data.reason);
-        } else {
-            params.onSuccess(data);
-        }
-    }).catch(error => {
-        params.onFailure(error)
-    })
+    const url = api.baseUrl + '/users/status?email=' + params.email;
+    makeDataRequest(params, url, 'GET', {}, handleData);
 }
 
 function getUsers(params) {
-    fetch(api.baseUrl + '/users', {
-        method: 'GET',
-        headers: getBearerHeaders()
-    }).then(response => {
-        return response.json();
-    }).then(data => {
-        if (data.error) {
-            params.onFailure(data.reason);
-        } else {
-            params.onSuccess(data);
-        }
-    }).catch(error => {
-        params.onFailure(error)
-    })
+    const url = api.baseUrl + '/users';
+    makeDataRequest(params, url, 'GET', getBearerHeaders(), handleData);
 }
 
 function getFollows(params) {
-    fetch(api.baseUrl + '/users/' + localStorage.user().id + '/' + params.followsType, {
-        method: 'GET',
-        headers: getBearerHeaders()
-    }).then(response => {
-        return response.json();
-    }).then(data => {
-        if (data.error) {
-            params.onFailure(data.reason);
-        } else {
-            params.onSuccess(data);
-        }
-    }).catch(error => {
-        params.onFailure(error)
-    })
+    const url = api.baseUrl + '/users/' + localStorage.user().id + '/' + params.followsType;
+    makeDataRequest(params, url, 'GET', getBearerHeaders(), handleData);
 }
 
 function getUsersAndFollows(params) {
@@ -200,121 +202,39 @@ function toggleFollowingStatus(params) {
     formData.append("otherUserId", params.otherUser.id);
     formData.append("follow", !params.otherUser.following);
 
-    fetch(api.baseUrl + '/users/' + localStorage.user().id + '/setFollowingStatus', {
-        method: 'POST',
-        headers: getBearerHeaders(),
-        body: formData
-    }).then(response => {
-        if (response.ok) {
-            return params.onSuccess();
-        } else {
-            return response.json().then(data => {
-                if (data.error) {
-                    params.onFailure(data.reason);
-                } else {
-                    params.onSuccess(data);
-                }
-            }).catch(error => {
-                params.onFailure(error)
-            })
-        }
-    })
+    const url = api.baseUrl + '/users/' + localStorage.user().id + '/setFollowingStatus';
+    makeResponseRequest(params, url, 'POST', getBearerHeaders(), formData);
 }
 
 function toggleAdminStatus(params) {
     const formData = new FormData();
     formData.append("isAdmin", !params.user.isAdmin);
 
-    fetch(api.baseUrl + '/users/' + params.user.id + '/setAdminStatus', {
-        method: 'PUT',
-        headers: getBearerHeaders(),
-        body: formData
-    }).then(response => {
-        if (response.ok) {
-            return params.onSuccess();
-        } else {
-            return response.json().then(data => {
-                if (data.error) {
-                    params.onFailure(data.reason);
-                } else {
-                    params.onSuccess(data);
-                }
-            }).catch(error => {
-                params.onFailure(error)
-            })
-        }
-    })
+    const url = api.baseUrl + '/users/' + params.user.id + '/setAdminStatus';
+    makeResponseRequest(params, url, 'PUT', getBearerHeaders(), formData);
 }
 
 function sendPasswordResetEmail(params) {
-    const url = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/resetPassword/";
+    const link = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/resetPassword/";
     const formData = new FormData();
     formData.append("email", params.email);
-    formData.append("url", url);
+    formData.append("url", link);
 
-    fetch(api.baseUrl + '/auth/sendPasswordResetEmail', {
-        method: 'POST',
-        body: formData
-    }).then(response => {
-        if (response.ok) {
-            return params.onSuccess();
-        } else {
-            return response.json().then(data => {
-                if (data.error) {
-                    params.onFailure(data.reason);
-                } else {
-                    params.onSuccess();
-                }
-            }).catch(error => {
-                params.onFailure(error)
-            })
-        }
-    })
+    const url = api.baseUrl + '/auth/sendPasswordResetEmail';
+    makeResponseRequest(params, url, 'POST', getBearerHeaders(), formData);
 }
 
 function resetPassword(params) {
     const formData = new FormData();
     formData.append("value", params.password);
 
-    fetch(api.baseUrl + '/auth/resetPassword/' + params.tokenId, {
-        method: 'PUT',
-        body: formData
-    }).then(response => {
-        if (response.ok) {
-            return params.onSuccess();
-        } else {
-            return response.json().then(data => {
-                if (data.error) {
-                    params.onFailure(data.reason);
-                } else {
-                    params.onSuccess();
-                }
-            }).catch(error => {
-                params.onFailure(error)
-            })
-        }
-    })
+    const url = api.baseUrl + '/auth/resetPassword/' + params.tokenId;
+    makeResponseRequest(params, url, 'PUT', {}, formData);
 }
 
 function deleteUser(params) {
-    fetch(api.baseUrl + '/users/' + params.userId, {
-        method: 'DELETE',
-        headers: getBearerHeaders()
-    }).then(response => {
-        if (response.ok) {
-            return params.onSuccess();
-        } else {
-            return response.json().then(data => {
-                if (data.error) {
-                    params.onFailure(data.reason);
-                } else {
-                    params.onSuccess();
-                }
-            }).catch(error => {
-                params.onFailure(error)
-            })
-        }
-    })
+    const url = api.baseUrl + '/users/' + params.userId;
+    makeResponseRequest(params, url, 'DELETE', {}, new FormData());
 }
 
 function updateUser(params) {
@@ -332,25 +252,8 @@ function updateUser(params) {
         formData.append("isAdmin", params.isAdmin);
     }
 
-    fetch(api.baseUrl + '/users', {
-        method: 'PUT',
-        headers: getBearerHeaders(),
-        body: formData
-    }).then(response => {
-        if (response.ok) {
-            return params.onSuccess();
-        } else {
-            return response.json().then(data => {
-                if (data.error) {
-                    params.onFailure(data.reason);
-                } else {
-                    params.onSuccess();
-                }
-            }).catch(error => {
-                params.onFailure(error)
-            })
-        }
-    })
+    const url = api.baseUrl + '/users';
+    makeResponseRequest(params, url, 'PUT', getBearerHeaders(), formData);
 }
 
 export default { login, logout, register, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword, deleteUser, updateUser };

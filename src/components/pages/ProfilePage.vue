@@ -6,10 +6,10 @@
         </div>
         <base-card v-if="user">
             <profile-item label="Email" :currentValue="email" :editable="false"></profile-item>
-            <profile-item field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="isYou"></profile-item>
-            <profile-item field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="isYou"></profile-item>
-            <profile-item field="username" label="Username" :currentValue="username" :update="updateUser" :editable="isYou"></profile-item>
-            <profile-item v-if="isYou" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="isYou"></profile-item>
+            <profile-item field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item field="username" label="Username" :currentValue="username" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item v-if="isYou" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="isYou" :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
         </base-card>
     </div>
     <div class="container follows">
@@ -36,7 +36,13 @@ export default {
         return {
             followers: [],
             following: [],
-            user: null
+            user: null,
+            changeStatuses: {
+                'firstName': false,
+                'lastName': false,
+                'username': false,
+                'password': false
+            }
         }
     },
     computed: {
@@ -102,10 +108,11 @@ export default {
             network.updateUser({
                 [field]: value,
                 onSuccess: () => {
-                    alert("Success");
+                    this.changeStatuses[field] = false;
                     this.getData();
                 },
                 onFailure: error => {
+                    this.changeStatuses[field] = false;
                     alert(error);
                 }
             })
@@ -116,17 +123,20 @@ export default {
                 tokenId: localStorage.tokenId,
                 onSuccess: () => {
                     alert("Your password was changed successfully!")
+                    this.passwordBeingChanged = false
                     this.getData();
                 },
                 onFailure: error => {
                     alert(error);
                 }
             })
+        },
+        toggleBeingChanged(field) {
+            this.changeStatuses[field] = !this.changeStatuses[field]
         }
     },
     mounted() {
         if (localStorage.token != null) {
-            console.log(localStorage.user())
             this.getData();
         } else {
             this.$router.push({ name: 'login' });

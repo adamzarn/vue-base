@@ -6,9 +6,9 @@
             <p v-else class="content bold">{{ getValue }}</p>
         </div>
         <div v-if="editable" class="buttons-container">
-            <base-button v-if="beingChanged" class="change-button" @click="beingChanged=false">Cancel</base-button>
+            <base-button v-if="beingChanged" class="change-button" @click="toggleBeingChanged(field)">Cancel</base-button>
             <base-button v-if="beingChanged" class="change-button" @click="update(field, newValue)">Submit</base-button>
-            <base-button v-if="!beingChanged" class="change-button" @click="beingChanged=true">Change</base-button>
+            <base-button v-if="!beingChanged" class="change-button" @click="toggleBeingChanged(field)">Change</base-button>
         </div>
     </div>
     <div v-show="showSeparator" class="separator"></div>
@@ -21,6 +21,8 @@ export default {
         label: String,
         currentValue: String,
         update: Function,
+        beingChanged: Boolean,
+        toggleBeingChanged: Function,
         editable: {
             type: Boolean,
             default: true
@@ -37,8 +39,7 @@ export default {
     },
     data() {
         return {
-            newValue: this.currentValue,
-            beingChanged: false
+            newValue: this.currentValue
         }
     },
     computed: {
