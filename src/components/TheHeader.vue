@@ -50,12 +50,24 @@ export default {
         validateEmail() {
             const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
             this.emailIsInvalid = !regex.test(this.enteredEmail)
+        },
+        getUpdatedUser() {
+            network.getUser({
+                onSuccess: user => {
+                    localStorage.setObject('user', user);
+                    this.isAdmin = user.isAdmin;
+                },
+                onFailure: error => {
+                    alert(error);
+                }
+            })
         }
     },
     watch: {
-        $route() {
-            if (localStorage.user() !== null) {
-                this.isAdmin = localStorage.user().isAdmin;
+        $route(to) {
+            const updatedUserRequiredRoutes = ['home', 'profile', 'manageUsers']
+            if (updatedUserRequiredRoutes.includes(to.name)) {
+                this.getUpdatedUser();
             }
         }
     }

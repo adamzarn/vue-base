@@ -1,7 +1,13 @@
 <template>
     <div class="container">
-        <page-title class="title" text="Manage Users"></page-title>
-        <user-list :users="users" :refresh="getData" :showFollowButton="true"></user-list>
+        <div class="col-6">
+            <page-title class="title" text="Admins"></page-title>
+            <user-list :users="admins" :refresh="getData" :showFollowButton="true"></user-list>
+        </div>
+        <div class="col-6">
+            <page-title class="title" text="Users"></page-title>
+            <user-list :users="users" :refresh="getData" :showFollowButton="true"></user-list>
+        </div>
     </div>
 </template>
 
@@ -15,36 +21,49 @@ export default {
         UserList,
         PageTitle
     },
-    computed: {
-        fullName() {
-            return localStorage.user().firstName + ' ' + localStorage.user().lastName;
-        },
-        userId() {
-            return localStorage.user().id;
-        }
-    },
     data() {
         return {
+            admins: [],
             users: []
         }
     },
     methods: {
-        getData() {
-            network.getUsersAndFollows({
-                userId: this.userId,
-                onSuccess: users => {
-                    this.users = users.filter(user => {
-                        return user.you == false;
+        getAdmins() {
+            network.getUsers({
+                isAdmin: "yes",
+                onSuccess: admins => {
+                    var adminIds = admins.map((admin) => {
+                        return admin.id;
                     });
+                    if (adminIds.includes(localStorage.user().id) == false) {
+                        this.$router.push({ name: 'home' });
+                    } else {
+                        this.admins = admins
+                    }
                 },
                 onFailure: error => {
                     alert(error);
                 }
             })
+        },
+        getUsers() {
+            network.getUsers({
+                isAdmin: "no",
+                onSuccess: users => {
+                    this.users = users
+                },
+                onFailure: error => {
+                    alert(error);
+                }
+            })
+        },
+        getData() {
+            this.getAdmins()
+            this.getUsers()
         }
     },
     mounted() {
-        if (localStorage.token != null && this.userId != null) {
+        if (localStorage.user() != null) {
             this.getData();
         } else {
             this.$router.push({ name: 'login' });
@@ -55,6 +74,9 @@ export default {
 
 <style scoped>
 .container {
+    display: flex;
+    column-gap: var(--default-spacing);
+    row-gap: var(--default-spacing);
     padding: var(--default-spacing);
 }
 .title {
@@ -62,5 +84,10 @@ export default {
 }
 h3 {
     text-align: center;
+}
+@media only screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
 }
 </style>

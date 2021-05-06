@@ -39,7 +39,14 @@ export default {
         toggleAdminStatus() {
             network.toggleAdminStatus({
                 user: this.user,
-                onSuccess: this.refresh,
+                onSuccess: () => {
+                    if (this.user.id == localStorage.user().id) {
+                        var updatedUser = localStorage.user();
+                        updatedUser.isAdmin = !updatedUser.isAdmin;
+                        localStorage.setObject('user', updatedUser);
+                    }
+                    this.refresh()
+                },
                 onFailure: error => { alert(error) }
             });
         },

@@ -142,19 +142,40 @@ function register(params) {
     })
 }
 
+function getUser(params) {
+    const url = api.baseUrl + '/users/me';
+    makeDataRequest(params, url, 'GET', getBearerHeaders());
+}
+
 function getUserStatus(params) {
     const url = api.baseUrl + '/users/status?email=' + params.email;
-    makeDataRequest(params, url, 'GET', {}, handleData);
+    makeDataRequest(params, url, 'GET', {});
 }
 
 function getUsers(params) {
-    const url = api.baseUrl + '/users/search';
-    makeDataRequest(params, url, 'GET', getBearerHeaders(), handleData);
+    var url = api.baseUrl + '/users/search';
+    var queryParameters = [];
+    if (params.query != null) {
+        queryParameters.push(`query=${params.query}`)
+    }
+    if (params.start != null) {
+        queryParameters.push(`start=${params.start}`)
+    }
+    if (params.end != null) {
+        queryParameters.push(`end=${params.end}`)
+    }
+    if (params.isAdmin != null) {
+        queryParameters.push(`isAdmin=${params.isAdmin}`)
+    }
+    if (queryParameters.length > 0) {
+        url += `?${queryParameters.join('&')}`
+    }
+    makeDataRequest(params, url, 'GET', getBearerHeaders());
 }
 
 function getFollows(params) {
     const url = api.baseUrl + '/users/' + localStorage.user().id + '/' + params.followsType;
-    makeDataRequest(params, url, 'GET', getBearerHeaders(), handleData);
+    makeDataRequest(params, url, 'GET', getBearerHeaders());
 }
 
 function getUsersAndFollows(params) {
@@ -256,4 +277,4 @@ function updateUser(params) {
     makeResponseRequest(params, url, 'PUT', getBearerHeaders(), formData);
 }
 
-export default { login, logout, register, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword, deleteUser, updateUser };
+export default { login, logout, register, getUser, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword, deleteUser, updateUser };

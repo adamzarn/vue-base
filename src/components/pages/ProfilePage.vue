@@ -154,11 +154,13 @@ export default {
 .container {
     padding: var(--default-spacing);
 }
-.title {
-    margin-bottom: var(--default-spacing);
-}
 .follows {
     display: flex;
+    column-gap: var(--default-spacing);
+    row-gap: var(--default-spacing);
+}
+.title {
+    margin-bottom: var(--default-spacing);
 }
 .title-container {
     display: flex;
