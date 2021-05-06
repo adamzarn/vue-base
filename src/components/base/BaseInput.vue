@@ -8,6 +8,7 @@
             :value="modelValue" 
             @input="updateModelValue"
             @blur="confirm"
+            @change="onChange"
         />
     </div>
 </template>
@@ -26,7 +27,11 @@ export default {
         name: String,
         type: String,
         label: String,
-        modelValue: String
+        modelValue: String,
+        onChange: {
+            type: Function,
+            required: false
+        }
     },
     emits: ['update:modelValue'],
     methods: {
@@ -34,6 +39,9 @@ export default {
             this.$emit('update:modelValue', event.target.value);
             if (this.validate) {
                 this.validate()
+            }
+            if (this.onChange) {
+                this.onChange()
             }
         }
     }

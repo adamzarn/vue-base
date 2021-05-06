@@ -2,11 +2,11 @@
     <div class="container">
         <div class="col-6">
             <page-title class="title" text="Admins"></page-title>
-            <user-list :users="admins" :refresh="getData" :showFollowButton="true"></user-list>
+            <user-list :users="admins" :refresh="getData" :showFollowButton="false"></user-list>
         </div>
         <div class="col-6">
-            <page-title class="title" text="Users"></page-title>
-            <user-list :users="users" :refresh="getData" :showFollowButton="true"></user-list>
+            <base-input label="Search Users" class="search-bar" v-model="enteredQuery" :onChange="getUsers"></base-input>
+            <user-list :users="users" :refresh="getData" :showFollowButton="false"></user-list>
         </div>
     </div>
 </template>
@@ -24,7 +24,8 @@ export default {
     data() {
         return {
             admins: [],
-            users: []
+            users: [],
+            enteredQuery: ''
         }
     },
     methods: {
@@ -47,7 +48,12 @@ export default {
             })
         },
         getUsers() {
+            if (this.enteredQuery === '') {
+                this.users = [];
+                return
+            }
             network.getUsers({
+                query: this.enteredQuery,
                 isAdmin: "no",
                 onSuccess: users => {
                     this.users = users
@@ -75,7 +81,7 @@ export default {
 <style scoped>
 .container {
     display: flex;
-    column-gap: var(--default-spacing);
+    column-gap: calc(var(--default-spacing)*2);
     row-gap: var(--default-spacing);
     padding: var(--default-spacing);
 }
@@ -84,6 +90,9 @@ export default {
 }
 h3 {
     text-align: center;
+}
+.search-bar {
+    margin: var(--default-spacing);
 }
 @media only screen and (max-width: 768px) {
     .container {

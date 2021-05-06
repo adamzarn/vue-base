@@ -156,7 +156,7 @@ export default {
 }
 .follows {
     display: flex;
-    column-gap: var(--default-spacing);
+    column-gap: calc(var(--default-spacing)*2);
     row-gap: var(--default-spacing);
 }
 .title {
