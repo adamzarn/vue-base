@@ -148,7 +148,7 @@ function getUserStatus(params) {
 }
 
 function getUsers(params) {
-    const url = api.baseUrl + '/users';
+    const url = api.baseUrl + '/users/search';
     makeDataRequest(params, url, 'GET', getBearerHeaders(), handleData);
 }
 
@@ -168,7 +168,7 @@ function getUsersAndFollows(params) {
             method: 'GET',
             headers: getBearerHeaders()
         }),
-        fetch(api.baseUrl + '/users', {
+        fetch(api.baseUrl + '/users/search', {
             method: 'GET',
             headers: getBearerHeaders()
         })

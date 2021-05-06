@@ -4,6 +4,7 @@ import RegisterRoute from './routes/RegisterRoute';
 import HomeRoute from './routes/HomeRoute';
 import ProfileRoute from './routes/ProfileRoute';
 import ResetPasswordRoute from './routes/ResetPasswordRoute';
+import ManageUsersRoute from './routes/ManageUsersRoute';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -13,7 +14,8 @@ const router = createRouter({
         RegisterRoute,
         HomeRoute,
         ProfileRoute,
-        ResetPasswordRoute
+        ResetPasswordRoute,
+        ManageUsersRoute
     ]
 })
 

@@ -4,6 +4,7 @@
             <a href="/home" class="brand"><img src="/logo.svg" alt="brandy"></a>
             <nav v-if="shouldShowButtons" class="buttons-container">
                 <base-button @click="home">Home</base-button>
+                <base-button v-if="isAdmin" @click="manageUsers">Manage Users</base-button>
                 <base-button @click="profile">My Profile</base-button>
                 <base-button @click="logout">Logout</base-button>
             </nav>
@@ -16,6 +17,11 @@
 import network from '../layers/network.js';
 
 export default {
+    data() {
+        return {
+            isAdmin: false
+        }
+    },
     computed: {
         shouldShowButtons() {
             return !['login', 'register', 'resetPassword'].includes(this.$route.name);
@@ -24,6 +30,9 @@ export default {
     methods: {
         home() {
             this.$router.push({ name: 'home' });
+        },
+        manageUsers() {
+            this.$router.push({ name: 'manageUsers' });
         },
         profile() {
             this.$router.push({ name: 'profile', params: { userId: localStorage.user().id }});
@@ -41,6 +50,13 @@ export default {
         validateEmail() {
             const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
             this.emailIsInvalid = !regex.test(this.enteredEmail)
+        }
+    },
+    watch: {
+        $route() {
+            if (localStorage.user() !== null) {
+                this.isAdmin = localStorage.user().isAdmin;
+            }
         }
     }
 }

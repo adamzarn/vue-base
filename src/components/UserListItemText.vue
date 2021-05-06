@@ -1,6 +1,6 @@
 <template>
     <div class="text-container">
-        <h3 class="text">{{ fullName }}</h3>
+        <h3 class="text">{{ fullName }} <span class="username">{{ "@" + user.username }}</span></h3>
         <p v-show="user.isAdmin" class="text admin-badge">ADMIN</p>
         <p class="text">{{ user.email }}</p>
         <p class="text following-status">{{ followingStatuses }}</p>
@@ -35,6 +35,9 @@ export default {
 .text {
     margin: 0;
     text-align: 'center'
+}
+.username {
+    font-size: calc(var(--default-font-size)*3/4);
 }
 .following-status {
     color: var(--theme-dark-color);
