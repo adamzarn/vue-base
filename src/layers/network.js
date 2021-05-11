@@ -12,6 +12,10 @@ Storage.prototype.user = function() {
     return this.getObject('user');
 }
 
+function frontendBaseUrl() {
+    return window.location.protocol + "//" + window.location.hostname + ":" + window.location.port;
+}
+
 function getBasicAuthorizationValue(email, password) {
     return "Basic " + btoa(email + ':' + password);
 }
@@ -28,9 +32,30 @@ function getBearerHeaders() {
     return { 'Authorization': getBearerAuthorizationValue() }
 }
 
+function createError(response, data) {
+    let components = data.reason.split(':');
+    let status = response.status;
+    let identifier = '';
+    let reason = '';
+    if (components.length == 2) {
+        identifier = components[0];
+        reason = components[1].trim();
+    } else {
+        identifier = 'Unknown'
+        reason = data.reason
+    }
+    let description = `${status}\n${identifier}\n${reason}`
+    return {
+        'status': status,
+        'identifier': identifier,
+        'reason': reason,
+        'description': description
+    }
+}
+
 function handleAuthenticationResult(params) {
     if (params.data.error) {
-        params.onFailure(params.data.reason);
+        params.onFailure(createError(params.response, params.data));
     } else {
         localStorage.tokenId = params.data.id;
         localStorage.token = params.data.token;
@@ -39,9 +64,9 @@ function handleAuthenticationResult(params) {
     }
 }
 
-function handleData(data, params) {
+function handleData(response, data, params) {
     if (data.error) {
-        params.onFailure(data.reason);
+        params.onFailure(createError(response, data));
     } else {
         params.onSuccess(data);
     }
@@ -52,7 +77,7 @@ function handleResponse(response, params) {
         return params.onSuccess();
     } else {
         return response.json().then(data => {
-            handleData(data, params)
+            handleData(response, data, params)
         }).catch(error => {
             params.onFailure(error)
         })
@@ -82,12 +107,15 @@ function login(params) {
         method: 'POST',
         headers: getBasicHeaders(params.email, params.password)
     }).then(response => {
-        return response.json();
-    }).then(data => {
-        handleAuthenticationResult({
-            data,
-            onSuccess: params.onSuccess,
-            onFailure: params.onFailure
+        return response.json().then(data => {
+            handleAuthenticationResult({
+                response,
+                data,
+                onSuccess: params.onSuccess,
+                onFailure: params.onFailure
+            })
+        }).catch(error => {
+            params.onFailure(error)
         })
     }).catch(error => {
         params.onFailure(error)
@@ -125,6 +153,7 @@ function register(params) {
     formData.append("username", params.username);
     formData.append("email", params.email);
     formData.append("password", params.password);
+    formData.append("emailVerificationUrl", frontendBaseUrl() + "/verifyEmail")
 
     fetch(api.baseUrl + '/auth/register', {
         method: 'POST',
@@ -153,8 +182,8 @@ function getUserStatus(params) {
 }
 
 function getUsers(params) {
-    var url = api.baseUrl + '/users/search';
-    var queryParameters = [];
+    let url = api.baseUrl + '/users/search';
+    let queryParameters = [];
     if (params.query != null) {
         queryParameters.push(`query=${params.query}`)
     }
@@ -198,11 +227,11 @@ function getUsersAndFollows(params) {
             return response.json();
         }))
     }).then(data => {
-        var followerIds = data[0].map(follower => { return follower.id })
-        var followingIds = data[1].map(following => { return following.id })
-        var users = data[2]
-        var updatedUsers = users.map(user => {
-            var updatedUser = user;
+        let followerIds = data[0].map(follower => { return follower.id })
+        let followingIds = data[1].map(following => { return following.id })
+        let users = data[2]
+        let updatedUsers = users.map(user => {
+            let updatedUser = user;
             updatedUser.you = localStorage.user().id == user.id;
             updatedUser.followingYou = followerIds.includes(user.id);
             updatedUser.following = followingIds.includes(user.id);
@@ -236,7 +265,7 @@ function toggleAdminStatus(params) {
 }
 
 function sendPasswordResetEmail(params) {
-    const link = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/resetPassword/";
+    const link = frontendBaseUrl() + "/resetPassword/";
     const formData = new FormData();
     formData.append("email", params.email);
     formData.append("url", link);
@@ -255,7 +284,7 @@ function resetPassword(params) {
 
 function deleteUser(params) {
     const url = api.baseUrl + '/users/' + params.userId;
-    makeResponseRequest(params, url, 'DELETE', {}, new FormData());
+    makeResponseRequest(params, url, 'DELETE', getBearerHeaders(), new FormData());
 }
 
 function updateUser(params) {
@@ -277,4 +306,9 @@ function updateUser(params) {
     makeResponseRequest(params, url, 'PUT', getBearerHeaders(), formData);
 }
 
-export default { login, logout, register, getUser, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword, deleteUser, updateUser };
+function verifyEmail(params) {
+    const url = api.baseUrl + '/users/verifyEmail/' + params.tokenId;
+    makeResponseRequest(params, url, 'PUT', {}, new FormData());
+}
+
+export default { login, logout, register, getUser, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword, deleteUser, updateUser, verifyEmail };

@@ -100,7 +100,7 @@ export default {
                     this.$router.push({ name: 'home' });
                 },
                 onFailure: error => {
-                    alert(error);
+                    alert(error.description);
                 } 
             })
         },
@@ -129,7 +129,7 @@ export default {
                     viewModel.emailAlreadyExists = userStatus.exists;
                 },
                 onFailure: error => {
-                    alert(error);
+                    alert(error.description);
                 }
             })    
         }

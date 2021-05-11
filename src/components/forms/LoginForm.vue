@@ -45,7 +45,7 @@ export default {
                     viewModel.$router.push({ name: 'home' });
                 },
                 onFailure: error => {
-                    alert(error);
+                    alert(error.description);
                 }
             })
         },

@@ -33,7 +33,7 @@ export default {
             network.getUsers({
                 isAdmin: "yes",
                 onSuccess: admins => {
-                    var adminIds = admins.map((admin) => {
+                    let adminIds = admins.map((admin) => {
                         return admin.id;
                     });
                     if (adminIds.includes(localStorage.user().id) == false) {
@@ -43,7 +43,7 @@ export default {
                     }
                 },
                 onFailure: error => {
-                    alert(error);
+                    alert(error.description);
                 }
             })
         },
@@ -59,7 +59,7 @@ export default {
                     this.users = users
                 },
                 onFailure: error => {
-                    alert(error);
+                    alert(error.description);
                 }
             })
         },

@@ -78,7 +78,7 @@ export default {
                     this.following = users.filter(user => {
                         return user.following == true;
                     })
-                    var matchingUsers = users.filter(user => {
+                    let matchingUsers = users.filter(user => {
                         return user.id == this.$route.params.userId
                     })
                     if (matchingUsers.length > 0) {
@@ -86,7 +86,7 @@ export default {
                     }
                 },
                 onFailure: error => {
-                    alert(error);
+                    alert(error.description);
                 }
             })
         },
@@ -101,7 +101,7 @@ export default {
                         this.$router.push({ name: 'home' });
                     }
                 },
-                onFailure: error => { alert(error) }
+                onFailure: error => { alert(error.description) }
             });
         },
         updateUser(field, value) {
@@ -113,7 +113,7 @@ export default {
                 },
                 onFailure: error => {
                     this.changeStatuses[field] = false;
-                    alert(error);
+                    alert(error.description);
                 }
             })
         },
@@ -127,7 +127,7 @@ export default {
                     this.getData();
                 },
                 onFailure: error => {
-                    alert(error);
+                    alert(error.description);
                 }
             })
         },

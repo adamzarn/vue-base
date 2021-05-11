@@ -43,7 +43,7 @@ export default {
                     this.$router.push({ name: 'login' });
                 },
                 onFailure: error => {
-                    alert(error);
+                    alert(error.description);
                 }
             })
         },
@@ -58,7 +58,7 @@ export default {
                     this.isAdmin = user.isAdmin;
                 },
                 onFailure: error => {
-                    alert(error);
+                    alert(error.description);
                 }
             })
         }

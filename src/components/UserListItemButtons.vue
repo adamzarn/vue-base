@@ -33,7 +33,7 @@ export default {
             network.toggleFollowingStatus({
                 otherUser: this.user,
                 onSuccess: this.refresh,
-                onFailure: error => { alert(error) }
+                onFailure: error => { alert(error.description) }
             })
         },
         toggleAdminStatus() {
@@ -41,20 +41,20 @@ export default {
                 user: this.user,
                 onSuccess: () => {
                     if (this.user.id == localStorage.user().id) {
-                        var updatedUser = localStorage.user();
+                        let updatedUser = localStorage.user();
                         updatedUser.isAdmin = !updatedUser.isAdmin;
                         localStorage.setObject('user', updatedUser);
                     }
                     this.refresh()
                 },
-                onFailure: error => { alert(error) }
+                onFailure: error => { alert(error.description) }
             });
         },
         deleteUser() {
             network.deleteUser({
                 userId: this.user.id,
                 onSuccess: this.refresh,
-                onFailure: error => { alert(error) }
+                onFailure: error => { alert(error.description) }
             });
         }
     }

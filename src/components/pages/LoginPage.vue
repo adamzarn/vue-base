@@ -46,7 +46,7 @@ export default {
                     alert("A password reset email was sent to " + this.passwordResetEmail);
                 },
                 onFailure: error => {
-                    alert(error);
+                    alert(error.description);
                 }
             })
         }
