@@ -24,7 +24,7 @@ export default {
     },
     computed: {
         shouldShowButtons() {
-            return !['login', 'register', 'resetPassword'].includes(this.$route.name);
+            return !['login', 'register', 'resetPassword', 'verifyEmail'].includes(this.$route.name);
         }
     },
     methods: {

@@ -3,7 +3,7 @@
     <div class="centered-link">
         <a @click="showForgotPasswordModal">Forgot Password?</a>
     </div>
-    <base-modal v-if="shouldShowForgotPasswordModal" title="Password Reset" @close="confirmError">
+    <base-modal v-if="shouldShowForgotPasswordModal" title="Password Reset">
         <template #default>
             <p>Enter your email and we'll send you a password reset link.</p>
             <base-input

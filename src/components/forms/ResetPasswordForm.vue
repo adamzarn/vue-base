@@ -80,6 +80,9 @@ export default {
 </script>
 
 <style scoped>
+form {
+    padding: var(--default-spacing);
+}
 h2 {
     margin: 0;
     margin-bottom: calc(var(--default-spacing)*2);

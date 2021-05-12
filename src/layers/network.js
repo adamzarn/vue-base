@@ -64,6 +64,27 @@ function handleAuthenticationResult(params) {
     }
 }
 
+function makeRequest(params, url, method, headers, body) {
+    fetch(url, { method, headers, body })
+    .then(response => {
+        return response.text().then(text => {
+            if (text && text.length) {
+                try {
+                    const data = JSON.parse(text);
+                    handleData(response, data, params);
+                } catch(error) {
+                    params.onFailure(error);
+                }
+            } else {
+                handleResponse(response, params);
+            }
+        })
+    }).catch(error => {
+        params.onFailure(error)
+    })
+}
+
+
 function handleData(response, data, params) {
     if (data.error) {
         params.onFailure(createError(response, data));
@@ -82,24 +103,6 @@ function handleResponse(response, params) {
             params.onFailure(error)
         })
     }
-}
-
-function makeDataRequest(params, url, method, headers) {
-    fetch(url, { method, headers })
-    .then(response => {
-        return response.json();
-    }).then(data => {
-        handleData(data, params);
-    }).catch(error => {
-        params.onFailure(error)
-    })
-}
-
-function makeResponseRequest(params, url, method, headers, body) {
-    fetch(url, { method, headers, body })
-    .then(response => {
-        handleResponse(response, params)
-    })
 }
 
 function login(params) {
@@ -173,12 +176,12 @@ function register(params) {
 
 function getUser(params) {
     const url = api.baseUrl + '/users/me';
-    makeDataRequest(params, url, 'GET', getBearerHeaders());
+    makeRequest(params, url, 'GET', getBearerHeaders());
 }
 
 function getUserStatus(params) {
     const url = api.baseUrl + '/users/status?email=' + params.email;
-    makeDataRequest(params, url, 'GET', {});
+    makeRequest(params, url, 'GET', {});
 }
 
 function getUsers(params) {
@@ -199,12 +202,12 @@ function getUsers(params) {
     if (queryParameters.length > 0) {
         url += `?${queryParameters.join('&')}`
     }
-    makeDataRequest(params, url, 'GET', getBearerHeaders());
+    makeRequest(params, url, 'GET', getBearerHeaders());
 }
 
 function getFollows(params) {
     const url = api.baseUrl + '/users/' + localStorage.user().id + '/' + params.followsType;
-    makeDataRequest(params, url, 'GET', getBearerHeaders());
+    makeRequest(params, url, 'GET', getBearerHeaders());
 }
 
 function getUsersAndFollows(params) {
@@ -253,7 +256,7 @@ function toggleFollowingStatus(params) {
     formData.append("follow", !params.otherUser.following);
 
     const url = api.baseUrl + '/users/' + localStorage.user().id + '/setFollowingStatus';
-    makeResponseRequest(params, url, 'POST', getBearerHeaders(), formData);
+    makeRequest(params, url, 'POST', getBearerHeaders(), formData);
 }
 
 function toggleAdminStatus(params) {
@@ -261,7 +264,7 @@ function toggleAdminStatus(params) {
     formData.append("isAdmin", !params.user.isAdmin);
 
     const url = api.baseUrl + '/users/' + params.user.id + '/setAdminStatus';
-    makeResponseRequest(params, url, 'PUT', getBearerHeaders(), formData);
+    makeRequest(params, url, 'PUT', getBearerHeaders(), formData);
 }
 
 function sendPasswordResetEmail(params) {
@@ -271,7 +274,7 @@ function sendPasswordResetEmail(params) {
     formData.append("url", link);
 
     const url = api.baseUrl + '/auth/sendPasswordResetEmail';
-    makeResponseRequest(params, url, 'POST', getBearerHeaders(), formData);
+    makeRequest(params, url, 'POST', getBearerHeaders(), formData);
 }
 
 function resetPassword(params) {
@@ -279,12 +282,12 @@ function resetPassword(params) {
     formData.append("value", params.password);
 
     const url = api.baseUrl + '/auth/resetPassword/' + params.tokenId;
-    makeResponseRequest(params, url, 'PUT', {}, formData);
+    makeRequest(params, url, 'PUT', {}, formData);
 }
 
 function deleteUser(params) {
     const url = api.baseUrl + '/users/' + params.userId;
-    makeResponseRequest(params, url, 'DELETE', getBearerHeaders(), new FormData());
+    makeRequest(params, url, 'DELETE', getBearerHeaders(), new FormData());
 }
 
 function updateUser(params) {
@@ -303,12 +306,22 @@ function updateUser(params) {
     }
 
     const url = api.baseUrl + '/users';
-    makeResponseRequest(params, url, 'PUT', getBearerHeaders(), formData);
+    makeRequest(params, url, 'PUT', getBearerHeaders(), formData);
 }
 
 function verifyEmail(params) {
     const url = api.baseUrl + '/users/verifyEmail/' + params.tokenId;
-    makeResponseRequest(params, url, 'PUT', {}, new FormData());
+    makeRequest(params, url, 'PUT', {}, new FormData());
 }
 
-export default { login, logout, register, getUser, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword, deleteUser, updateUser, verifyEmail };
+function sendEmailVerificationEmail(params) {
+    const formData = new FormData();
+    formData.append("email", "")
+    formData.append("password", "")
+    formData.append("emailVerificationUrl", frontendBaseUrl() + "/verifyEmail")
+
+    const url = api.baseUrl + '/auth/sendEmailVerificationEmail';
+    makeRequest(params, url, 'POST', getBasicHeaders(params.email, params.password), formData);
+}
+
+export default { login, logout, register, getUser, getUserStatus, getUsers, getFollows, getUsersAndFollows, toggleFollowingStatus, toggleAdminStatus, sendPasswordResetEmail, resetPassword, deleteUser, updateUser, verifyEmail, sendEmailVerificationEmail };

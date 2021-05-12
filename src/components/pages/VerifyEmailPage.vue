@@ -1,7 +1,8 @@
 <template>
-    <h1>{{ message }}</h1>
-    <base-button v-show="success" @click="showLogin">Login</base-button>
-    <base-button v-show="failure" @click="resendEmailVerificationEmail">Resend Email Verification Email</base-button>
+    <div class="verify-email-container">
+        <h3>{{ message }}</h3>
+        <base-button v-show="completed" @click="showLogin">Login</base-button>
+    </div>
 </template>
 
 <script>
@@ -10,8 +11,7 @@ import network from '../../layers/network.js';
 export default {
     data() {
         return {
-            success: false,
-            failure: false,
+            completed: false,
             message: ''
         }
     },
@@ -20,19 +20,16 @@ export default {
             network.verifyEmail({
                 tokenId: this.$route.params.tokenId,
                 onSuccess: () => {
-                    this.success = true;
+                    this.completed = true;
                     this.message = "Your email was successfully verified.";
                 }, onFailure: error => {
-                    this.failure = true;
-                    this.message = error;
+                    this.completed = true;
+                    this.message = error.reason;
                 }
             });
         },
         showLogin() {
             this.$router.push({ name: 'login' });
-        },
-        resendEmailVerificationEmail() {
-            console.log("Resend")
         }
     },
     mounted() {
@@ -42,4 +39,7 @@ export default {
 </script>
 
 <style scoped>
+.verify-email-container {
+    margin: var(--default-spacing);
+}
 </style>
