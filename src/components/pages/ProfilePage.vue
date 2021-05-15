@@ -15,11 +15,11 @@
     <div class="container follows">
         <div class="col-6">
             <page-title class="title" text="Followers"></page-title>
-            <user-list :users="followers" :refresh="getData" :showFollowButton="isYou"></user-list>
+            <user-list :users="followers" :refresh="getFollowers" :showToggleFollowButton="false"></user-list>
         </div>
         <div class="col-6">
             <page-title class="title" text="Following"></page-title>
-            <user-list :users="following" :refresh="getData" :showFollowButton="isYou"></user-list>
+            <user-list :users="following" :refresh="getFollowing" :showToggleFollowButton="isYou"></user-list>
         </div>
     </div>
 </template>
@@ -68,31 +68,39 @@ export default {
         }
     },
     methods: {
-        getData() {
-            network.getUsersAndFollows({
-                userId: this.$route.params.userId,
-                onSuccess: users => {
-                    this.followers = users.filter(user => {
-                        return user.followingYou == true;
-                    });
-                    this.following = users.filter(user => {
-                        return user.following == true;
-                    })
-                    let matchingUsers = users.filter(user => {
-                        return user.id == this.$route.params.userId
-                    })
-                    if (matchingUsers.length > 0) {
-                        this.user = matchingUsers[0];
-                    }
+        getFollowers() {
+            network.getFollows({
+                urlParams: {
+                    userId: this.$route.params.userId,
+                    followType: "followers"
                 },
-                onFailure: error => {
-                    alert(error.description);
-                }
+                onSuccess: users => { 
+                    this.followers = users
+                },
+                onFailure: error => { alert(error.description) }
+            })
+        },
+        getFollowing() {
+            network.getFollows({
+                urlParams: {
+                    userId: this.$route.params.userId,
+                    followType: "following"
+                },
+                onSuccess: users => {
+                    this.following = users.map((user) => {
+                        let updatedUser = user
+                        user.following = true
+                        return updatedUser
+                    })
+                },
+                onFailure: error => { alert(error.description) }
             })
         },
         deleteUser() {
             network.deleteUser({
-                userId: this.user.id,
+                urlParams: {
+                    userId: this.user.id
+                },
                 onSuccess: () => {
                     if (this.isYou) {
                         localStorage.clear();
@@ -106,7 +114,9 @@ export default {
         },
         updateUser(field, value) {
             network.updateUser({
-                [field]: value,
+                body: {
+                    [field]: value
+                },
                 onSuccess: () => {
                     this.changeStatuses[field] = false;
                     this.getData();
@@ -119,12 +129,16 @@ export default {
         },
         changePassword(field, value) {
             network.resetPassword({
-                [field]: value,
-                tokenId: localStorage.tokenId,
+                urlParams: {
+                    tokenId: localStorage.tokenId,
+                },
+                body: {
+                    [field]: value
+                },
                 onSuccess: () => {
                     alert("Your password was changed successfully!")
                     this.passwordBeingChanged = false
-                    this.getData();
+                    this.getUser()
                 },
                 onFailure: error => {
                     alert(error.description);
@@ -133,6 +147,27 @@ export default {
         },
         toggleBeingChanged(field) {
             this.changeStatuses[field] = !this.changeStatuses[field]
+        },
+        getData() {
+            this.getFollowers()
+            this.getFollowing()
+            this.getUser()
+        },
+        getUser() {
+            network.getUser({
+                urlParams: {
+                    userId: this.$route.params.userId
+                },
+                onSuccess: user => {
+                    this.user = user;
+                    if (user.id == localStorage.user().id) {
+                        this.user.you = true;
+                    }
+                },
+                onFailure: error => {
+                    alert(error.description);
+                }
+            })
         }
     },
     mounted() {
@@ -144,7 +179,9 @@ export default {
     },
     watch: {
         $route() {
-            this.getData();
+            if (localStorage.token != null) {
+                this.getData();
+            }
         }
     } 
 }

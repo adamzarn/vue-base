@@ -41,7 +41,10 @@ export default {
         sendForgotPasswordEmail() {
             this.shouldShowForgotPasswordModal = false;
             network.sendPasswordResetEmail({
-                email: this.passwordResetEmail,
+                body: {
+                    email: this.passwordResetEmail,
+                    url: network.frontendBaseUrl() + "/resetPassword/"
+                },
                 onSuccess: () => {
                     alert("A password reset email was sent to " + this.passwordResetEmail);
                 },

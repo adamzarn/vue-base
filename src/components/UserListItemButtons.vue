@@ -1,9 +1,9 @@
 <template>
     <div class="buttons-container">
-        <base-button v-show="showFollowButton" class="follow-button" @click.stop="toggleFollowingStatus()">{{ toggleFollowingStatusButtonText }}</base-button>
+        <base-button v-show="showToggleFollowButton" class="follow-button" @click.stop="toggleFollowingStatus()">{{ toggleFollowingStatusButtonText }}</base-button>
         <div v-show="loggedInUserIsAdmin" class="admin-buttons">
-            <base-button mode="light" class="admin-button" @click.stop="toggleAdminStatus()">{{ toggleAdminStatusButtonText }}</base-button>
-            <img class="svg delete-button" src="/delete.svg" @click.stop="deleteUser()">
+            <base-button v-show="showToggleAdminButton" mode="light" class="admin-button" @click.stop="toggleAdminStatus()">{{ toggleAdminStatusButtonText }}</base-button>
+            <img v-show="showDeleteButton" class="svg delete-button" src="/delete.svg" @click.stop="deleteUser()">
         </div>
     </div>
 </template>
@@ -15,7 +15,21 @@ export default {
     props: {
         user: Object,
         refresh: Function,
-        showFollowButton: Boolean
+        showToggleFollowButton: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        showToggleAdminButton: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        showDeleteButton: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     },
     computed: {
         loggedInUserIsAdmin() {
@@ -31,14 +45,25 @@ export default {
     methods: {
         toggleFollowingStatus() {
             network.toggleFollowingStatus({
-                otherUser: this.user,
+                urlParams: {
+                    userId: localStorage.user().id
+                },
+                body: {
+                    otherUserId: this.user.id,
+                    follow: !this.user.following
+                },
                 onSuccess: this.refresh,
                 onFailure: error => { alert(error.description) }
             })
         },
         toggleAdminStatus() {
             network.toggleAdminStatus({
-                user: this.user,
+                urlParams: {
+                    userId: this.user.id
+                },
+                body: {
+                    isAdmin: !this.user.isAdmin
+                },
                 onSuccess: () => {
                     if (this.user.id == localStorage.user().id) {
                         let updatedUser = localStorage.user();
@@ -52,7 +77,9 @@ export default {
         },
         deleteUser() {
             network.deleteUser({
-                userId: this.user.id,
+                urlParams: {
+                    userId: this.user.id
+                },
                 onSuccess: this.refresh,
                 onFailure: error => { alert(error.description) }
             });

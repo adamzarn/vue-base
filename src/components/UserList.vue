@@ -7,7 +7,9 @@
             :isFirst="index==0"
             :isLast="index==users.length-1"
             :refresh="refresh"
-            :showFollowButton="showFollowButton">
+            :showToggleFollowButton="showToggleFollowButton"
+            :showToggleAdminButton="showToggleAdminButton"
+            :showDeleteButton="showDeleteButton">
         </user-list-item>
     </base-card>
 </template>
@@ -28,9 +30,20 @@ export default {
             type: Function,
             required: true
         },
-        showFollowButton: {
+        showToggleFollowButton: {
             type: Boolean,
-            required: true
+            required: false,
+            default: false
+        },
+        showToggleAdminButton: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        showDeleteButton: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     }
 }

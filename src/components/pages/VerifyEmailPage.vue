@@ -18,7 +18,9 @@ export default {
     methods: {
         verifyEmail() {
             network.verifyEmail({
-                tokenId: this.$route.params.tokenId,
+                urlParams: {
+                    tokenId: this.$route.params.tokenId
+                },
                 onSuccess: () => {
                     this.completed = true;
                     this.message = "Your email was successfully verified.";

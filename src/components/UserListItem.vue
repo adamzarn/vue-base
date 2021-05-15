@@ -1,7 +1,13 @@
 <template>
     <div class="container col-12" :class="classes" @click="profile">
         <user-list-item-text :user="user"></user-list-item-text>
-        <user-list-item-buttons :user="user" :refresh="refresh" :showFollowButton="showFollowButton"></user-list-item-buttons>
+        <user-list-item-buttons
+            :user="user"
+            :refresh="refresh"
+            :showToggleFollowButton="showToggleFollowButton"
+            :showToggleAdminButton="showToggleAdminButton"
+            :showDeleteButton="showDeleteButton">
+        </user-list-item-buttons>
     </div>
     <div v-if="isLast==false" class="separator"></div>
 </template>
@@ -12,7 +18,7 @@ import UserListItemButtons from '../components/UserListItemButtons';
 
 export default {
     components: { UserListItemText, UserListItemButtons },
-    props: ['user', 'isFirst', 'isLast', 'refresh', 'showFollowButton'],
+    props: ['user', 'isFirst', 'isLast', 'refresh', 'showToggleFollowButton', 'showToggleAdminButton', 'showDeleteButton'],
     computed: {
         classes() {
             return {

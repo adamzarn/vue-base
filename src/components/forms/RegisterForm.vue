@@ -91,17 +91,19 @@ export default {
     methods: {
         register() {
             network.register({
-                firstName: this.enteredFirstName,
-                lastName: this.enteredLastName,
-                username: this.enteredUsername,
-                email: this.enteredEmail,
-                password: this.enteredPassword, 
+                body: {
+                    firstName: this.enteredFirstName,
+                    lastName: this.enteredLastName,
+                    username: this.enteredUsername,
+                    email: this.enteredEmail,
+                    password: this.enteredPassword
+                },
                 onSuccess: () => {
                     this.$router.push({ name: 'home' });
                 },
                 onFailure: error => {
                     alert(error.description);
-                } 
+                }
             })
         },
         validateFirstName() {
@@ -124,7 +126,9 @@ export default {
         checkIfUserAlreadyExists() {
             const viewModel = this;
             network.getUserStatus({
-                email: this.enteredEmail, 
+                queryParams: {
+                    email: this.enteredEmail
+                },
                 onSuccess: userStatus => {
                     viewModel.emailAlreadyExists = userStatus.exists;
                 },

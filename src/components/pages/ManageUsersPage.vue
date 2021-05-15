@@ -2,11 +2,11 @@
     <div class="container">
         <div class="col-6">
             <page-title class="title" text="Admins"></page-title>
-            <user-list :users="admins" :refresh="getData" :showFollowButton="false"></user-list>
+            <user-list :users="admins" :refresh="getData" :showToggleAdminButton="true"></user-list>
         </div>
         <div class="col-6">
             <base-input label="Search Users" class="search-bar" v-model="enteredQuery" :onChange="getUsers"></base-input>
-            <user-list :users="users" :refresh="getData" :showFollowButton="false"></user-list>
+            <user-list :users="users" :refresh="getData" :showToggleAdminButton="true"></user-list>
         </div>
     </div>
 </template>
@@ -30,8 +30,10 @@ export default {
     },
     methods: {
         getAdmins() {
-            network.getUsers({
-                isAdmin: "yes",
+            network.searchUsers({
+                queryParams: {
+                    isAdmin: "yes"
+                },
                 onSuccess: admins => {
                     let adminIds = admins.map((admin) => {
                         return admin.id;
@@ -52,9 +54,13 @@ export default {
                 this.users = [];
                 return
             }
-            network.getUsers({
-                query: this.enteredQuery,
-                isAdmin: "no",
+            network.searchUsers({
+                queryParams: {
+                    query: this.enteredQuery,
+                    start: 0,
+                    end: 50,
+                    isAdmin: "no"
+                },
                 onSuccess: users => {
                     this.users = users
                 },

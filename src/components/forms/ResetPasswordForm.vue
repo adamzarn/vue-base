@@ -58,8 +58,12 @@ export default {
                 return
             }
             network.resetPassword({
-                "tokenId": this.$route.params.tokenId,
-                "password": this.enteredPassword,
+                urlParams: {
+                    tokenId: this.$route.params.tokenId
+                },
+                body: {
+                    value: this.enteredPassword
+                },
                 onSuccess: () => {
                     alert("Your password was successfully reset. You will now be redirected to the login page.")
                     this.$router.push({ name: 'login' });

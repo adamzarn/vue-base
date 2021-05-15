@@ -52,12 +52,13 @@ export default {
     },
     methods: {
         login() {
-            const viewModel = this;
             network.login({
-                email: viewModel.enteredEmail,
-                password: viewModel.enteredPassword,
+                headerParams: {
+                    email: this.enteredEmail,
+                    password: this.enteredPassword
+                },
                 onSuccess: () => {
-                    viewModel.$router.push({ name: 'home' });
+                    this.$router.push({ name: 'home' });
                 },
                 onFailure: error => {
                     if (error.identifier === 'emailIsNotVerified') {
