@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import network from '../../layers/network.js';
+import network from '../../network/network.js';
 
 export default {
     data() {

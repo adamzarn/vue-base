@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import network from '../layers/network.js';
+import network from '../network/network.js';
 
 export default {
     data() {
@@ -53,6 +53,9 @@ export default {
         },
         getUpdatedUser() {
             network.getUser({
+                urlParams: {
+                    userId: localStorage.user().id
+                },
                 onSuccess: user => {
                     localStorage.setObject('user', user);
                     this.isAdmin = user.isAdmin;

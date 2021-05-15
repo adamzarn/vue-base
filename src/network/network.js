@@ -1,4 +1,4 @@
-import api from '../constants/api.js';
+import api from './api.js';
 
 Storage.prototype.setObject = function(key, value) {
     this.setItem(key, JSON.stringify(value));
@@ -19,19 +19,12 @@ function frontendBaseUrl() {
 function createError(response, data) {
     let components = data.reason.split(':');
     let status = response.status;
-    let identifier = '';
-    let reason = '';
-    if (components.length == 2) {
-        identifier = components[0];
-        reason = components[1].trim();
-    } else {
-        identifier = 'Unknown'
-        reason = data.reason
-    }
-    let description = `${status}\n${identifier}\n${reason}`
+    let exception = (components.length == 2) ? components[0] : 'Unknown'
+    let reason = (components.length == 2) ? components[1].trim() : data.reason
+    let description = `${status}\n${exception}\n${reason}`
     return {
         'status': status,
-        'identifier': identifier,
+        'exception': exception,
         'reason': reason,
         'description': description
     }
@@ -54,13 +47,15 @@ function getUrl(endpoint, params) {
 function getRequest(endpoint, params) {
     return { 
         method: endpoint.method,
-        headers: endpoint.headers ? endpoint.headers(params.headerParams) : null,
+        headers: endpoint.headers ? endpoint.headers(params.headerParams) : {},
         body: endpoint.body ? endpoint.body(params.body) : null
     }
 }
 
 function makeRequest(endpoint, params) {
-    console.log(localStorage.user().id)
+    if (localStorage.user()) {
+        console.log(localStorage.user().id)
+    }
     console.log(getUrl(endpoint, params))
     console.log(getRequest(endpoint, params))
     fetch(
@@ -80,6 +75,7 @@ function makeRequest(endpoint, params) {
             }
         })
     }).catch(error => {
+        console.log(error)
         params.onFailure(error)
     })
 }
@@ -143,6 +139,7 @@ function resetPassword(params) {
 }
 
 function getUser(params) {
+    if (params.urlParams.userId == null) { return }
     makeRequest(api.endpoints.getUser, params)
 }
 
@@ -159,7 +156,6 @@ function toggleAdminStatus(params) {
 }
 
 function toggleFollowingStatus(params) {
-    console.log(params)
     makeRequest(api.endpoints.setFollowingStatus, params)
 }
 

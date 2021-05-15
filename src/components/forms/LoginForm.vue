@@ -39,13 +39,14 @@
 </template>
 
 <script>
-import network from '../../layers/network.js';
+import network from '../../network/network.js';
+import exceptions from '../../network/exceptions.js';
 
 export default {
     data() {
         return {
-            enteredEmail: '',
-            enteredPassword: '',
+            enteredEmail: 'adam.zarn@my.wheaton.edu',
+            enteredPassword: '123456',
             emailIsInvalid: false,
             shouldShowVerifyEmailModal: false
         }
@@ -61,7 +62,7 @@ export default {
                     this.$router.push({ name: 'home' });
                 },
                 onFailure: error => {
-                    if (error.identifier === 'emailIsNotVerified') {
+                    if (error.exception === exceptions.emailIsNotVerified) {
                         this.shouldShowVerifyEmailModal = true
                     } else {
                         alert(error.description);
@@ -75,10 +76,17 @@ export default {
         sendEmailVerificationEmail() {
             this.shouldShowVerifyEmailModal = false;
             network.sendEmailVerificationEmail({
-                email: this.enteredEmail,
-                password: this.enteredPassword,
+                headerParams: {
+                    email: this.enteredEmail,
+                    password: this.enteredPassword
+                },
+                body: {
+                    email: '',
+                    password: '',
+                    frontendBaseUrl: network.frontendBaseUrl() + '/verifyEmail'
+                },
                 onSuccess: () => {
-                    alert(`An email verification email was sent to ${this.enteredEmail}`)
+                    alert(`An email verification email was sent to ${this.enteredEmail}.`)
                 },
                 onFailure: error => {
                     alert(error.description);

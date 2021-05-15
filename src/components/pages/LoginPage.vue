@@ -21,7 +21,7 @@
 
 <script>
 import LoginForm from '../forms/LoginForm.vue';
-import network from '../../layers/network.js';
+import network from '../../network/network.js';
 
 export default {
     components: { LoginForm },
@@ -46,7 +46,7 @@ export default {
                     url: network.frontendBaseUrl() + "/resetPassword/"
                 },
                 onSuccess: () => {
-                    alert("A password reset email was sent to " + this.passwordResetEmail);
+                    alert(`A password reset email was sent to ${this.passwordResetEmail}.`);
                 },
                 onFailure: error => {
                     alert(error.description);

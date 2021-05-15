@@ -13,7 +13,7 @@
 
 <script>
 import UserList from '../UserList.vue';
-import network from '../../layers/network.js';
+import network from '../../network/network.js';
 import PageTitle from '../base/PageTitle.vue';
 
 export default {

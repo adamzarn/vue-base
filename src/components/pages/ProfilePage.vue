@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import network from '../../layers/network.js';
+import network from '../../network/network.js';
 import UserList from '../UserList.vue';
 import ProfileItem from '../base/ProfileItem.vue';
 import PageTitle from '../base/PageTitle.vue';
@@ -64,7 +64,7 @@ export default {
         },
         isYou() {
             if (this.user == null) { return false; }
-            return this.user.you;
+            return this.user.id == localStorage.user().id;
         }
     },
     methods: {
@@ -178,8 +178,8 @@ export default {
         }
     },
     watch: {
-        $route() {
-            if (localStorage.token != null) {
+        $route(to) {
+            if (localStorage.token != null && to.name == "profile") {
                 this.getData();
             }
         }
