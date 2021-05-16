@@ -45,7 +45,7 @@ export default {
             return this.enteredPassword === this.enteredConfirmedPassword;
         },
         invalidPasswordMessage() {
-            return "Your password must have at least " + this.minPasswordLength + " characters";
+            return `Your password must have at least ${this.minPasswordLength} characters`;
         },
         formIsInvalid() {
             return this.passwordIsInvalid || this.confirmedPasswordIsInvalid || this.enteredPassword == '' || this.enteredConfirmedPassword === '';

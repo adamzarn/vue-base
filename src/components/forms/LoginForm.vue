@@ -83,7 +83,7 @@ export default {
                 body: {
                     email: '',
                     password: '',
-                    frontendBaseUrl: network.frontendBaseUrl() + '/verifyEmail'
+                    frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
                 },
                 onSuccess: () => {
                     alert(`An email verification email was sent to ${this.enteredEmail}.`)

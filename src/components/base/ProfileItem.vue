@@ -44,7 +44,7 @@ export default {
     },
     computed: {
         getLabel() {
-            return this.beingChanged ? "New " + this.label : this.label;
+            return this.beingChanged ? `New ${this.label}` : this.label;
         },
         getValue() {
             return this.type == 'password' ? "*************" : this.currentValue;

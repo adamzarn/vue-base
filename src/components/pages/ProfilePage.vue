@@ -1,13 +1,17 @@
 <template>
     <div class="col-12 container">
         <div class="title-container">
-            <page-title text="Profile"></page-title>
-            <img class="svg delete-button" src="/delete.svg" @click="deleteUser()">
+            <page-title :text="fullName"></page-title>
+            <div class="buttons-container">
+                <base-button v-if="isYou == false" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
+                <base-button v-if="isAdmin" mode="light" @click="toggleAdminStatus()">{{ toggleAdminButtonText }}</base-button>
+                <img v-if="isAdmin || isYou" class="svg delete-button" src="/delete.svg" @click="deleteUser()">
+            </div>
         </div>
         <base-card v-if="user">
             <profile-item label="Email" :currentValue="email" :editable="false"></profile-item>
-            <profile-item field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-            <profile-item field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item v-if="isYou" field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item v-if="isYou" field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
             <profile-item field="username" label="Username" :currentValue="username" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
             <profile-item v-if="isYou" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="isYou" :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
         </base-card>
@@ -42,7 +46,10 @@ export default {
                 'lastName': false,
                 'username': false,
                 'password': false
-            }
+            },
+            toggleFollowButtonText: '',
+            toggleAdminButtonText: '',
+            isFollowing: false
         }
     },
     computed: {
@@ -58,6 +65,9 @@ export default {
             if (this.user == null) { return ''; }
             return this.user.lastName
         },
+        fullName() {
+            return `${this.firstName} ${this.lastName}`
+        },
         username() {
             if (this.user == null) { return ''; }
             return this.user.username;
@@ -65,10 +75,14 @@ export default {
         isYou() {
             if (this.user == null) { return false; }
             return this.user.id == localStorage.user().id;
+        },
+        isAdmin() {
+            if (localStorage.user() == null) { return false; }
+            return localStorage.user().isAdmin;
         }
     },
     methods: {
-        getFollowers() {
+        async getFollowers() {
             network.getFollows({
                 urlParams: {
                     userId: this.$route.params.userId,
@@ -76,11 +90,12 @@ export default {
                 },
                 onSuccess: users => { 
                     this.followers = users
+                    this.getUser()
                 },
                 onFailure: error => { alert(error.description) }
             })
         },
-        getFollowing() {
+        async getFollowing() {
             network.getFollows({
                 urlParams: {
                     userId: this.$route.params.userId,
@@ -92,9 +107,42 @@ export default {
                         user.following = true
                         return updatedUser
                     })
+                    this.getUser()
                 },
                 onFailure: error => { alert(error.description) }
             })
+        },
+        toggleFollowingStatus() {
+            network.toggleFollowingStatus({
+                urlParams: {
+                    userId: localStorage.user().id
+                },
+                body: {
+                    otherUserId: this.user.id,
+                    follow: !this.isFollowing
+                },
+                onSuccess: this.getData,
+                onFailure: error => { alert(error.description) }
+            })
+        },
+        toggleAdminStatus() {
+            network.toggleAdminStatus({
+                urlParams: {
+                    userId: this.user.id
+                },
+                body: {
+                    isAdmin: !this.user.isAdmin
+                },
+                onSuccess: () => {
+                    if (this.user.id == localStorage.user().id) {
+                        let updatedUser = localStorage.user();
+                        updatedUser.isAdmin = !updatedUser.isAdmin;
+                        localStorage.setObject('user', updatedUser);
+                    }
+                    this.getData()
+                },
+                onFailure: error => { alert(error.description) }
+            });
         },
         deleteUser() {
             network.deleteUser({
@@ -148,10 +196,9 @@ export default {
         toggleBeingChanged(field) {
             this.changeStatuses[field] = !this.changeStatuses[field]
         },
-        getData() {
+        async getData() {
             this.getFollowers()
             this.getFollowing()
-            this.getUser()
         },
         getUser() {
             network.getUser({
@@ -163,6 +210,11 @@ export default {
                     if (user.id == localStorage.user().id) {
                         this.user.you = true;
                     }
+                    this.toggleAdminButtonText = user.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access'
+                    this.isFollowing = this.followers.filter((follower) => { 
+                        return follower.id == localStorage.user().id
+                    }).length == 1
+                    this.toggleFollowButtonText = this.isFollowing ? "Unfollow" : "Follow"
                 },
                 onFailure: error => {
                     alert(error.description);
@@ -190,6 +242,11 @@ export default {
 <style scoped>
 .container {
     padding: var(--default-spacing);
+}
+.buttons-container {
+    display: flex;
+    column-gap: var(--default-spacing);
+    align-items: center;
 }
 .follows {
     display: flex;

@@ -1,6 +1,6 @@
 <template>
     <div class="text-container">
-        <h3 class="text">{{ fullName }} <span class="username">{{ "@" + user.username }}</span></h3>
+        <h3 class="text">{{ fullName }} <span class="username">{{ `@${user.username}` }}</span></h3>
         <p class="text">{{ user.email }}</p>
     </div>
 </template>
@@ -10,7 +10,7 @@ export default {
     props: ['user'],
     computed: {
         fullName() {
-            return this.user.firstName + " " + this.user.lastName;
+            return `${this.user.firstName} ${this.user.lastName}`;
         }
     }
 }

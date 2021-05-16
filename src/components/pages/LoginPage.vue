@@ -43,7 +43,7 @@ export default {
             network.sendPasswordResetEmail({
                 body: {
                     email: this.passwordResetEmail,
-                    url: network.frontendBaseUrl() + "/resetPassword/"
+                    url: `${network.frontendBaseUrl()}/resetPassword`
                 },
                 onSuccess: () => {
                     alert(`A password reset email was sent to ${this.passwordResetEmail}.`);

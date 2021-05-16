@@ -13,7 +13,8 @@ Storage.prototype.user = function() {
 }
 
 function frontendBaseUrl() {
-    return window.location.protocol + "//" + window.location.hostname + ":" + window.location.port;
+    let loc = window.location;
+    return `${loc.protocol}//${loc.hostname}:${loc.port}`;
 }
 
 function createError(response, data) {

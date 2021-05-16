@@ -4,16 +4,16 @@ const components = {
     port: '8080',
 }
 
-const baseUrl = components.scheme + '://' + components.host + ':' + components.port
+const baseUrl = `${components.scheme}://${components.host}:${components.port}`
 const authUrl = `${baseUrl}/auth`
 const usersUrl = `${baseUrl}/users`
 
 function getBasicAuthorizationValue(email, password) {
-    return "Basic " + btoa(email + ':' + password);
+    return `Basic ${btoa(`${email}:${password}`)}`;
 }
 
 function getBearerAuthorizationValue() {
-    return "Bearer " + localStorage.token;
+    return `Bearer ${localStorage.token}`;
 }
 
 function getBasicHeaders(email, password) {
