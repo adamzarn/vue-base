@@ -4,7 +4,7 @@
             <a href="/home" class="brand"><img src="/logo.svg" alt="brandy"></a>
             <nav v-if="shouldShowButtons" class="buttons-container">
                 <base-button @click="home">Home</base-button>
-                <base-button v-if="isAdmin" @click="manageUsers">Manage Users</base-button>
+                <base-button v-if="loggedInUserIsAdmin" @click="manageUsers">Manage Users</base-button>
                 <base-button @click="profile">My Profile</base-button>
                 <base-button @click="logout">Logout</base-button>
             </nav>
@@ -19,7 +19,7 @@ import network from '../network/network.js';
 export default {
     data() {
         return {
-            isAdmin: false
+            loggedInUserIsAdmin: false
         }
     },
     computed: {
@@ -58,7 +58,7 @@ export default {
                 },
                 onSuccess: user => {
                     localStorage.setObject('user', user);
-                    this.isAdmin = user.isAdmin;
+                    this.loggedInUserIsAdmin = user.isAdmin;
                 },
                 onFailure: error => {
                     alert(error.description);
@@ -68,8 +68,12 @@ export default {
     },
     watch: {
         $route(to) {
-            const updatedUserRequiredRoutes = ['home', 'profile', 'manageUsers']
-            if (updatedUserRequiredRoutes.includes(to.name)) {
+            const userRequiredRoutes = ['home', 'profile', 'manageUsers']
+            if (userRequiredRoutes.includes(to.name)) {
+                if (localStorage.user() == null) {
+                    this.$router.push({ name: 'login' })
+                    return
+                }
                 this.getUpdatedUser();
             }
         }

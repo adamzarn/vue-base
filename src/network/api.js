@@ -66,7 +66,13 @@ const endpoints = {
         name: 'sendEmailVerificationEmail',
         url: () => { return `${authUrl}/sendEmailVerificationEmail` },
         method: 'POST',
-        headers: (headerParams) => { return getBasicHeaders(headerParams.email, headerParams.password) },
+        headers: (headerParams) => {
+            if (headerParams) {
+                return getBasicHeaders(headerParams.email, headerParams.password);
+            } else {
+                return getBearerHeaders();
+            }
+        },
         body: (body) => { return getFormData(body) }
     },
     verifyEmail: {

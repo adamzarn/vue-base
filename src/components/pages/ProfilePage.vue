@@ -3,17 +3,17 @@
         <div class="title-container">
             <page-title :text="fullName"></page-title>
             <div class="buttons-container">
-                <base-button v-if="isYou == false" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
-                <base-button v-if="isAdmin" mode="light" @click="toggleAdminStatus()">{{ toggleAdminButtonText }}</base-button>
-                <img v-if="isAdmin || isYou" class="svg delete-button" src="/delete.svg" @click="deleteUser()">
+                <base-button v-if="userIsLoggedInUser == false" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
+                <base-button v-if="loggedInUserIsAdmin" mode="light" @click="toggleAdminStatus()">{{ toggleAdminButtonText }}</base-button>
+                <img v-if="loggedInUserIsAdmin || userIsLoggedInUser" class="svg delete-button" src="/delete.svg" @click="deleteUser()">
             </div>
         </div>
         <base-card v-if="user">
-            <profile-item label="Email" :currentValue="email" :editable="false"></profile-item>
-            <profile-item v-if="isYou" field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-            <profile-item v-if="isYou" field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-            <profile-item field="username" label="Username" :currentValue="username" :update="updateUser" :editable="isYou" :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-            <profile-item v-if="isYou" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="isYou" :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item v-if="userIsLoggedInUser" field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item v-if="userIsLoggedInUser" field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item field="username" label="Username" :currentValue="username" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item field="email" label="Email" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item v-if="userIsLoggedInUser" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
         </base-card>
     </div>
     <div class="container follows">
@@ -23,9 +23,20 @@
         </div>
         <div class="col-6">
             <page-title class="title" :text="followingTitle"></page-title>
-            <user-list :users="following" :refresh="getFollowing" :showToggleFollowButton="isYou"></user-list>
+            <user-list :users="following" :refresh="getFollowing" :showToggleFollowButton="userIsLoggedInUser"></user-list>
         </div>
     </div>
+    <base-modal v-if="shouldShowChangeEmailNotificationModal" title="Change Email">
+        <template #default>
+            <p>If you change your email, you will be automatically logged out and an email verification link will be sent to your new email. You will be required to verify your new email before you can login again.</p>
+        </template>
+        <template #actions>
+            <div class="buttons-container">
+                <base-button @click="dismissChangeEmailNotificationModal">Cancel</base-button>
+                <base-button @click="allowEmailUpdate">Continue</base-button>
+            </div>
+        </template>
+    </base-modal>
 </template>
 
 <script>
@@ -45,11 +56,13 @@ export default {
                 'firstName': false,
                 'lastName': false,
                 'username': false,
+                'email': false,
                 'password': false
             },
             toggleFollowButtonText: '',
             toggleAdminButtonText: '',
-            isFollowing: false
+            isFollowing: false,
+            shouldShowChangeEmailNotificationModal: false
         }
     },
     computed: {
@@ -72,19 +85,19 @@ export default {
             if (this.user == null) { return ''; }
             return this.user.username;
         },
-        isYou() {
+        userIsLoggedInUser() {
             if (this.user == null) { return false; }
             return this.user.id == localStorage.user().id;
         },
-        isAdmin() {
+        loggedInUserIsAdmin() {
             if (localStorage.user() == null) { return false; }
             return localStorage.user().isAdmin;
         },
         followersTitle() {
-            return this.isYou ? "Following You" : `Following ${this.firstName}`
+            return this.userIsLoggedInUser ? "Following You" : `Following ${this.firstName}`
         },
         followingTitle() {
-            return this.isYou ? "You're Following" : `${this.firstName}'s Following`
+            return this.userIsLoggedInUser ? "You're Following" : `${this.firstName}'s Following`
         }
     },
     methods: {
@@ -139,12 +152,12 @@ export default {
                     userId: this.user.id
                 },
                 body: {
-                    isAdmin: !this.user.isAdmin
+                    loggedInUserIsAdmin: !this.user.loggedInUserIsAdmin
                 },
                 onSuccess: () => {
                     if (this.user.id == localStorage.user().id) {
                         let updatedUser = localStorage.user();
-                        updatedUser.isAdmin = !updatedUser.isAdmin;
+                        updatedUser.loggedInUserIsAdmin = !updatedUser.loggedInUserIsAdmin;
                         localStorage.setObject('user', updatedUser);
                     }
                     this.getData()
@@ -158,7 +171,7 @@ export default {
                     userId: this.user.id
                 },
                 onSuccess: () => {
-                    if (this.isYou) {
+                    if (this.userIsLoggedInUser) {
                         localStorage.clear();
                         this.$router.push({ name: 'login' });
                     } else {
@@ -174,14 +187,51 @@ export default {
                     [field]: value
                 },
                 onSuccess: () => {
-                    this.changeStatuses[field] = false;
-                    this.getUser();
+                    if (field === 'email' && network.requireEmailVerification) {
+                        this.sendEmailVerificationEmail(value)
+                    } else {
+                        this.changeStatuses[field] = false;
+                        this.getUser();
+                    }
                 },
                 onFailure: error => {
                     this.changeStatuses[field] = false;
                     alert(error.description);
                 }
             })
+        },
+        sendEmailVerificationEmail(email) {
+            network.sendEmailVerificationEmail({
+                body: {
+                    email: '',
+                    password: '',
+                    frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
+                },
+                onSuccess: () => {
+                    this.logout(email)
+                },
+                onFailure: error => {
+                    alert(error.description);
+                }
+            })
+        },
+        logout(email) {
+            network.logout({
+                onSuccess: () => {
+                    alert(`You will now be logged out and an email verification email was sent to ${email}.`)
+                    this.$router.push({ name: 'login' });
+                },
+                onFailure: error => {
+                    alert(error.description);
+                }
+            })
+        },
+        dismissChangeEmailNotificationModal() {
+            this.shouldShowChangeEmailNotificationModal = false
+        },
+        allowEmailUpdate() {
+            this.shouldShowChangeEmailNotificationModal = false
+            this.changeStatuses['email'] = true
         },
         changePassword(field, value) {
             network.resetPassword({
@@ -189,20 +239,26 @@ export default {
                     tokenId: localStorage.tokenId,
                 },
                 body: {
-                    [field]: value
+                    value: value
                 },
                 onSuccess: () => {
+                    this.changeStatuses[field] = false;
                     alert("Your password was changed successfully!")
                     this.passwordBeingChanged = false
                     this.getUser()
                 },
                 onFailure: error => {
+                    this.changeStatuses[field] = false;
                     alert(error.description);
                 }
             })
         },
         toggleBeingChanged(field) {
-            this.changeStatuses[field] = !this.changeStatuses[field]
+            if (field === 'email' && this.changeStatuses['email'] === false && network.requireEmailVerification) {
+                this.shouldShowChangeEmailNotificationModal = true
+            } else {
+                this.changeStatuses[field] = !this.changeStatuses[field]
+            }
         },
         async getData() {
             this.getFollowers()
@@ -219,7 +275,7 @@ export default {
                     if (user.id == localStorage.user().id) {
                         this.user.you = true;
                     }
-                    this.toggleAdminButtonText = user.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access'
+                    this.toggleAdminButtonText = user.loggedInUserIsAdmin ? 'Revoke Admin Access' : 'Give Admin Access'
                 },
                 onFailure: error => {
                     alert(error.description);

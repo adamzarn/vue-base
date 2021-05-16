@@ -23,7 +23,7 @@
         </form>
         <base-modal v-if="shouldShowVerifyEmailModal" title="Verify Email">
             <template #default>
-                <p>You must verify your email to login. Follow the link from the email we sent you at registration, or enter your email and we'll send you a new email verification email.</p>
+                <p>You must verify your email to login. Follow the link from the email we sent you at registration or when you changed your email, or enter your email and we'll send you a new email verification email.</p>
                 <base-input
                     v-model.trim="enteredEmail"
                 ></base-input>
