@@ -96,7 +96,10 @@ export default {
                 },
                 onSuccess: users => { 
                     this.followers = users
-                    this.getUser()
+                    this.isFollowing = this.followers.filter((follower) => { 
+                        return follower.id == localStorage.user().id
+                    }).length > 0
+                    this.toggleFollowButtonText = this.isFollowing ? "Unfollow" : "Follow"
                 },
                 onFailure: error => { alert(error.description) }
             })
@@ -172,7 +175,7 @@ export default {
                 },
                 onSuccess: () => {
                     this.changeStatuses[field] = false;
-                    this.getData();
+                    this.getUser();
                 },
                 onFailure: error => {
                     this.changeStatuses[field] = false;
@@ -204,6 +207,7 @@ export default {
         async getData() {
             this.getFollowers()
             this.getFollowing()
+            this.getUser()
         },
         getUser() {
             network.getUser({
@@ -216,10 +220,6 @@ export default {
                         this.user.you = true;
                     }
                     this.toggleAdminButtonText = user.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access'
-                    this.isFollowing = this.followers.filter((follower) => { 
-                        return follower.id == localStorage.user().id
-                    }).length == 1
-                    this.toggleFollowButtonText = this.isFollowing ? "Unfollow" : "Follow"
                 },
                 onFailure: error => {
                     alert(error.description);
