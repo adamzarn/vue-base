@@ -14,6 +14,8 @@ const exceptions = {
     couldNotCreateToken: "couldNotCreateToken",
     couldNotCreatePasswordHash: "couldNotCreatePasswordHash",
     missingUserUpdate: "missingUserUpdate",
+    missingFollowType: "missingFollowType",
+    invalidFollowType: "invalidFollowType",
     unknown: "unknown"
 }
 
