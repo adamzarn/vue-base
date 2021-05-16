@@ -18,11 +18,11 @@
     </div>
     <div class="container follows">
         <div class="col-6">
-            <page-title class="title" text="Followers"></page-title>
+            <page-title class="title" :text="followersTitle"></page-title>
             <user-list :users="followers" :refresh="getFollowers" :showToggleFollowButton="false"></user-list>
         </div>
         <div class="col-6">
-            <page-title class="title" text="Following"></page-title>
+            <page-title class="title" :text="followingTitle"></page-title>
             <user-list :users="following" :refresh="getFollowing" :showToggleFollowButton="isYou"></user-list>
         </div>
     </div>
@@ -79,6 +79,12 @@ export default {
         isAdmin() {
             if (localStorage.user() == null) { return false; }
             return localStorage.user().isAdmin;
+        },
+        followersTitle() {
+            return this.isYou ? "Following You" : `Following ${this.firstName}`
+        },
+        followingTitle() {
+            return this.isYou ? "You're Following" : `${this.firstName}'s Following`
         }
     },
     methods: {
@@ -107,7 +113,6 @@ export default {
                         user.following = true
                         return updatedUser
                     })
-                    this.getUser()
                 },
                 onFailure: error => { alert(error.description) }
             })
@@ -274,6 +279,10 @@ export default {
 @media only screen and (max-width: 768px) {
     .follows {
         flex-direction: column;
+    }
+    .title-container, .buttons-container {
+        flex-direction: column;
+        row-gap: var(--default-spacing);
     }
 }
 </style>
