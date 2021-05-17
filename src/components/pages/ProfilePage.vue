@@ -1,13 +1,17 @@
 <template>
     <div class="col-12 container">
         <div class="title-container">
-            <page-title :text="fullName"></page-title>
-            <div class="buttons-container">
+            <div class="title-text-container">
+                <page-title :text="fullName"></page-title>
+                <p v-if="loggedInUserIsAdmin" class="badge">{{ adminBadgeText }}</p>
+            </div>
+            <div class="title-buttons-container">
                 <base-button v-if="userIsLoggedInUser == false" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
                 <base-button v-if="loggedInUserIsAdmin" mode="light" @click="toggleAdminStatus()">{{ toggleAdminButtonText }}</base-button>
                 <img v-if="loggedInUserIsAdmin || userIsLoggedInUser" class="svg delete-button" src="/delete.svg" @click="deleteUser()">
             </div>
         </div>
+        
         <base-card v-if="user">
             <profile-item v-if="userIsLoggedInUser" field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
             <profile-item v-if="userIsLoggedInUser" field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
@@ -52,6 +56,7 @@ export default {
             followers: [],
             following: [],
             user: null,
+            loggedInUser: null,
             changeStatuses: {
                 'firstName': false,
                 'lastName': false,
@@ -59,8 +64,6 @@ export default {
                 'email': false,
                 'password': false
             },
-            toggleFollowButtonText: '',
-            toggleAdminButtonText: '',
             isFollowing: false,
             shouldShowChangeEmailNotificationModal: false
         }
@@ -90,14 +93,25 @@ export default {
             return this.user.id == localStorage.user().id;
         },
         loggedInUserIsAdmin() {
-            if (localStorage.user() == null) { return false; }
-            return localStorage.user().isAdmin;
+            if (this.loggedInUser == null) { return false; }
+            return this.loggedInUser.isAdmin;
+        },
+        adminBadgeText() {
+            if (this.user == null) { return ''; }
+            return this.user.isAdmin ? 'ADMIN' : 'USER';
         },
         followersTitle() {
             return this.userIsLoggedInUser ? "Following You" : `Following ${this.firstName}`
         },
         followingTitle() {
             return this.userIsLoggedInUser ? "You're Following" : `${this.firstName}'s Following`
+        },
+        toggleFollowButtonText() {
+            return this.isFollowing ? "Unfollow" : "Follow"
+        },
+        toggleAdminButtonText() {
+            if (this.user == null) { return ''; }
+            return this.user.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access'
         }
     },
     methods: {
@@ -110,9 +124,8 @@ export default {
                 onSuccess: users => { 
                     this.followers = users
                     this.isFollowing = this.followers.filter((follower) => { 
-                        return follower.id == localStorage.user().id
+                        return follower.id == this.loggedInUser.id
                     }).length > 0
-                    this.toggleFollowButtonText = this.isFollowing ? "Unfollow" : "Follow"
                 },
                 onFailure: error => { alert(error.description) }
             })
@@ -136,7 +149,7 @@ export default {
         toggleFollowingStatus() {
             network.toggleFollowingStatus({
                 urlParams: {
-                    userId: localStorage.user().id
+                    userId: this.loggedInUser.id
                 },
                 body: {
                     otherUserId: this.user.id,
@@ -152,15 +165,18 @@ export default {
                     userId: this.user.id
                 },
                 body: {
-                    loggedInUserIsAdmin: !this.user.loggedInUserIsAdmin
+                    isAdmin: !this.user.isAdmin
                 },
                 onSuccess: () => {
-                    if (this.user.id == localStorage.user().id) {
-                        let updatedUser = localStorage.user();
-                        updatedUser.loggedInUserIsAdmin = !updatedUser.loggedInUserIsAdmin;
+                    if (this.user.id == this.loggedInUser.id) {
+                        let updatedUser = this.loggedInUser;
+                        updatedUser.isAdmin = !updatedUser.isAdmin;
                         localStorage.setObject('user', updatedUser);
+                        this.loggedInUser = updatedUser
+                        this.$router.go()
+                    } else {
+                        this.user.isAdmin = !this.user.isAdmin
                     }
-                    this.getData()
                 },
                 onFailure: error => { alert(error.description) }
             });
@@ -186,8 +202,8 @@ export default {
                 body: {
                     [field]: value
                 },
-                onSuccess: () => {
-                    if (field === 'email' && network.requireEmailVerification) {
+                onSuccess: (settings) => {
+                    if (field === 'email' && settings.requireEmailVerification) {
                         this.sendEmailVerificationEmail(value)
                     } else {
                         this.changeStatuses[field] = false;
@@ -254,8 +270,18 @@ export default {
             })
         },
         toggleBeingChanged(field) {
-            if (field === 'email' && this.changeStatuses['email'] === false && network.requireEmailVerification) {
-                this.shouldShowChangeEmailNotificationModal = true
+            if (field === 'email' && this.changeStatuses['email'] === false) {
+                network.getSettings({
+                    onSuccess: (settings) => {
+                        if (settings.requireEmailVerification) {
+                            this.shouldShowChangeEmailNotificationModal = true
+                        } else {
+                            this.changeStatuses[field] = !this.changeStatuses[field]
+                        }
+                    }, onFailure: () => {
+                        this.changeStatuses[field] = !this.changeStatuses[field]
+                    }
+                })
             } else {
                 this.changeStatuses[field] = !this.changeStatuses[field]
             }
@@ -271,11 +297,11 @@ export default {
                     userId: this.$route.params.userId
                 },
                 onSuccess: user => {
+                    console.log(user)
                     this.user = user;
                     if (user.id == localStorage.user().id) {
-                        this.user.you = true;
+                        this.loggedInUser = user;
                     }
-                    this.toggleAdminButtonText = user.loggedInUserIsAdmin ? 'Revoke Admin Access' : 'Give Admin Access'
                 },
                 onFailure: error => {
                     alert(error.description);
@@ -304,7 +330,7 @@ export default {
 .container {
     padding: var(--default-spacing);
 }
-.buttons-container {
+.title-buttons-container {
     display: flex;
     column-gap: var(--default-spacing);
     align-items: center;
@@ -317,11 +343,20 @@ export default {
 .title {
     margin-bottom: var(--default-spacing);
 }
+.badge {
+    font-weight: bold;
+    color: var(--theme-dark-color);
+}
 .title-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--default-spacing);
+}
+.title-text-container {
+    display: flex;
+    align-items: center;
+    column-gap: var(--default-spacing);
 }
 .delete-button {
     cursor: pointer;

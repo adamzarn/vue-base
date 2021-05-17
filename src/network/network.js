@@ -16,7 +16,6 @@ function frontendBaseUrl() {
     let loc = window.location;
     return `${loc.protocol}//${loc.hostname}:${loc.port}`;
 }
-const requireEmailVerification = true
 
 function createError(response, data) {
     let components = data.reason.split(':');
@@ -173,6 +172,10 @@ function updateUser(params) {
     makeRequest(api.endpoints.updateUser, params)
 }
 
+function getSettings(params) {
+    makeRequest(api.endpoints.getSettings, params)
+}
+
 export default {
     register,
     login,
@@ -189,7 +192,7 @@ export default {
     getFollows, 
     deleteUser,
     updateUser,
+    getSettings,
 
-    frontendBaseUrl,
-    requireEmailVerification
+    frontendBaseUrl
 };

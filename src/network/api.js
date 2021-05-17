@@ -7,6 +7,7 @@ const components = {
 const baseUrl = `${components.scheme}://${components.host}:${components.port}`
 const authUrl = `${baseUrl}/auth`
 const usersUrl = `${baseUrl}/users`
+const settingsUrl = `${baseUrl}/settings`
 
 function getBasicAuthorizationValue(email, password) {
     return `Basic ${btoa(`${email}:${password}`)}`;
@@ -31,6 +32,7 @@ function getFormData(body) {
             formData.append(key, value)
         }
     }
+    console.log(body)
     return formData
 }
 
@@ -144,6 +146,12 @@ const endpoints = {
         method: 'PUT',
         headers: () => { return getBearerHeaders() }, 
         body: (body) => { return getFormData(body) }
+    },
+    getSettings: {
+        name: 'getSettings',
+        url: () => { return `${settingsUrl}` },
+        method: 'GET',
+        headers: () => { return getBearerHeaders() }
     }
 }
 
