@@ -17,7 +17,8 @@ const router = createRouter({
         AccountRoute,
         ResetPasswordRoute,
         ManageUsersRoute,
-        VerifyEmailRoute
+        VerifyEmailRoute,
+        { path: '/:catchAll(.*)', redirect: '/home' }
     ]
 })
 
