@@ -1,6 +1,6 @@
 <template>
     <div class="text-container">
-        <h3 class="text">{{ fullName }} <span class="username">{{ `@${user.username}` }}</span></h3>
+        <h3 class="text">{{ fullName }} <span class="username">{{ username }}</span></h3>
         <p class="text">{{ user.email }}</p>
     </div>
 </template>
@@ -10,7 +10,14 @@ export default {
     props: ['user'],
     computed: {
         fullName() {
-            return `${this.user.firstName} ${this.user.lastName}`;
+            let name = `${this.user.firstName} ${this.user.lastName}`
+            if (localStorage.user().id == this.user.id) {
+                return `${name} (You)`
+            }
+            return name
+        },
+        username() {
+            return `@${this.user.username}`
         }
     }
 }

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginRoute from './routes/LoginRoute';
 import RegisterRoute from './routes/RegisterRoute';
 import HomeRoute from './routes/HomeRoute';
-import ProfileRoute from './routes/ProfileRoute';
+import AccountRoute from './routes/AccountRoute';
 import ResetPasswordRoute from './routes/ResetPasswordRoute';
 import ManageUsersRoute from './routes/ManageUsersRoute';
 import VerifyEmailRoute from './routes/VerifyEmailRoute';
@@ -14,7 +14,7 @@ const router = createRouter({
         LoginRoute,
         RegisterRoute,
         HomeRoute,
-        ProfileRoute,
+        AccountRoute,
         ResetPasswordRoute,
         ManageUsersRoute,
         VerifyEmailRoute

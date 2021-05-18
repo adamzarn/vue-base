@@ -1,9 +1,9 @@
 <template>
     <div class="buttons-container">
-        <base-button v-show="showToggleFollowButton" class="follow-button" @click.stop="toggleFollowingStatus()">{{ toggleFollowingStatusButtonText }}</base-button>
-        <div v-show="loggedInUserIsAdmin" class="admin-buttons">
-            <base-button v-show="showToggleAdminButton" mode="light" class="admin-button" @click.stop="toggleAdminStatus()">{{ toggleAdminStatusButtonText }}</base-button>
-            <img v-show="showDeleteButton" class="svg delete-button" src="/delete.svg" @click.stop="deleteUser()">
+        <base-button v-if="showToggleFollowButton" class="follow-button" @click.stop="toggleFollowingStatus()">{{ toggleFollowingStatusButtonText }}</base-button>
+        <div v-if="loggedInUserIsAdmin && (showToggleAdminButton || showDeleteButton)" class="admin-buttons">
+            <base-button v-if="showToggleAdminButton" mode="light" class="admin-button" @click.stop="toggleAdminStatus()">{{ toggleAdminStatusButtonText }}</base-button>
+            <img v-if="showDeleteButton" class="svg delete-button" src="/delete.svg" @click.stop="deleteUser()">
         </div>
     </div>
 </template>

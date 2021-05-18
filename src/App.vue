@@ -73,6 +73,11 @@ a:active {
     color: var(--invalid-color);
 }
 
+.separator {
+    height: calc(var(--default-spacing)/16);
+    background-color: var(--light-gray-color);
+}
+
 /* For desktop: */
 .col-1 {width: 8.33%;}
 .col-2 {width: 16.66%;}

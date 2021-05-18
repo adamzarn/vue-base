@@ -1,5 +1,5 @@
 <template>
-    <div class="col-12 container">
+    <div class="profile-container">
         <div class="title-container">
             <div class="title-text-container">
                 <page-title :text="fullName"></page-title>
@@ -11,7 +11,6 @@
                 <img v-if="loggedInUserIsAdmin || userIsLoggedInUser" class="svg delete-button" src="/delete.svg" @click="deleteUser()">
             </div>
         </div>
-        
         <base-card v-if="user">
             <profile-item v-if="userIsLoggedInUser" field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
             <profile-item v-if="userIsLoggedInUser" field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
@@ -20,7 +19,7 @@
             <profile-item v-if="userIsLoggedInUser" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
         </base-card>
     </div>
-    <div class="container follows">
+    <div class="profile-container follows">
         <div class="col-6">
             <page-title class="title" :text="followersTitle"></page-title>
             <user-list :users="followers" :refresh="getFollowers" :showToggleFollowButton="false"></user-list>
@@ -44,10 +43,10 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import UserList from '../UserList.vue';
-import ProfileItem from '../base/ProfileItem.vue';
-import PageTitle from '../base/PageTitle.vue';
+import network from '../../../network/network.js';
+import UserList from '../../UserList.vue';
+import ProfileItem from '../../base/ProfileItem.vue';
+import PageTitle from '../../base/PageTitle.vue';
 
 export default {
     components: { UserList, ProfileItem, PageTitle },
@@ -297,10 +296,11 @@ export default {
                     userId: this.$route.params.userId
                 },
                 onSuccess: user => {
-                    console.log(user)
                     this.user = user;
                     if (user.id == localStorage.user().id) {
                         this.loggedInUser = user;
+                    } else {
+                        this.loggedInUser = localStorage.user()
                     }
                 },
                 onFailure: error => {
@@ -322,12 +322,15 @@ export default {
                 this.getData();
             }
         }
-    } 
+    }
 }
 </script>
 
 <style scoped>
-.container {
+.menu-container {
+    padding: var(--default-spacing);
+}
+.profile-container {
     padding: var(--default-spacing);
 }
 .title-buttons-container {
@@ -371,7 +374,7 @@ export default {
     .follows {
         flex-direction: column;
     }
-    .title-container, .buttons-container {
+    .container, .title-container, .buttons-container {
         flex-direction: column;
         row-gap: var(--default-spacing);
     }

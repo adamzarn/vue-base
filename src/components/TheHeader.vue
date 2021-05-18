@@ -5,7 +5,7 @@
             <nav v-if="shouldShowButtons" class="buttons-container">
                 <base-button @click="home">Home</base-button>
                 <base-button v-if="loggedInUserIsAdmin" @click="manageUsers">Manage Users</base-button>
-                <base-button @click="profile">My Profile</base-button>
+                <base-button @click="account">Account</base-button>
                 <base-button @click="logout">Logout</base-button>
             </nav>
         </div>
@@ -34,7 +34,7 @@ export default {
         manageUsers() {
             this.$router.push({ name: 'manageUsers' });
         },
-        profile() {
+        account() {
             this.$router.push({ name: 'profile', params: { userId: localStorage.user().id }});
         },
         logout() {
@@ -68,7 +68,7 @@ export default {
     },
     watch: {
         $route(to) {
-            const userRequiredRoutes = ['home', 'profile', 'manageUsers']
+            const userRequiredRoutes = ['home', 'account', 'manageUsers']
             if (userRequiredRoutes.includes(to.name)) {
                 if (localStorage.user() == null) {
                     this.$router.push({ name: 'login' })

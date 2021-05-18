@@ -1,5 +1,5 @@
 <template>
-    <div class="container col-12" :class="classes" @click="profile">
+    <div class="container col-12" :class="classes" @click="account">
         <user-list-item-text :user="user"></user-list-item-text>
         <user-list-item-buttons
             :user="user"
@@ -28,7 +28,7 @@ export default {
         }
     },
     methods: {
-        profile() {
+        account() {
             this.$router.push({ name: "profile", params: { userId: this.user.id }})
         }
     }
@@ -55,10 +55,6 @@ export default {
 .last {
     border-bottom-left-radius: var(--default-corner-radius);
     border-bottom-right-radius: var(--default-corner-radius);
-}
-.separator {
-    height: calc(var(--default-spacing)/16);
-    background-color: var(--light-gray-color);
 }
 @media only screen and (max-width: 480px) {
     .container {
