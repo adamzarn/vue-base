@@ -172,6 +172,10 @@ function updateUser(params) {
     makeRequest(api.endpoints.updateUser, params)
 }
 
+function uploadProfilePhoto(params) {
+    makeRequest(api.endpoints.uploadProfilePhoto, params)
+}
+
 function getSettings(params) {
     makeRequest(api.endpoints.getSettings, params)
 }
@@ -192,6 +196,7 @@ export default {
     getFollows, 
     deleteUser,
     updateUser,
+    uploadProfilePhoto,
     getSettings,
 
     frontendBaseUrl

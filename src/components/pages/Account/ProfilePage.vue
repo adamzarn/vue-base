@@ -2,6 +2,10 @@
     <div class="profile-container">
         <div class="title-container">
             <div class="title-text-container">
+                <div class="image-container">
+                    <img class="profile-photo" :src="profilePhotoUrl">
+                    <input type="file" @change="handleProfilePhoto($event)"/>
+                </div>
                 <page-title :text="fullName"></page-title>
                 <p v-if="loggedInUserIsAdmin" class="badge">{{ adminBadgeText }}</p>
             </div>
@@ -64,7 +68,8 @@ export default {
                 'password': false
             },
             isFollowing: false,
-            shouldShowChangeEmailNotificationModal: false
+            shouldShowChangeEmailNotificationModal: false,
+            profilePhotoUrl: null
         }
     },
     computed: {
@@ -297,16 +302,37 @@ export default {
                 },
                 onSuccess: user => {
                     this.user = user;
+                    this.profilePhotoUrl = this.getUniqueUrl(user.profilePhotoUrl);
                     if (user.id == localStorage.user().id) {
                         this.loggedInUser = user;
                     } else {
-                        this.loggedInUser = localStorage.user()
+                        this.loggedInUser = localStorage.user();
                     }
                 },
                 onFailure: error => {
                     alert(error.description);
                 }
             })
+        },
+        handleProfilePhoto(event) {
+            this.uploadProfilePhoto(event.target.files[0]);
+        },
+        uploadProfilePhoto(file) {
+            network.uploadProfilePhoto({
+                body: {
+                    file: file
+                },
+                onSuccess: (data) => {
+                    console.log(data)
+                    this.profilePhotoUrl = this.getUniqueUrl(data.url);
+                },
+                onFailure: error => {
+                    alert(error.description)
+                }
+            })
+        },
+        getUniqueUrl(url) {
+            return `${url}#${new Date().getTime()}`
         }
     },
     mounted() {
@@ -354,7 +380,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--default-spacing);
+    margin-bottom: calc(var(--default-spacing)*2);
 }
 .title-text-container {
     display: flex;
@@ -378,5 +404,26 @@ export default {
         flex-direction: column;
         row-gap: var(--default-spacing);
     }
+}
+.image-container {
+    width: 120px;
+    height: 120px;
+    position: relative;
+}
+input {
+    cursor: pointer;
+    opacity: 0;
+}
+.profile-photo, input {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+}
+.profile-photo {
+    background-color: var(--light-gray-color);
+    object-fit: cover;
 }
 </style>

@@ -147,6 +147,13 @@ const endpoints = {
         headers: () => { return getBearerHeaders() }, 
         body: (body) => { return getFormData(body) }
     },
+    uploadProfilePhoto: {
+        name: 'uploadProfilePhoto',
+        url: () => { return `${usersUrl}/profilePhoto` },
+        method: 'POST',
+        headers: () => { return getBearerHeaders() },
+        body: (body) => { return getFormData(body) }
+    },
     getSettings: {
         name: 'getSettings',
         url: () => { return `${settingsUrl}` },

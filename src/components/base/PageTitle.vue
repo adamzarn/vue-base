@@ -10,7 +10,6 @@ export default {
 
 <style scoped>
 .page-title {
-    padding-left: var(--default-spacing);
     font-weight: bold;
     margin: 0;
 }
