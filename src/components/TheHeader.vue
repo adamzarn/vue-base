@@ -68,7 +68,7 @@ export default {
     },
     watch: {
         $route(to) {
-            const userRequiredRoutes = ['home', 'account', 'manageUsers']
+            const userRequiredRoutes = ['home', 'account', 'profile', 'manageUsers']
             if (userRequiredRoutes.includes(to.name)) {
                 if (localStorage.user() == null) {
                     this.$router.push({ name: 'login' })

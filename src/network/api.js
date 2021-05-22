@@ -154,6 +154,12 @@ const endpoints = {
         headers: () => { return getBearerHeaders() },
         body: (body) => { return getFormData(body) }
     },
+    deleteProfilePhoto: {
+        name: 'deleteProfilePhoto',
+        url: () => { return `${usersUrl}/profilePhoto` },
+        method: 'DELETE',
+        headers: () => { return getBearerHeaders() }
+    },
     getSettings: {
         name: 'getSettings',
         url: () => { return `${settingsUrl}` },

@@ -1,13 +1,18 @@
 <template>
-    <div class="profile-container">
+    <div v-if="user" class="profile-container">
         <div class="title-container">
             <div class="title-text-container">
-                <div class="image-container">
-                    <img class="profile-photo" :src="profilePhotoUrl">
-                    <input type="file" @change="handleProfilePhoto($event)"/>
+                <div class="image-container" :class="{ clickable: userIsLoggedInUser }" @click="didClickProfilePhoto">
+                    <div class="image-placeholder">
+                        <p v-if="profilePhotoUrl==null" class="initials">{{ user.firstName[0] + user.lastName[0] }}</p>
+                    </div>
+                    <img v-if="profilePhotoUrl" class="profile-photo" :src="profilePhotoUrl">
+                    <input type="file" id="profile-photo-input" @change="handleProfilePhoto($event)"/>
                 </div>
-                <page-title :text="fullName"></page-title>
-                <p v-if="loggedInUserIsAdmin" class="badge">{{ adminBadgeText }}</p>
+                <div>
+                    <page-title :text="fullName"></page-title>
+                    <p v-if="loggedInUserIsAdmin" class="badge">{{ adminBadgeText }}</p>
+                </div>
             </div>
             <div class="title-buttons-container">
                 <base-button v-if="userIsLoggedInUser == false" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
@@ -23,7 +28,7 @@
             <profile-item v-if="userIsLoggedInUser" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
         </base-card>
     </div>
-    <div class="profile-container follows">
+    <div v-if="user" class="profile-container follows">
         <div class="col-6">
             <page-title class="title" :text="followersTitle"></page-title>
             <user-list :users="followers" :refresh="getFollowers" :showToggleFollowButton="false"></user-list>
@@ -41,6 +46,15 @@
             <div class="buttons-container">
                 <base-button @click="dismissChangeEmailNotificationModal">Cancel</base-button>
                 <base-button @click="allowEmailUpdate">Continue</base-button>
+            </div>
+        </template>
+    </base-modal>
+    <base-modal v-if="shouldShowProfilePhotoModal" :title="profilePhotoUrl == null ? 'Upload Profile Photo' : 'Change Profile Photo'" :section="false">
+        <template #actions>
+            <div class="buttons-container">
+                <base-button mode="light" @click="shouldShowProfilePhotoModal=false">Cancel</base-button>
+                <base-button @click="openFileSelector">{{ profilePhotoUrl == null ? 'Choose Photo' : 'Choose New Photo' }}</base-button>
+                <base-button v-if="profilePhotoUrl" @click="deleteProfilePhoto">Delete Photo</base-button>
             </div>
         </template>
     </base-modal>
@@ -69,7 +83,8 @@ export default {
             },
             isFollowing: false,
             shouldShowChangeEmailNotificationModal: false,
-            profilePhotoUrl: null
+            profilePhotoUrl: null,
+            shouldShowProfilePhotoModal: false
         }
     },
     computed: {
@@ -314,8 +329,21 @@ export default {
                 }
             })
         },
+        didClickProfilePhoto() {
+            if (this.userIsLoggedInUser) {
+                this.shouldShowProfilePhotoModal = true;
+            }
+        },
+        openFileSelector() {
+            this.shouldShowProfilePhotoModal = false;
+            document.getElementById('profile-photo-input').click();
+        },
         handleProfilePhoto(event) {
-            this.uploadProfilePhoto(event.target.files[0]);
+            this.shouldShowProfilePhotoModal = false;
+            let file = event.target.files[0];
+            if (file) {
+                this.uploadProfilePhoto(file)
+            }
         },
         uploadProfilePhoto(file) {
             network.uploadProfilePhoto({
@@ -323,7 +351,6 @@ export default {
                     file: file
                 },
                 onSuccess: (data) => {
-                    console.log(data)
                     this.profilePhotoUrl = this.getUniqueUrl(data.url);
                 },
                 onFailure: error => {
@@ -331,8 +358,23 @@ export default {
                 }
             })
         },
+        deleteProfilePhoto() {
+            this.shouldShowProfilePhotoModal = false;
+            network.deleteProfilePhoto({
+                onSuccess: () => {
+                    localStorage.user().profilePhotoUrl = null
+                    this.profilePhotoUrl = null
+                }, onFailure: error => {
+                    alert(error.description)
+                }
+            })
+        },
         getUniqueUrl(url) {
-            return `${url}#${new Date().getTime()}`
+            if (url) {
+                return `${url}#${new Date().getTime()}`
+            } else {
+                return null;
+            }
         }
     },
     mounted() {
@@ -375,6 +417,7 @@ export default {
 .badge {
     font-weight: bold;
     color: var(--theme-dark-color);
+    margin: 0;
 }
 .title-container {
     display: flex;
@@ -396,6 +439,20 @@ export default {
 .delete-button:hover {
     filter: invert(7%) sepia(86%) saturate(3809%) hue-rotate(294deg) brightness(109%) contrast(104%);
 }
+.buttons-container {
+    display: flex;
+    column-gap: var(--default-spacing);
+}
+.initials {
+    font-size: calc(var(--default-font-size)*3);
+    font-weight: bold;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    transform: translate(0, -50%);
+    margin: 0;
+}
 @media only screen and (max-width: 768px) {
     .follows {
         flex-direction: column;
@@ -405,25 +462,36 @@ export default {
         row-gap: var(--default-spacing);
     }
 }
+img[src=""] {
+    display: none;
+}
+img[src] {
+    display: block;
+}
 .image-container {
     width: 120px;
     height: 120px;
     position: relative;
 }
-input {
+.clickable {
     cursor: pointer;
-    opacity: 0;
 }
-.profile-photo, input {
+input {
+    opacity: 0;
+    pointer-events: none;
+}
+.profile-photo, input, .image-placeholder {
     width: 100%;
     height: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    border-radius: 50%;
+    border-radius: var(--default-corner-radius);
 }
 .profile-photo {
-    background-color: var(--light-gray-color);
     object-fit: cover;
+}
+.image-placeholder {
+    background-color: var(--light-gray-color);
 }
 </style>

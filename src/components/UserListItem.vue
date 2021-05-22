@@ -1,6 +1,9 @@
 <template>
     <div class="container col-12" :class="classes" @click="account">
-        <user-list-item-text :user="user"></user-list-item-text>
+        <div class="left-container">
+            <img :src="user.profilePhotoUrl">
+            <user-list-item-text :user="user"></user-list-item-text>
+        </div>
         <user-list-item-buttons
             :user="user"
             :refresh="refresh"
@@ -41,12 +44,23 @@ export default {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
+    column-gap: var(--default-spacing);
     row-gap: var(--default-spacing);
     cursor: pointer;
     padding: var(--default-spacing);
 }
+.left-container {
+    display: flex;
+    column-gap: var(--default-spacing);
+}
 .container:hover {
     background-color: var(--light-gray-color);
+}
+img {
+    height: 50px;
+    width: 50px;
+    border-radius: calc(var(--default-corner-radius)/2);
+    object-fit: cover;
 }
 .first {
     border-top-left-radius: var(--default-corner-radius);

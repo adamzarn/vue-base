@@ -176,6 +176,10 @@ function uploadProfilePhoto(params) {
     makeRequest(api.endpoints.uploadProfilePhoto, params)
 }
 
+function deleteProfilePhoto(params) {
+    makeRequest(api.endpoints.deleteProfilePhoto, params)
+}
+
 function getSettings(params) {
     makeRequest(api.endpoints.getSettings, params)
 }
@@ -197,6 +201,7 @@ export default {
     deleteUser,
     updateUser,
     uploadProfilePhoto,
+    deleteProfilePhoto,
     getSettings,
 
     frontendBaseUrl

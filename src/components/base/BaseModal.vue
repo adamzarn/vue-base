@@ -7,7 +7,7 @@
                     <h2>{{ title }}</h2>
                 </slot>
             </header>
-            <section>
+            <section v-if="section">
                 <slot></slot>
             </section>
             <menu>
@@ -25,6 +25,11 @@ export default {
         title: {
             type: String,
             required: false
+        },
+        section: {
+          type: Boolean,
+          required: false,
+          default: true
         }
     },
     emits: ['close']
