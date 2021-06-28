@@ -24,7 +24,7 @@
             <profile-item v-if="userIsLoggedInUser" field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
             <profile-item v-if="userIsLoggedInUser" field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
             <profile-item field="username" label="Username" :currentValue="username" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-            <profile-item field="email" label="Email" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            <profile-item field="email" label="Email" :showSeparator="userIsLoggedInUser" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
             <profile-item v-if="userIsLoggedInUser" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
         </base-card>
     </div>
@@ -120,17 +120,17 @@ export default {
             return this.user.isAdmin ? 'ADMIN' : 'USER';
         },
         followersTitle() {
-            return this.userIsLoggedInUser ? "Following You" : `Following ${this.firstName}`
+            return "Followers";
         },
         followingTitle() {
-            return this.userIsLoggedInUser ? "You're Following" : `${this.firstName}'s Following`
+            return "Following";
         },
         toggleFollowButtonText() {
-            return this.isFollowing ? "Unfollow" : "Follow"
+            return this.isFollowing ? "Unfollow" : "Follow";
         },
         toggleAdminButtonText() {
             if (this.user == null) { return ''; }
-            return this.user.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access'
+            return this.user.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access';
         }
     },
     methods: {
@@ -146,7 +146,7 @@ export default {
                         return follower.id == this.loggedInUser.id
                     }).length > 0
                 },
-                onFailure: error => { alert(error.description) }
+                onFailure: error => { alert(error.description); }
             })
         },
         async getFollowing() {
@@ -162,24 +162,21 @@ export default {
                         return updatedUser
                     })
                 },
-                onFailure: error => { alert(error.description) }
+                onFailure: error => { alert(error.description); }
             })
         },
         toggleFollowingStatus() {
             network.toggleFollowingStatus({
                 urlParams: {
-                    userId: this.loggedInUser.id
-                },
-                body: {
-                    otherUserId: this.user.id,
-                    follow: !this.isFollowing
+                    action: this.isFollowing ? 'unfollow' : 'follow',
+                    userId: this.user.id
                 },
                 onSuccess: this.getData,
-                onFailure: error => { alert(error.description) }
+                onFailure: error => { alert(error.description); }
             })
         },
         toggleAdminStatus() {
-            network.toggleAdminStatus({
+            network.updateUser({
                 urlParams: {
                     userId: this.user.id
                 },
@@ -197,7 +194,9 @@ export default {
                         this.user.isAdmin = !this.user.isAdmin
                     }
                 },
-                onFailure: error => { alert(error.description) }
+                onFailure: error => { 
+                    alert(error.description); 
+                }
             });
         },
         deleteUser() {
@@ -213,7 +212,7 @@ export default {
                         this.$router.push({ name: 'home' });
                     }
                 },
-                onFailure: error => { alert(error.description) }
+                onFailure: error => { alert(error.description); }
             });
         },
         updateUser(field, value) {
@@ -354,7 +353,7 @@ export default {
                     this.profilePhotoUrl = this.getUniqueUrl(data.url);
                 },
                 onFailure: error => {
-                    alert(error.description)
+                    alert(error.description);
                 }
             })
         },
@@ -365,7 +364,7 @@ export default {
                     localStorage.user().profilePhotoUrl = null
                     this.profilePhotoUrl = null
                 }, onFailure: error => {
-                    alert(error.description)
+                    alert(error.description);
                 }
             })
         },

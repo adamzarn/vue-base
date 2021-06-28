@@ -49,25 +49,25 @@ const endpoints = {
     register: {
         name: 'register',
         url: () => { return `${authUrl}/register` },
-        method: 'POST',
+        method: () => { return 'POST' },
         body: (body) => { return getFormData(body) }
     },
     login: {
         name: 'login',
         url: () => { return `${authUrl}/login`; },
-        method: 'POST',
+        method: () => { return 'POST' },
         headers: (headerParams) => { return getBasicHeaders(headerParams.email, headerParams.password) }
     },
     logout: {
         name: 'logout',
         url: () => { return `${authUrl}/logout` },
-        method: 'DELETE',
+        method: () => { return 'DELETE' },
         headers: () => { return getBearerHeaders() }
     },
     sendEmailVerificationEmail: {
         name: 'sendEmailVerificationEmail',
         url: () => { return `${authUrl}/sendEmailVerificationEmail` },
-        method: 'POST',
+        method: () => { return 'POST' },
         headers: (headerParams) => {
             if (headerParams) {
                 return getBasicHeaders(headerParams.email, headerParams.password);
@@ -80,18 +80,18 @@ const endpoints = {
     verifyEmail: {
         name: 'verifyEmail',
         url: (params) => { return `${authUrl}/verifyEmail/${params.urlParams.tokenId}` },
-        method: 'PUT'
+        method: () => { return 'PUT' }
     },
     sendPasswordResetEmail: {
         name: 'sendPasswordResetEmail',
         url: () => { return `${authUrl}/sendPasswordResetEmail` },
-        method: 'POST',
+        method: () => { return 'POST' },
         body: (body) => { return getFormData(body) }
     },
     resetPassword: {
         name: 'resetPassword',
         url: (params) => { return `${authUrl}/resetPassword/${params.urlParams.tokenId}` },
-        method: 'PUT',
+        method: () => { return 'PUT' },
         body: (body) => { return getFormData(body) }
     },
     getUser: {
@@ -100,70 +100,72 @@ const endpoints = {
             if (params.urlParams) { return `${usersUrl}/${params.urlParams.userId}` }
             return `${usersUrl}/me`
         },
-        method: 'GET',
+        method: () => { return 'GET' },
         headers: () => { return getBearerHeaders() }
     },
     getUserStatus: {
         name: 'getUserStatus',
         url: (params) => { return `${usersUrl}/status${query(params.queryParams)}` },
-        method: 'GET'
+        method: () => { return 'GET' }
     },
     searchUsers: {
         name: 'searchUsers',
         url: (params) => { return `${usersUrl}/search${query(params.queryParams)}` },
-        method: 'GET',
+        method: () => { return 'GET' },
         headers: () => { return getBearerHeaders() }
     },
-    setAdminStatus: {
-        name: 'setAdminStatus',
-        url: (params) => { return `${usersUrl}/${params.urlParams.userId}/setAdminStatus` },
-        method: 'PUT',
-        headers: () => { return getBearerHeaders() }, 
-        body: (body) => { return getFormData(body) }
-    },
-    setFollowingStatus: {
-        name: 'setFollowingStatus',
-        url: (params) => { return `${usersUrl}/${params.urlParams.userId}/setFollowingStatus` },
-        method: 'POST',
-        headers: () => { return getBearerHeaders() }, 
-        body: (body) => { return getFormData(body) }
+    toggleFollowingStatus: {
+        name: 'toggleFollowingStatus',
+        url: (params) => {
+            return `${usersUrl}/${params.urlParams.userId}/${params.urlParams.action}` 
+        },
+        method: (params) => {
+            return (params.urlParams.action === 'follow') ? 'POST' : 'DELETE'
+        },
+        headers: () => { return getBearerHeaders() }
     },
     getFollows: {
         name: 'getFollows',
         url: (params) => { return `${usersUrl}/${params.urlParams.userId}/${params.urlParams.followType}` },
-        method: 'GET',
+        method: () => { return 'GET' },
         headers: () => { return getBearerHeaders() }
     },
     deleteUser: {
         name: 'deleteUser',
         url: (params) => { return `${usersUrl}/${params.urlParams.userId}` },
-        method: 'DELETE',
+        method: () => { return 'DELETE' },
         headers: () => { return getBearerHeaders() }
     },
     updateUser: {
         name: 'updateUser',
-        url: () => { return `${usersUrl}` },
-        method: 'PUT',
+        url: (params) => { 
+            if (params.urlParams.userId) {
+                return `${usersUrl}/${params.urlParams.userId}`
+            } else {
+                return `${usersUrl}`
+            }
+        },
+        method: () => { return 'PUT' },
         headers: () => { return getBearerHeaders() }, 
         body: (body) => { return getFormData(body) }
     },
     uploadProfilePhoto: {
         name: 'uploadProfilePhoto',
         url: () => { return `${usersUrl}/profilePhoto` },
-        method: 'POST',
+        method: () => { return 'POST' },
         headers: () => { return getBearerHeaders() },
         body: (body) => { return getFormData(body) }
     },
     deleteProfilePhoto: {
         name: 'deleteProfilePhoto',
         url: () => { return `${usersUrl}/profilePhoto` },
-        method: 'DELETE',
+        method: () => { return 'DELETE' },
         headers: () => { return getBearerHeaders() }
     },
     getSettings: {
         name: 'getSettings',
         url: () => { return `${settingsUrl}` },
-        method: 'GET',
+        method: () => { return 'GET' },
         headers: () => { return getBearerHeaders() }
     }
 }

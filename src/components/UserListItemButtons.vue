@@ -46,18 +46,15 @@ export default {
         toggleFollowingStatus() {
             network.toggleFollowingStatus({
                 urlParams: {
-                    userId: localStorage.user().id
-                },
-                body: {
-                    otherUserId: this.user.id,
-                    follow: !this.user.following
+                    action: this.user.following ? 'unfollow' : 'follow',
+                    userId: this.user.id
                 },
                 onSuccess: this.refresh,
-                onFailure: error => { alert(error.description) }
+                onFailure: error => { alert(error.description); }
             })
         },
         toggleAdminStatus() {
-            network.toggleAdminStatus({
+            network.updateUser({
                 urlParams: {
                     userId: this.user.id
                 },
@@ -72,7 +69,7 @@ export default {
                     }
                     this.refresh()
                 },
-                onFailure: error => { alert(error.description) }
+                onFailure: error => { alert(error.description); }
             });
         },
         deleteUser() {
@@ -81,7 +78,7 @@ export default {
                     userId: this.user.id
                 },
                 onSuccess: this.refresh,
-                onFailure: error => { alert(error.description) }
+                onFailure: error => { alert(error.description); }
             });
         }
     }

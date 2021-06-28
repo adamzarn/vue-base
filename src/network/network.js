@@ -17,17 +17,25 @@ function frontendBaseUrl() {
     return `${loc.protocol}//${loc.hostname}:${loc.port}`;
 }
 
-function createError(response, data) {
+function createError(response, data, endpoint) {
     let components = data.reason.split(':');
     let status = response.status;
     let exception = (components.length == 2) ? components[0] : 'Unknown'
     let reason = (components.length == 2) ? components[1].trim() : data.reason
-    let description = `${status}\n${exception}\n${reason}`
+    let description = `${endpoint}\n${status}\n${exception}\n${reason}`
     return {
+        'endpoint': endpoint,
         'status': status,
         'exception': exception,
         'reason': reason,
         'description': description
+    }
+}
+
+function createBasicError(error, endpoint) {
+    return {
+        'endpoint': endpoint,
+        'description': `${endpoint}\n${error.description}`
     }
 }
 
@@ -47,18 +55,13 @@ function getUrl(endpoint, params) {
 
 function getRequest(endpoint, params) {
     return { 
-        method: endpoint.method,
+        method: endpoint.method(params),
         headers: endpoint.headers ? endpoint.headers(params.headerParams) : {},
         body: endpoint.body ? endpoint.body(params.body) : null
     }
 }
 
 function makeRequest(endpoint, params) {
-    if (localStorage.user()) {
-        console.log(localStorage.user().id)
-    }
-    console.log(getUrl(endpoint, params))
-    console.log(getRequest(endpoint, params))
     fetch(
         getUrl(endpoint, params),
         getRequest(endpoint, params)
@@ -69,15 +72,14 @@ function makeRequest(endpoint, params) {
                     const data = JSON.parse(text);
                     handleData(endpoint, response, data, params);
                 } catch(error) {
-                    params.onFailure(error);
+                    params.onFailure(createBasicError(error, endpoint.name));
                 }
             } else {
                 handleResponse(endpoint, response, params);
             }
         })
     }).catch(error => {
-        console.log(error)
-        params.onFailure(error)
+        params.onFailure(createBasicError(error, endpoint.name));
     })
 }
 
@@ -89,7 +91,7 @@ function handleResponse(endpoint, response, params) {
         return response.json().then(data => {
             handleData(response, data, params)
         }).catch(error => {
-            params.onFailure(error)
+            params.onFailure(createBasicError(error, endpoint.name));
         })
     }
 }
@@ -100,7 +102,7 @@ function handleData(endpoint, response, data, params) {
             localStorage.clear();
             return params.onSuccess();
         } else {
-            params.onFailure(createError(response, data));
+            params.onFailure(createError(response, data, endpoint.name));
         }
     } else {
         if (['login', 'register'].includes(endpoint.name)) {
@@ -152,12 +154,8 @@ function searchUsers(params) {
     makeRequest(api.endpoints.searchUsers, params)
 }
 
-function toggleAdminStatus(params) {
-    makeRequest(api.endpoints.setAdminStatus, params)
-}
-
 function toggleFollowingStatus(params) {
-    makeRequest(api.endpoints.setFollowingStatus, params)
+    makeRequest(api.endpoints.toggleFollowingStatus, params)
 }
 
 function getFollows(params) {
@@ -184,6 +182,10 @@ function getSettings(params) {
     makeRequest(api.endpoints.getSettings, params)
 }
 
+function debugDescription(errorObject) {
+    return `Endpoint:\n${errorObject.endpoint}\n\nDescription:\n${errorObject.error.description}`;
+}
+
 export default {
     register,
     login,
@@ -195,7 +197,6 @@ export default {
     getUser,
     getUserStatus,
     searchUsers,
-    toggleAdminStatus,
     toggleFollowingStatus,
     getFollows, 
     deleteUser,
@@ -204,5 +205,6 @@ export default {
     deleteProfilePhoto,
     getSettings,
 
+    debugDescription,
     frontendBaseUrl
 };
