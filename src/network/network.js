@@ -182,6 +182,18 @@ function getSettings(params) {
     makeRequest(api.endpoints.getSettings, params)
 }
 
+function createPost(params) {
+    makeRequest(api.endpoints.createPost, params)
+}
+
+function getMyPosts(params) {
+    makeRequest(api.endpoints.getMyPosts, params)
+}
+
+function getFeed(params) {
+    makeRequest(api.endpoints.getFeed, params)
+}
+
 function debugDescription(errorObject) {
     return `Endpoint:\n${errorObject.endpoint}\n\nDescription:\n${errorObject.error.description}`;
 }
@@ -204,6 +216,9 @@ export default {
     uploadProfilePhoto,
     deleteProfilePhoto,
     getSettings,
+    createPost,
+    getMyPosts,
+    getFeed,
 
     debugDescription,
     frontendBaseUrl

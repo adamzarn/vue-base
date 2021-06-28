@@ -8,6 +8,7 @@ const baseUrl = `${components.scheme}://${components.host}:${components.port}`
 const authUrl = `${baseUrl}/auth`
 const usersUrl = `${baseUrl}/users`
 const settingsUrl = `${baseUrl}/settings`
+const postsUrl = `${baseUrl}/posts`
 
 function getBasicAuthorizationValue(email, password) {
     return `Basic ${btoa(`${email}:${password}`)}`;
@@ -32,7 +33,6 @@ function getFormData(body) {
             formData.append(key, value)
         }
     }
-    console.log(body)
     return formData
 }
 
@@ -165,6 +165,24 @@ const endpoints = {
     getSettings: {
         name: 'getSettings',
         url: () => { return `${settingsUrl}` },
+        method: () => { return 'GET' },
+        headers: () => { return getBearerHeaders() }
+    },
+    createPost: {
+        name: 'createPost',
+        url: () => { return `${postsUrl}` },
+        method: () => { return 'POST' },
+        headers: () => { return getBearerHeaders() }
+    },
+    getMyPosts: {
+        name: 'getMyPosts',
+        url: () => { return `${postsUrl}` },
+        method: () => { return 'GET' },
+        headers: () => { return getBearerHeaders() }
+    },
+    getFeed: {
+        name: 'getFeed',
+        url: () => { return `${postsUrl}/feed` },
         method: () => { return 'GET' },
         headers: () => { return getBearerHeaders() }
     }
