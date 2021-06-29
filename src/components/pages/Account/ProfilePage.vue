@@ -146,7 +146,9 @@ export default {
                         return follower.id == this.loggedInUser.id
                     }).length > 0
                 },
-                onFailure: error => { alert(error.description); }
+                onFailure: error => { 
+                    alert(error.description);
+                }
             })
         },
         async getFollowing() {
@@ -162,7 +164,9 @@ export default {
                         return updatedUser
                     })
                 },
-                onFailure: error => { alert(error.description); }
+                onFailure: error => { 
+                    alert(error.description); 
+                }
             })
         },
         toggleFollowingStatus() {

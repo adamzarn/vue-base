@@ -72,6 +72,8 @@ function makeRequest(endpoint, params) {
                     const data = JSON.parse(text);
                     handleData(endpoint, response, data, params);
                 } catch(error) {
+                    console.log(text);
+                    console.log(error);
                     params.onFailure(createBasicError(error, endpoint.name));
                 }
             } else {
@@ -108,6 +110,9 @@ function handleData(endpoint, response, data, params) {
         if (['login', 'register'].includes(endpoint.name)) {
             handleAuthenticationResult(data, params)
         } else {
+            if (endpoint.name == 'getUser' && data.id == localStorage.user().id) {
+                localStorage.setObject('user', data);
+            }
             params.onSuccess(data);
         }
     }

@@ -1,6 +1,15 @@
 <template>
     <div class="container">
         <div class="col-8">
+            <page-title class="title" text="Post"></page-title>
+            <form @submit.prevent="createPost">
+                <div>
+                    <textarea :placeholder="textAreaPlaceholder" v-model.trim="enteredPostText"></textarea>
+                </div>
+                <div class="submit-button-container">
+                    <base-button @click="createPost">Submit</base-button>
+                </div>
+            </form>
             <page-title class="title" text="Feed"></page-title>
             <post-list :posts="posts"></post-list>
         </div>
@@ -27,7 +36,16 @@ export default {
         return {
             posts: [],
             users: [],
-            enteredQuery: ''
+            enteredQuery: '',
+            enteredPostText: ''
+        }
+    },
+    computed: {
+        firstName() {
+            return localStorage.user().firstName;
+        },
+        textAreaPlaceholder() {
+            return `${this.firstName}, what's on your mind?`;
         }
     },
     methods: {
@@ -41,7 +59,8 @@ export default {
                     query: this.enteredQuery,
                     start: 0,
                     end: 50,
-                    isFollowing: "no"
+                    isFollowing: "no",
+                    excludeMe: "yes"
                 },
                 onSuccess: users => {
                     this.users = users
@@ -57,6 +76,20 @@ export default {
                     this.posts = posts;
                 }, onFailure: error => {
                     alert(error.description);
+                }
+            })
+        },
+        createPost() {
+            if (this.enteredPostText.length == 0) { return; }
+            network.createPost({
+                body: {
+                    text: this.enteredPostText
+                },
+                onSuccess: () => {
+                    this.enteredPostText = '';
+                    this.getFeed()
+                }, onFailure: error => {
+                    alert(error.description)
                 }
             })
         },
@@ -83,5 +116,17 @@ export default {
 }
 .search-bar {
     margin: var(--default-spacing);
+}
+.submit-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--default-spacing);
+}
+textarea {
+    height: 100px;
+    width: 100%;
+    resize: none;
+    padding: var(--default-spacing);
+    font-size: calc(var(--default-font-size)*1.25);
 }
 </style>

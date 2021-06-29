@@ -32,7 +32,8 @@ export default {
         getAdmins() {
             network.searchUsers({
                 queryParams: {
-                    isAdmin: "yes"
+                    isAdmin: "yes",
+                    excludeMe: "no"
                 },
                 onSuccess: admins => {
                     let adminIds = admins.map((admin) => {
@@ -59,7 +60,8 @@ export default {
                     query: this.enteredQuery,
                     start: 0,
                     end: 50,
-                    isAdmin: "no"
+                    isAdmin: "no",
+                    excludeMe: "no"
                 },
                 onSuccess: users => {
                     this.users = users

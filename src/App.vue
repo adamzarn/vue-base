@@ -30,7 +30,7 @@ export default {
 * {
   box-sizing: border-box;
 }
-html {
+html, textarea {
   font-family: 'Open Sans', sans-serif;
 }
 body {

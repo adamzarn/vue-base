@@ -57,7 +57,6 @@ export default {
                     userId: localStorage.user().id
                 },
                 onSuccess: user => {
-                    localStorage.setObject('user', user);
                     this.loggedInUserIsAdmin = user.isAdmin;
                 },
                 onFailure: error => {

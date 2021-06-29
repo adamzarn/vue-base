@@ -139,7 +139,7 @@ const endpoints = {
     updateUser: {
         name: 'updateUser',
         url: (params) => { 
-            if (params.urlParams.userId) {
+            if (params.urlParams?.userId) {
                 return `${usersUrl}/${params.urlParams.userId}`
             } else {
                 return `${usersUrl}`
@@ -172,7 +172,8 @@ const endpoints = {
         name: 'createPost',
         url: () => { return `${postsUrl}` },
         method: () => { return 'POST' },
-        headers: () => { return getBearerHeaders() }
+        headers: () => { return getBearerHeaders() },
+        body: (body) => { return getFormData(body) }
     },
     getMyPosts: {
         name: 'getMyPosts',
