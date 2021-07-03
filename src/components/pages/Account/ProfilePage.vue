@@ -1,41 +1,47 @@
 <template>
-    <div v-if="user" class="profile-container">
-        <div class="title-container">
-            <div class="title-text-container">
-                <div class="image-container" :class="{ clickable: userIsLoggedInUser }" @click="didClickProfilePhoto">
-                    <div class="image-placeholder">
-                        <p v-if="profilePhotoUrl==null" class="initials">{{ user.firstName[0] + user.lastName[0] }}</p>
+    <div class="col-12 profile-page-container">
+        <div v-if="user" class="col-8 profile-container">
+            <div class="title-container">
+                <div class="title-text-container">
+                    <div class="image-container" :class="{ clickable: userIsLoggedInUser }" @click="didClickProfilePhoto">
+                        <div class="image-placeholder">
+                            <p v-if="profilePhotoUrl==null" class="initials">{{ user.firstName[0] + user.lastName[0] }}</p>
+                        </div>
+                        <img v-if="profilePhotoUrl" class="profile-photo" :src="profilePhotoUrl">
+                        <input type="file" id="profile-photo-input" @change="handleProfilePhoto($event)"/>
                     </div>
-                    <img v-if="profilePhotoUrl" class="profile-photo" :src="profilePhotoUrl">
-                    <input type="file" id="profile-photo-input" @change="handleProfilePhoto($event)"/>
+                    <div>
+                        <page-title :text="fullName"></page-title>
+                        <p v-if="loggedInUserIsAdmin" class="badge">{{ adminBadgeText }}</p>
+                    </div>
                 </div>
-                <div>
-                    <page-title :text="fullName"></page-title>
-                    <p v-if="loggedInUserIsAdmin" class="badge">{{ adminBadgeText }}</p>
+                <div class="title-buttons-container">
+                    <base-button v-if="userIsLoggedInUser == false" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
+                    <base-button v-if="loggedInUserIsAdmin" mode="light" @click="toggleAdminStatus()">{{ toggleAdminButtonText }}</base-button>
+                    <img v-if="loggedInUserIsAdmin || userIsLoggedInUser" class="svg delete-button" src="/delete.svg" @click="deleteUser()">
                 </div>
             </div>
-            <div class="title-buttons-container">
-                <base-button v-if="userIsLoggedInUser == false" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
-                <base-button v-if="loggedInUserIsAdmin" mode="light" @click="toggleAdminStatus()">{{ toggleAdminButtonText }}</base-button>
-                <img v-if="loggedInUserIsAdmin || userIsLoggedInUser" class="svg delete-button" src="/delete.svg" @click="deleteUser()">
+            <base-card v-if="user">
+                <profile-item v-if="userIsLoggedInUser" field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+                <profile-item v-if="userIsLoggedInUser" field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+                <profile-item field="username" label="Username" :currentValue="username" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+                <profile-item field="email" label="Email" :showSeparator="userIsLoggedInUser" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+                <profile-item v-if="userIsLoggedInUser" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
+            </base-card>
+            <div v-if="user" class="follows">
+                <div class="col-6">
+                    <page-title class="title" :text="followersTitle"></page-title>
+                    <user-list :users="followers" :refresh="getFollowers" :showToggleFollowButton="false"></user-list>
+                </div>
+                <div class="col-6">
+                    <page-title class="title" :text="followingTitle"></page-title>
+                    <user-list :users="following" :refresh="getFollowing" :showToggleFollowButton="userIsLoggedInUser"></user-list>
+                </div>
             </div>
         </div>
-        <base-card v-if="user">
-            <profile-item v-if="userIsLoggedInUser" field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-            <profile-item v-if="userIsLoggedInUser" field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-            <profile-item field="username" label="Username" :currentValue="username" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-            <profile-item field="email" label="Email" :showSeparator="userIsLoggedInUser" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-            <profile-item v-if="userIsLoggedInUser" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-        </base-card>
-    </div>
-    <div v-if="user" class="profile-container follows">
-        <div class="col-6">
-            <page-title class="title" :text="followersTitle"></page-title>
-            <user-list :users="followers" :refresh="getFollowers" :showToggleFollowButton="false"></user-list>
-        </div>
-        <div class="col-6">
-            <page-title class="title" :text="followingTitle"></page-title>
-            <user-list :users="following" :refresh="getFollowing" :showToggleFollowButton="userIsLoggedInUser"></user-list>
+        <div class="col-4 posts-container">
+            <page-title text="Posts"></page-title>
+            <post-list :posts="posts"></post-list>
         </div>
     </div>
     <base-modal v-if="shouldShowChangeEmailNotificationModal" title="Change Email">
@@ -65,13 +71,15 @@ import network from '../../../network/network.js';
 import UserList from '../../UserList.vue';
 import ProfileItem from '../../base/ProfileItem.vue';
 import PageTitle from '../../base/PageTitle.vue';
+import PostList from '../../PostList.vue';
 
 export default {
-    components: { UserList, ProfileItem, PageTitle },
+    components: { UserList, ProfileItem, PageTitle, PostList },
     data() {
         return {
             followers: [],
             following: [],
+            posts: [],
             user: null,
             loggedInUser: null,
             changeStatuses: {
@@ -143,7 +151,7 @@ export default {
                 onSuccess: users => { 
                     this.followers = users
                     this.isFollowing = this.followers.filter((follower) => { 
-                        return follower.id == this.loggedInUser.id
+                        return follower.id == localStorage.user().id
                     }).length > 0
                 },
                 onFailure: error => { 
@@ -312,6 +320,7 @@ export default {
             this.getFollowers()
             this.getFollowing()
             this.getUser()
+            this.getPosts()
         },
         getUser() {
             network.getUser({
@@ -378,6 +387,18 @@ export default {
             } else {
                 return null;
             }
+        },
+        getPosts() {
+            network.getPosts({
+                urlParams: {
+                    userId: this.$route.params.userId
+                },
+                onSuccess: (posts) => {
+                    this.posts = posts;
+                }, onFailure: error => {
+                    alert(error.description);
+                }
+            })
         }
     },
     mounted() {
@@ -401,7 +422,19 @@ export default {
 .menu-container {
     padding: var(--default-spacing);
 }
+.profile-page-container {
+    display: flex;
+}
 .profile-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--default-spacing);
+    padding: var(--default-spacing);
+}
+.posts-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--default-spacing);
     padding: var(--default-spacing);
 }
 .title-buttons-container {
@@ -426,7 +459,6 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: calc(var(--default-spacing)*2);
 }
 .title-text-container {
     display: flex;
@@ -496,5 +528,11 @@ input {
 }
 .image-placeholder {
     background-color: var(--light-gray-color);
+}
+@media only screen and (max-width: 480px) {
+    .profile-page-container {
+        flex-flow: column;
+        row-gap: var(--default-spacing);
+    }
 }
 </style>

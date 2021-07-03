@@ -175,9 +175,15 @@ const endpoints = {
         headers: () => { return getBearerHeaders() },
         body: (body) => { return getFormData(body) }
     },
-    getMyPosts: {
-        name: 'getMyPosts',
-        url: () => { return `${postsUrl}` },
+    getPosts: {
+        name: 'getPosts',
+        url: (params) => { 
+            if (params.urlParams?.userId) {
+                return `${postsUrl}/${params.urlParams.userId}`
+            } else {
+                return `${postsUrl}`
+            }
+        },
         method: () => { return 'GET' },
         headers: () => { return getBearerHeaders() }
     },

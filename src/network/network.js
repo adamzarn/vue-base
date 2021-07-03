@@ -17,14 +17,15 @@ function frontendBaseUrl() {
     return `${loc.protocol}//${loc.hostname}:${loc.port}`;
 }
 
-function createError(response, data, endpoint) {
+function createError(source, response, data, endpoint) {
     let components = data.reason.split(':');
     let status = response.status;
     let exception = (components.length == 2) ? components[0] : 'Unknown'
     let reason = (components.length == 2) ? components[1].trim() : data.reason
-    let description = `${endpoint}\n${status}\n${exception}\n${reason}`
+    let description = `${endpoint}\n${source}\n${status}\n${exception}\n${reason}`
     return {
         'endpoint': endpoint,
+        'source': source,
         'status': status,
         'exception': exception,
         'reason': reason,
@@ -32,10 +33,12 @@ function createError(response, data, endpoint) {
     }
 }
 
-function createBasicError(error, endpoint) {
+function createBasicError(source, error, endpoint) {
     return {
         'endpoint': endpoint,
-        'description': `${endpoint}\n${error.description}`
+        'soucre': source,
+        'error': error,
+        'description': `${endpoint}\n${source}\n${error.description}`
     }
 }
 
@@ -62,6 +65,9 @@ function getRequest(endpoint, params) {
 }
 
 function makeRequest(endpoint, params) {
+    if (endpoint.name == 'getFollows') {
+        console.log(params);
+    }
     fetch(
         getUrl(endpoint, params),
         getRequest(endpoint, params)
@@ -69,19 +75,20 @@ function makeRequest(endpoint, params) {
         return response.text().then(text => {
             if (text && text.length) {
                 try {
+                    console.log("Attempting to parse JSON")
                     const data = JSON.parse(text);
                     handleData(endpoint, response, data, params);
                 } catch(error) {
                     console.log(text);
                     console.log(error);
-                    params.onFailure(createBasicError(error, endpoint.name));
+                    params.onFailure(createBasicError('JSON Parsing', error, endpoint.name));
                 }
             } else {
                 handleResponse(endpoint, response, params);
             }
         })
     }).catch(error => {
-        params.onFailure(createBasicError(error, endpoint.name));
+        params.onFailure(createBasicError('No Response', error, endpoint.name));
     })
 }
 
@@ -104,7 +111,7 @@ function handleData(endpoint, response, data, params) {
             localStorage.clear();
             return params.onSuccess();
         } else {
-            params.onFailure(createError(response, data, endpoint.name));
+            params.onFailure(createError('handleData', response, data, endpoint.name));
         }
     } else {
         if (['login', 'register'].includes(endpoint.name)) {
@@ -191,8 +198,8 @@ function createPost(params) {
     makeRequest(api.endpoints.createPost, params)
 }
 
-function getMyPosts(params) {
-    makeRequest(api.endpoints.getMyPosts, params)
+function getPosts(params) {
+    makeRequest(api.endpoints.getPosts, params)
 }
 
 function getFeed(params) {
@@ -222,7 +229,7 @@ export default {
     deleteProfilePhoto,
     getSettings,
     createPost,
-    getMyPosts,
+    getPosts,
     getFeed,
 
     debugDescription,

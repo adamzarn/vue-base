@@ -1,5 +1,5 @@
 <template>
-    <div class="container col-12">
+    <div class="account-container col-12">
         <div v-if="userIsLoggedInUser" class="col-3 menu-container">
             <base-card>
                 <div class="menu-item dark first" :class="{ selected: selectedPage == 'profile'}" @click="account('profile')">
@@ -47,7 +47,7 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.account-container {
     display: flex;
     column-gap: var(--default-spacing);
     padding: var(--default-spacing);
@@ -81,5 +81,11 @@ export default {
     top: 50%;
     transform: translate(0, -50%);
     margin: 0 var(--default-spacing);
+}
+@media only screen and (max-width: 480px) {
+    .account-container {
+        flex-flow: column;
+        row-gap: var(--default-spacing);
+    }
 }
 </style>

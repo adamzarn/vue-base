@@ -1,5 +1,5 @@
 <template>
-    <div v-if="posts.length > 0" class="posts-container">
+    <div v-if="posts.length > 0" class="post-list-container">
         <post-list-item
             v-for="(post) in posts"
             :key="post.id"
@@ -25,7 +25,7 @@ export default {
 </script>
 
 <style scoped>
-.posts-container {
+.post-list-container {
     display: flex;
     flex-direction: column;
     row-gap: var(--default-spacing);

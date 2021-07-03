@@ -2,14 +2,14 @@
     <div class="container">
         <div class="col-8">
             <page-title class="title" text="Post"></page-title>
-            <form @submit.prevent="createPost">
+            <div>
                 <div>
                     <textarea :placeholder="textAreaPlaceholder" v-model.trim="enteredPostText"></textarea>
                 </div>
                 <div class="submit-button-container">
                     <base-button @click="createPost">Submit</base-button>
                 </div>
-            </form>
+            </div>
             <page-title class="title" text="Feed"></page-title>
             <post-list :posts="posts"></post-list>
         </div>
