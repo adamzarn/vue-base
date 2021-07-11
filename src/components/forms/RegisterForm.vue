@@ -61,6 +61,7 @@
 
 <script>
 import network from '../../network/network.js';
+import exceptions from '../../network/exceptions.js';
 
 export default {
     data() {
@@ -100,6 +101,24 @@ export default {
                 },
                 onSuccess: () => {
                     this.$router.push({ name: 'home' });
+                },
+                onFailure: error => {
+                    if (error.exception === exceptions.emailIsNotVerified) {
+                        this.sendEmailVerificationEmail();
+                    } else {
+                        alert(error.description);
+                    }
+                }
+            })
+        },
+        sendEmailVerificationEmail() {
+            network.sendEmailVerificationEmail({
+                body: {
+                    email: this.enteredEmail,
+                    frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
+                },
+                onSuccess: () => {
+                    alert(`An email verification email was sent to ${this.enteredEmail}.`)
                 },
                 onFailure: error => {
                     alert(error.description);

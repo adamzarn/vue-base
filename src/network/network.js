@@ -45,6 +45,7 @@ function createBasicError(source, error, endpoint) {
 function handleAuthenticationResult(data, params) {
     localStorage.tokenId = data.id;
     localStorage.token = data.token;
+    localStorage.emailVerificationIsRequired = data.emailVerificationIsRequired;
     localStorage.setObject('user', data.user);
     params.onSuccess(data)
 }

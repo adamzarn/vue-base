@@ -11,6 +11,8 @@ const exceptions = {
     invalidToken: "invalidToken",
     missingEmail: "missingEmail",
     missingPassword: "missingPassword",
+    missingPasswordResetObject: "missingPasswordResetObject",
+    missingEmailVerificationObject: "missingEmailVerificationObject",
     couldNotCreateToken: "couldNotCreateToken",
     couldNotCreatePasswordHash: "couldNotCreatePasswordHash",
     missingUserUpdate: "missingUserUpdate",

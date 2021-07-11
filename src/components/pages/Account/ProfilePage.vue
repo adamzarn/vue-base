@@ -232,8 +232,8 @@ export default {
                 body: {
                     [field]: value
                 },
-                onSuccess: (settings) => {
-                    if (field === 'email' && settings.requireEmailVerification) {
+                onSuccess: (updatedUser) => {
+                    if (field === 'email' && updatedUser.isEmailVerified == false) {
                         this.sendEmailVerificationEmail(value)
                     } else {
                         this.changeStatuses[field] = false;
@@ -249,14 +249,14 @@ export default {
         sendEmailVerificationEmail(email) {
             network.sendEmailVerificationEmail({
                 body: {
-                    email: '',
-                    password: '',
+                    email: email,
                     frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
                 },
                 onSuccess: () => {
                     this.logout(email)
                 },
                 onFailure: error => {
+                    this.
                     alert(error.description);
                 }
             })
@@ -264,7 +264,7 @@ export default {
         logout(email) {
             network.logout({
                 onSuccess: () => {
-                    alert(`You will now be logged out and an email verification email was sent to ${email}.`)
+                    alert(`You will now be logged out. An email verification email was sent to ${email}.`)
                     this.$router.push({ name: 'login' });
                 },
                 onFailure: error => {
@@ -303,7 +303,7 @@ export default {
             if (field === 'email' && this.changeStatuses['email'] === false) {
                 network.getSettings({
                     onSuccess: (settings) => {
-                        if (settings.requireEmailVerification) {
+                        if (settings.emailVerificationIsRequired) {
                             this.shouldShowChangeEmailNotificationModal = true
                         } else {
                             this.changeStatuses[field] = !this.changeStatuses[field]

@@ -76,13 +76,8 @@ export default {
         sendEmailVerificationEmail() {
             this.shouldShowVerifyEmailModal = false;
             network.sendEmailVerificationEmail({
-                headerParams: {
-                    email: this.enteredEmail,
-                    password: this.enteredPassword
-                },
                 body: {
-                    email: '',
-                    password: '',
+                    email: this.enteredEmail,
                     frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
                 },
                 onSuccess: () => {

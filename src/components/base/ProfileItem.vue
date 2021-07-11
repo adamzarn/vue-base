@@ -7,7 +7,7 @@
         </div>
         <div v-if="editable" class="buttons-container">
             <base-button v-if="beingChanged" class="change-button" @click="toggleBeingChanged(field)">Cancel</base-button>
-            <base-button v-if="beingChanged" class="change-button" @click="update(field, newValue)">Submit</base-button>
+            <base-button v-if="beingChanged" class="change-button" @click="update(field, newValue); newValue = originalValue">Submit</base-button>
             <base-button v-if="!beingChanged" class="change-button" @click="toggleBeingChanged(field)">Change</base-button>
         </div>
     </div>
@@ -39,6 +39,7 @@ export default {
     },
     data() {
         return {
+            originalValue: this.currentValue,
             newValue: this.currentValue
         }
     },
