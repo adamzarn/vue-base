@@ -66,9 +66,6 @@ function getRequest(endpoint, params) {
 }
 
 function makeRequest(endpoint, params) {
-    if (endpoint.name == 'getFollows') {
-        console.log(params);
-    }
     fetch(
         getUrl(endpoint, params),
         getRequest(endpoint, params)
@@ -76,12 +73,9 @@ function makeRequest(endpoint, params) {
         return response.text().then(text => {
             if (text && text.length) {
                 try {
-                    console.log("Attempting to parse JSON")
                     const data = JSON.parse(text);
                     handleData(endpoint, response, data, params);
                 } catch(error) {
-                    console.log(text);
-                    console.log(error);
                     params.onFailure(createBasicError('JSON Parsing', error, endpoint.name));
                 }
             } else {

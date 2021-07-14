@@ -1,17 +1,13 @@
-const components = {
-    scheme: 'http',
-    host: 'localhost',
-    port: '8080',
-}
-
-const baseUrl = `${components.scheme}://${components.host}:${components.port}`
+const baseUrl = process.env.VUE_APP_API_BASE_URL;
 const authUrl = `${baseUrl}/auth`
 const usersUrl = `${baseUrl}/users`
 const settingsUrl = `${baseUrl}/settings`
 const postsUrl = `${baseUrl}/posts`
 
 function getBasicAuthorizationValue(email, password) {
-    return `Basic ${btoa(`${email}:${password}`)}`;
+    let buffer = Buffer(`${email}:${password}`);
+    let base64String = buffer.toString('base64');
+    return `Basic ${base64String}`;
 }
 
 function getBearerAuthorizationValue() {
@@ -189,7 +185,6 @@ const endpoints = {
 }
 
 export default {
-    components,
     baseUrl,
     endpoints
 }
