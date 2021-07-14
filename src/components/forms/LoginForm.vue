@@ -45,8 +45,8 @@ import exceptions from '../../network/exceptions.js';
 export default {
     data() {
         return {
-            enteredEmail: 'adam.zarn@my.wheaton.edu',
-            enteredPassword: '123456',
+            enteredEmail: '',
+            enteredPassword: '',
             emailIsInvalid: false,
             shouldShowVerifyEmailModal: false
         }
