@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import UserList from '../UserList.vue';
+import UserList from '../users/UserList.vue';
 import network from '../../network/network.js';
 import PageTitle from '../base/PageTitle.vue';
 

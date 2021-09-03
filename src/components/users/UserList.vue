@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import UserListItem from '../components/UserListItem.vue';
+import UserListItem from '../users/UserListItem.vue'
 
 export default {
     components: {

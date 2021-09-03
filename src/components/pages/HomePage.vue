@@ -23,8 +23,8 @@
 <script>
 import PageTitle from '../base/PageTitle.vue';
 import network from '../../network/network.js';
-import UserList from '../../components/UserList.vue';
-import PostList from '../PostList.vue';
+import UserList from '../../components/users/UserList.vue';
+import PostList from '../posts/PostList.vue';
 
 export default {
     components: {

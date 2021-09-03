@@ -68,10 +68,10 @@
 
 <script>
 import network from '../../../network/network.js';
-import UserList from '../../UserList.vue';
+import UserList from '../../users/UserList.vue';
 import ProfileItem from '../../base/ProfileItem.vue';
 import PageTitle from '../../base/PageTitle.vue';
-import PostList from '../../PostList.vue';
+import PostList from '../../posts/PostList.vue';
 
 export default {
     components: { UserList, ProfileItem, PageTitle, PostList },

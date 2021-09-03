@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import PostListItem from '../components/PostListItem.vue';
+import PostListItem from '../posts/PostListItem.vue';
 
 export default {
     components: {

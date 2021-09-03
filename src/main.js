@@ -6,7 +6,7 @@ import router from './router.js';
 import BaseCard from './components/base/BaseCard.vue';
 import BaseInput from './components/base/BaseInput.vue';
 import BaseButton from './components/base/BaseButton.vue';
-import TheHeader from './components/TheHeader.vue';
+import TheHeader from './components/base/TheHeader.vue';
 import BaseModal from './components/base/BaseModal.vue';
 
 const app = createApp(App);

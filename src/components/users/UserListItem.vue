@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import UserListItemText from '../components/UserListItemText.vue';
-import UserListItemButtons from '../components/UserListItemButtons';
+import UserListItemText from '../users/UserListItemText.vue';
+import UserListItemButtons from '../users/UserListItemButtons';
 
 export default {
     components: { UserListItemText, UserListItemButtons },

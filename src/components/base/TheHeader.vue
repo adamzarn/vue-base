@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import network from '../network/network.js';
+import network from '../../network/network.js';
 
 export default {
     data() {
