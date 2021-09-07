@@ -36,9 +36,9 @@ function createError(source, response, data, endpoint) {
 function createBasicError(source, error, endpoint) {
     return {
         'endpoint': endpoint,
-        'soucre': source,
+        'source': source,
         'error': error,
-        'description': `${endpoint}\n${source}\n${error.description}`
+        'description': `${endpoint}\n${source}\n${error}`
     }
 }
 

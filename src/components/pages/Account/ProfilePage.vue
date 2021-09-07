@@ -1,34 +1,16 @@
 <template>
     <div class="col-12 profile-page-container">
         <div v-if="user" class="col-8 profile-container">
-            <div class="title-container">
-                <div class="title-text-container">
-                    <profile-photo
-                        :profilePhotoUrl="profilePhotoUrl"
-                        :user="user"
-                        size="medium"
-                        :editable="true"
-                        :deleteProfilePhoto="deleteProfilePhoto"
-                        @change="handleNewProfilePhoto($event)">
-                    </profile-photo>
-                    <div>
-                        <page-title :text="fullName"></page-title>
-                        <p v-if="loggedInUserIsAdmin" class="badge">{{ adminBadgeText }}</p>
-                    </div>
-                </div>
-                <div class="title-buttons-container">
-                    <base-button v-if="userIsLoggedInUser == false" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
-                    <base-button v-if="loggedInUserIsAdmin" mode="light" @click="toggleAdminStatus()">{{ toggleAdminButtonText }}</base-button>
-                    <img v-if="loggedInUserIsAdmin || userIsLoggedInUser" class="svg delete-button" src="/delete.svg" @click="deleteUser()">
-                </div>
-            </div>
-            <base-card v-if="user">
-                <profile-item v-if="userIsLoggedInUser" field="firstName" label="First Name" :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-                <profile-item v-if="userIsLoggedInUser" field="lastName" label="Last Name" :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-                <profile-item field="username" label="Username" :currentValue="username" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-                <profile-item field="email" label="Email" :showSeparator="userIsLoggedInUser" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-                <profile-item v-if="userIsLoggedInUser" field="password" label="Password" type="password" :showSeparator="false" :update="changePassword" :editable="userIsLoggedInUser" :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged"></profile-item>
-            </base-card>
+            <profile-header
+                :profilePhotoUrl="profilePhotoUrl"
+                :passedInUser="user"
+                :loggedInUser="loggedInUser"
+                @change="didUpdateUser">
+            </profile-header>
+            <profile-body 
+                :user="user"
+                :refresh="getUser">
+            </profile-body>
             <div v-if="user" class="follows">
                 <div class="col-6">
                     <page-title class="title" :text="followersTitle"></page-title>
@@ -45,23 +27,18 @@
             <post-list :posts="posts"></post-list>
         </div>
     </div>
-    <change-email-modal
-        :shouldShow="shouldShowChangeEmailNotificationModal"
-        :allowEmailUpdate="allowEmailUpdate"
-        :dismiss="dismissChangeEmailNotificationModal">
-    </change-email-modal>
 </template>
 
 <script>
 import network from '../../../network/network.js';
 import UserList from '../../users/UserList.vue';
-import ProfileItem from '../../base/ProfileItem.vue';
-import PageTitle from '../../base/PageTitle.vue';
 import PostList from '../../posts/PostList.vue';
-import ChangeEmailModal from '../../modals/ChangeEmailModal.vue';
+import ProfileHeader from '../../profile/ProfileHeader.vue';
+import ProfileBody from '../../profile/ProfileBody.vue';
+import PageTitle from '../../base/PageTitle.vue';
 
 export default {
-    components: { UserList, ProfileItem, PageTitle, PostList, ChangeEmailModal },
+    components: { ProfileHeader, ProfileBody, PageTitle, UserList, PostList },
     data() {
         return {
             followers: [],
@@ -69,17 +46,8 @@ export default {
             posts: [],
             user: null,
             loggedInUser: null,
-            changeStatuses: {
-                'firstName': false,
-                'lastName': false,
-                'username': false,
-                'email': false,
-                'password': false
-            },
             isFollowing: false,
-            shouldShowChangeEmailNotificationModal: false,
             profilePhotoUrl: null,
-            shouldShowProfilePhotoModal: false
         }
     },
     computed: {
@@ -110,25 +78,17 @@ export default {
             if (this.loggedInUser == null) { return false; }
             return this.loggedInUser.isAdmin;
         },
-        adminBadgeText() {
-            if (this.user == null) { return ''; }
-            return this.user.isAdmin ? 'ADMIN' : 'USER';
-        },
         followersTitle() {
             return "Followers";
         },
         followingTitle() {
             return "Following";
         },
-        toggleFollowButtonText() {
-            return this.isFollowing ? "Unfollow" : "Follow";
-        },
-        toggleAdminButtonText() {
-            if (this.user == null) { return ''; }
-            return this.user.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access';
-        }
     },
     methods: {
+        didUpdateUser(updatedUser) {
+            this.loggedInUser = updatedUser
+        },
         async getFollowers() {
             network.getFollows({
                 urlParams: {
@@ -164,90 +124,6 @@ export default {
                 }
             })
         },
-        toggleFollowingStatus() {
-            network.toggleFollowingStatus({
-                urlParams: {
-                    action: this.isFollowing ? 'unfollow' : 'follow',
-                    userId: this.user.id
-                },
-                onSuccess: this.getData,
-                onFailure: error => { alert(error.description); }
-            })
-        },
-        toggleAdminStatus() {
-            network.updateUser({
-                urlParams: {
-                    userId: this.user.id
-                },
-                body: {
-                    isAdmin: !this.user.isAdmin
-                },
-                onSuccess: () => {
-                    if (this.user.id == this.loggedInUser.id) {
-                        let updatedUser = this.loggedInUser;
-                        updatedUser.isAdmin = !updatedUser.isAdmin;
-                        localStorage.setObject('user', updatedUser);
-                        this.loggedInUser = updatedUser
-                        this.$router.go()
-                    } else {
-                        this.user.isAdmin = !this.user.isAdmin
-                    }
-                },
-                onFailure: error => { 
-                    alert(error.description); 
-                }
-            });
-        },
-        deleteUser() {
-            network.deleteUser({
-                urlParams: {
-                    userId: this.user.id
-                },
-                onSuccess: () => {
-                    if (this.userIsLoggedInUser) {
-                        localStorage.clear();
-                        this.$router.push({ name: 'login' });
-                    } else {
-                        this.$router.push({ name: 'home' });
-                    }
-                },
-                onFailure: error => { alert(error.description); }
-            });
-        },
-        updateUser(field, value) {
-            network.updateUser({
-                body: {
-                    [field]: value
-                },
-                onSuccess: (updatedUser) => {
-                    if (field === 'email' && updatedUser.isEmailVerified == false) {
-                        this.sendEmailVerificationEmail(value)
-                    } else {
-                        this.changeStatuses[field] = false;
-                        this.getUser();
-                    }
-                },
-                onFailure: error => {
-                    this.changeStatuses[field] = false;
-                    alert(error.description);
-                }
-            })
-        },
-        sendEmailVerificationEmail(email) {
-            network.sendEmailVerificationEmail({
-                body: {
-                    email: email,
-                    frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
-                },
-                onSuccess: () => {
-                    this.logout(email)
-                },
-                onFailure: error => {
-                    this.
-                    alert(error.description);
-                }
-            })
-        },
         logout(email) {
             network.logout({
                 onSuccess: () => {
@@ -258,50 +134,6 @@ export default {
                     alert(error.description);
                 }
             })
-        },
-        dismissChangeEmailNotificationModal() {
-            this.shouldShowChangeEmailNotificationModal = false
-        },
-        allowEmailUpdate() {
-            this.shouldShowChangeEmailNotificationModal = false
-            this.changeStatuses['email'] = true
-        },
-        changePassword(field, value) {
-            network.resetPassword({
-                urlParams: {
-                    tokenId: localStorage.tokenId,
-                },
-                body: {
-                    value: value
-                },
-                onSuccess: () => {
-                    this.changeStatuses[field] = false;
-                    alert("Your password was changed successfully!")
-                    this.passwordBeingChanged = false
-                    this.getUser()
-                },
-                onFailure: error => {
-                    this.changeStatuses[field] = false;
-                    alert(error.description);
-                }
-            })
-        },
-        toggleBeingChanged(field) {
-            if (field === 'email' && this.changeStatuses['email'] === false) {
-                network.getSettings({
-                    onSuccess: (settings) => {
-                        if (settings.emailVerificationIsRequired) {
-                            this.shouldShowChangeEmailNotificationModal = true
-                        } else {
-                            this.changeStatuses[field] = !this.changeStatuses[field]
-                        }
-                    }, onFailure: () => {
-                        this.changeStatuses[field] = !this.changeStatuses[field]
-                    }
-                })
-            } else {
-                this.changeStatuses[field] = !this.changeStatuses[field]
-            }
         },
         async getData() {
             this.getFollowers()
@@ -328,32 +160,13 @@ export default {
                 }
             })
         },
-        handleNewProfilePhoto(event) {
-            this.shouldShowProfilePhotoModal = false;
-            let file = event.target.files[0];
-            if (file) {
-                this.uploadNewProfilePhoto(file)
-            }
-        },
-        uploadNewProfilePhoto(file) {
-            network.uploadProfilePhoto({
-                body: {
-                    file: file
+        getPosts() {
+            network.getPosts({
+                urlParams: {
+                    userId: this.$route.params.userId
                 },
-                onSuccess: (data) => {
-                    this.profilePhotoUrl = this.getUniqueUrl(data.url);
-                },
-                onFailure: error => {
-                    alert(error.description);
-                }
-            })
-        },
-        deleteProfilePhoto() {
-            this.shouldShowProfilePhotoModal = false;
-            network.deleteProfilePhoto({
-                onSuccess: () => {
-                    localStorage.user().profilePhotoUrl = null
-                    this.profilePhotoUrl = null
+                onSuccess: (posts) => {
+                    this.posts = posts;
                 }, onFailure: error => {
                     alert(error.description);
                 }
@@ -366,18 +179,6 @@ export default {
                 return null;
             }
         },
-        getPosts() {
-            network.getPosts({
-                urlParams: {
-                    userId: this.$route.params.userId
-                },
-                onSuccess: (posts) => {
-                    this.posts = posts;
-                }, onFailure: error => {
-                    alert(error.description);
-                }
-            })
-        }
     },
     mounted() {
         if (localStorage.token != null) {
@@ -415,46 +216,10 @@ export default {
     row-gap: var(--default-spacing);
     padding: var(--default-spacing);
 }
-.title-buttons-container {
-    display: flex;
-    column-gap: var(--default-spacing);
-    align-items: center;
-}
 .follows {
     display: flex;
     column-gap: calc(var(--default-spacing)*2);
     row-gap: var(--default-spacing);
-}
-.title {
-    margin-bottom: var(--default-spacing);
-}
-.badge {
-    font-weight: bold;
-    color: var(--theme-dark-color);
-    margin: 0;
-}
-.title-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.title-text-container {
-    display: flex;
-    align-items: center;
-    column-gap: var(--default-spacing);
-}
-.delete-button {
-    cursor: pointer;
-    width: calc(var(--default-spacing)*2);
-    height: calc(var(--default-spacing)*2);
-    filter: invert(9%) sepia(82%) saturate(1981%) hue-rotate(282deg) brightness(89%) contrast(120%);
-}
-.delete-button:hover {
-    filter: invert(7%) sepia(86%) saturate(3809%) hue-rotate(294deg) brightness(109%) contrast(104%);
-}
-.buttons-container {
-    display: flex;
-    column-gap: var(--default-spacing);
 }
 @media only screen and (max-width: 768px) {
     .follows {
