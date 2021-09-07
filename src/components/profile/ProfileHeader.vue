@@ -1,9 +1,9 @@
 <template>
-    <div class="title-container">
+    <div class="title-container" v-if="user">
         <div class="title-text-container">
             <profile-photo
                 :profilePhotoUrl="profilePhotoUrl"
-                :user="user"
+                :user="passedInUser"
                 size="medium"
                 :editable="true"
                 :deleteProfilePhoto="deleteProfilePhoto"
@@ -28,41 +28,29 @@ import PageTitle from '../base/PageTitle.vue';
 
 export default {
     components: { PageTitle },
-    props: ['profilePhotoUrl', 'passedInUser', 'loggedInUser'],
+    props: ['profilePhotoUrl', 'user', 'loggedInUser'],
     emits: ['change'],
     computed: {
-        user() {
-            return this.passedInUser
+        passedInUser() {
+            return this.user
         },
         firstName() {
-            if (this.passedInUser == null) { return ''; }
-            return this.passedInUser.firstName
+            return this.user.firstName
         },
         lastName() {
-            if (this.passedInUser == null) { return ''; }
-            return this.passedInUser.lastName
+            return this.user.lastName
         },
         fullName() {
             return `${this.firstName} ${this.lastName}`
         },
         userIsLoggedInUser() {
-            if (this.passedInUser == null) { return false; }
-            return this.passedInUser.id == localStorage.user().id;
+            return this.user.id == localStorage.user().id;
         },
         loggedInUserIsAdmin() {
-            if (this.loggedInUser == null) { return false; }
             return this.loggedInUser.isAdmin;
         },
         adminBadgeText() {
-            if (this.passedInUser == null) { return ''; }
-            return this.passedInUser.isAdmin ? 'ADMIN' : 'USER';
-        },
-        toggleFollowButtonText() {
-            return this.isFollowing ? "Unfollow" : "Follow";
-        },
-        toggleAdminButtonText() {
-            if (this.passedInUser == null) { return ''; }
-            return this.passedInUser.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access';
+            return this.user.isAdmin ? 'ADMIN' : 'USER';
         }
     },
     methods: {
@@ -92,7 +80,9 @@ export default {
                         this.$emit('change', updatedUser)
                         this.$router.go()
                     } else {
-                        this.user.isAdmin = !this.user.isAdmin
+                        let updatedUser = this.user;
+                        updatedUser.isAdmin = !updatedUser.isAdmin;
+                        this.$emit('change', updatedUser)
                     }
                 },
                 onFailure: error => { 

@@ -2,22 +2,22 @@
     <base-card v-if="user">
         <profile-item v-if="userIsLoggedInUser" 
             field="firstName" label="First Name" 
-            :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" 
+            :currentValue="user.firstName" :update="updateUser" :editable="userIsLoggedInUser" 
             :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item v-if="userIsLoggedInUser"
             field="lastName" label="Last Name"
-            :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser"
+            :currentValue="user.lastName" :update="updateUser" :editable="userIsLoggedInUser"
             :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item
             field="username" label="Username"
-            :currentValue="username" :update="updateUser" :editable="userIsLoggedInUser"
+            :currentValue="user.username" :update="updateUser" :editable="userIsLoggedInUser"
             :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item
             field="email" label="Email"
-            :showSeparator="userIsLoggedInUser" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser"
+            :showSeparator="userIsLoggedInUser" :currentValue="user.email" :update="updateUser" :editable="userIsLoggedInUser"
             :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item v-if="userIsLoggedInUser"
@@ -54,32 +54,8 @@ export default {
         }
     },
     computed: {
-        email() {
-            if (this.user == null) { return ''; }
-            return this.user.email;
-        },
-        firstName() {
-            if (this.user == null) { return ''; }
-            return this.user.firstName
-        },
-        lastName() {
-            if (this.user == null) { return ''; }
-            return this.user.lastName
-        },
-        fullName() {
-            return `${this.firstName} ${this.lastName}`
-        },
-        username() {
-            if (this.user == null) { return ''; }
-            return this.user.username;
-        },
         userIsLoggedInUser() {
-            if (this.user == null) { return false; }
             return this.user.id == localStorage.user().id;
-        },
-        loggedInUserIsAdmin() {
-            if (this.loggedInUser == null) { return false; }
-            return this.loggedInUser.isAdmin;
         }
     },
     methods: {
@@ -112,7 +88,17 @@ export default {
                     this.logout(email)
                 },
                 onFailure: error => {
-                    this.
+                    alert(error.description);
+                }
+            })
+        },
+        logout(email) {
+            network.logout({
+                onSuccess: () => {
+                    alert(`You will now be logged out. An email verification email was sent to ${email}.`)
+                    this.$router.push({ name: 'login' });
+                },
+                onFailure: error => {
                     alert(error.description);
                 }
             })
@@ -139,20 +125,24 @@ export default {
         },
         toggleBeingChanged(field) {
             if (field === 'email' && this.changeStatuses['email'] === false) {
+                // Check if email verification is required before allowing email change
                 network.getSettings({
                     onSuccess: (settings) => {
                         if (settings.emailVerificationIsRequired) {
                             this.shouldShowChangeEmailNotificationModal = true
                         } else {
-                            this.changeStatuses[field] = !this.changeStatuses[field]
+                            this.toggleChangeStatus(field);
                         }
                     }, onFailure: () => {
-                        this.changeStatuses[field] = !this.changeStatuses[field]
+                        this.toggleChangeStatus(field);
                     }
                 })
             } else {
-                this.changeStatuses[field] = !this.changeStatuses[field]
+                this.toggleChangeStatus(field);
             }
+        },
+        toggleChangeStatus(field) {
+            this.changeStatuses[field] = !this.changeStatuses[field];
         },
         dismissChangeEmailNotificationModal() {
             this.shouldShowChangeEmailNotificationModal = false
@@ -164,6 +154,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-</style>

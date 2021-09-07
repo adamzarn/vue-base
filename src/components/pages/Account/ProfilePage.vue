@@ -3,7 +3,7 @@
         <div v-if="user" class="col-8 profile-container">
             <profile-header
                 :profilePhotoUrl="profilePhotoUrl"
-                :passedInUser="user"
+                :user="user"
                 :loggedInUser="loggedInUser"
                 @change="didUpdateUser">
             </profile-header>
@@ -51,32 +51,9 @@ export default {
         }
     },
     computed: {
-        email() {
-            if (this.user == null) { return ''; }
-            return this.user.email;
-        },
-        firstName() {
-            if (this.user == null) { return ''; }
-            return this.user.firstName
-        },
-        lastName() {
-            if (this.user == null) { return ''; }
-            return this.user.lastName
-        },
-        fullName() {
-            return `${this.firstName} ${this.lastName}`
-        },
-        username() {
-            if (this.user == null) { return ''; }
-            return this.user.username;
-        },
         userIsLoggedInUser() {
             if (this.user == null) { return false; }
             return this.user.id == localStorage.user().id;
-        },
-        loggedInUserIsAdmin() {
-            if (this.loggedInUser == null) { return false; }
-            return this.loggedInUser.isAdmin;
         },
         followersTitle() {
             return "Followers";
@@ -121,17 +98,6 @@ export default {
                 },
                 onFailure: error => { 
                     alert(error.description); 
-                }
-            })
-        },
-        logout(email) {
-            network.logout({
-                onSuccess: () => {
-                    alert(`You will now be logged out. An email verification email was sent to ${email}.`)
-                    this.$router.push({ name: 'login' });
-                },
-                onFailure: error => {
-                    alert(error.description);
                 }
             })
         },
