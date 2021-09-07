@@ -7,7 +7,8 @@
                 name="email"
                 label="Email"
                 :validate="validateEmail"
-                v-model.trim="enteredEmail">
+                v-model.trim="enteredEmail"
+                @change="$emit('change', enteredEmail)">
             </base-input>
             <p class="validation" v-if="emailIsInvalid">You must provide a valid email</p>
             <base-input 
@@ -21,34 +22,29 @@
                 <base-button class="login-button" type="submit">Login</base-button>
             </div>
         </form>
-        <base-modal v-if="shouldShowVerifyEmailModal" title="Verify Email">
-            <template #default>
-                <p>You must verify your email to login. Follow the link from the email we sent you at registration or when you changed your email, or enter your email and we'll send you a new email verification email.</p>
-                <base-input
-                    v-model.trim="enteredEmail"
-                ></base-input>
-            </template>
-            <template #actions>
-                <div class="buttons-container">
-                    <base-button @click="dismissEmailVerificationModal">Cancel</base-button>
-                    <base-button @click="sendEmailVerificationEmail">Send</base-button>
-                </div>
-            </template>
-        </base-modal>
+        <email-verification-modal
+            :shouldShow="shouldShowEmailVerificationModal"
+            v-model="enteredEmail"
+            :dismiss="dismissEmailVerificationModal"
+            :sendEmail="sendEmailVerificationEmail">
+        </email-verification-modal>
     </base-card>
 </template>
 
 <script>
 import network from '../../network/network.js';
 import exceptions from '../../network/exceptions.js';
+import EmailVerificationModal from '../modals/EmailVerificationModal.vue';
 
 export default {
+    components: { EmailVerificationModal },
+    emits: ['change'],
     data() {
         return {
             enteredEmail: '',
             enteredPassword: '',
             emailIsInvalid: false,
-            shouldShowVerifyEmailModal: false
+            shouldShowEmailVerificationModal: false
         }
     },
     methods: {
@@ -63,7 +59,7 @@ export default {
                 },
                 onFailure: error => {
                     if (error.exception === exceptions.emailIsNotVerified) {
-                        this.shouldShowVerifyEmailModal = true
+                        this.shouldShowEmailVerificationModal = true
                     } else {
                         alert(error.description);
                     }
@@ -71,10 +67,10 @@ export default {
             })
         },
         dismissEmailVerificationModal() {
-            this.shouldShowVerifyEmailModal = false;
+            this.shouldShowEmailVerificationModal = false;
         },
         sendEmailVerificationEmail() {
-            this.shouldShowVerifyEmailModal = false;
+            this.shouldShowEmailVerificationModal = false;
             network.sendEmailVerificationEmail({
                 body: {
                     email: this.enteredEmail,
@@ -120,3 +116,4 @@ h2 {
     column-gap: var(--default-spacing);
 }
 </style>
+        EmailVerificationModal

@@ -1,30 +1,23 @@
 <template>
-    <login-form class="centered-card"></login-form>
+    <login-form @change="emailDidChange" class="centered-card"></login-form>
     <div class="centered-link">
         <a @click="showForgotPasswordModal">Forgot Password?</a>
     </div>
-    <base-modal v-if="shouldShowForgotPasswordModal" title="Password Reset">
-        <template #default>
-            <p>Enter your email and we'll send you a password reset link.</p>
-            <base-input
-                v-model.trim="passwordResetEmail"
-            ></base-input>
-        </template>
-        <template #actions>
-            <div class="buttons-container">
-                <base-button @click="dismissForgotPasswordModal">Cancel</base-button>
-                <base-button @click="sendForgotPasswordEmail">Send</base-button>
-            </div>
-        </template>
-    </base-modal>
+    <forgot-password-modal
+        :shouldShow="shouldShowForgotPasswordModal"
+        v-model="passwordResetEmail"
+        :dismiss="dismissForgotPasswordModal"
+        :sendEmail="sendForgotPasswordEmail">
+    </forgot-password-modal>
 </template>
 
 <script>
 import LoginForm from '../forms/LoginForm.vue';
 import network from '../../network/network.js';
+import ForgotPasswordModal from '../modals/ForgotPasswordModal.vue';
 
 export default {
-    components: { LoginForm },
+    components: { LoginForm, ForgotPasswordModal },
     data() {
         return {
             passwordResetEmail: '',
@@ -52,6 +45,9 @@ export default {
                     alert(error.description);
                 }
             })
+        },
+        emailDidChange(newEmail) {
+            this.passwordResetEmail = newEmail;
         }
     }, 
     mounted() {
