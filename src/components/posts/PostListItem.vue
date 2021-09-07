@@ -1,7 +1,11 @@
 <template>
     <base-card class="post-item-container">
         <div class="header">
-            <img :src="user.profilePhotoUrl">
+            <profile-photo
+                :profilePhotoUrl="user.profilePhotoUrl"
+                :user="user"
+                size="small">
+            </profile-photo>
             <div class="header-text">
                 <p class="name">{{ userName }}</p>
                 <p class="time">{{ time }}</p>

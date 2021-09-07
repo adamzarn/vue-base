@@ -3,13 +3,14 @@
         <div v-if="user" class="col-8 profile-container">
             <div class="title-container">
                 <div class="title-text-container">
-                    <div class="image-container" :class="{ clickable: userIsLoggedInUser }" @click="didClickProfilePhoto">
-                        <div class="image-placeholder">
-                            <p v-if="profilePhotoUrl==null" class="initials">{{ user.firstName[0] + user.lastName[0] }}</p>
-                        </div>
-                        <img v-if="profilePhotoUrl" class="profile-photo" :src="profilePhotoUrl">
-                        <input type="file" id="profile-photo-input" @change="handleProfilePhoto($event)"/>
-                    </div>
+                    <profile-photo
+                        :profilePhotoUrl="profilePhotoUrl"
+                        :user="user"
+                        size="medium"
+                        :editable="true"
+                        :deleteProfilePhoto="deleteProfilePhoto"
+                        @change="handleNewProfilePhoto($event)">
+                    </profile-photo>
                     <div>
                         <page-title :text="fullName"></page-title>
                         <p v-if="loggedInUserIsAdmin" class="badge">{{ adminBadgeText }}</p>
@@ -44,26 +45,11 @@
             <post-list :posts="posts"></post-list>
         </div>
     </div>
-    <base-modal v-if="shouldShowChangeEmailNotificationModal" title="Change Email">
-        <template #default>
-            <p>If you change your email, you will be automatically logged out and an email verification link will be sent to your new email. You will be required to verify your new email before you can login again.</p>
-        </template>
-        <template #actions>
-            <div class="buttons-container">
-                <base-button @click="dismissChangeEmailNotificationModal">Cancel</base-button>
-                <base-button @click="allowEmailUpdate">Continue</base-button>
-            </div>
-        </template>
-    </base-modal>
-    <base-modal v-if="shouldShowProfilePhotoModal" :title="profilePhotoUrl == null ? 'Upload Profile Photo' : 'Change Profile Photo'" :section="false">
-        <template #actions>
-            <div class="buttons-container">
-                <base-button mode="light" @click="shouldShowProfilePhotoModal=false">Cancel</base-button>
-                <base-button @click="openFileSelector">{{ profilePhotoUrl == null ? 'Choose Photo' : 'Choose New Photo' }}</base-button>
-                <base-button v-if="profilePhotoUrl" @click="deleteProfilePhoto">Delete Photo</base-button>
-            </div>
-        </template>
-    </base-modal>
+    <change-email-modal
+        :shouldShow="shouldShowChangeEmailNotificationModal"
+        :allowEmailUpdate="allowEmailUpdate"
+        :dismiss="dismissChangeEmailNotificationModal">
+    </change-email-modal>
 </template>
 
 <script>
@@ -72,9 +58,10 @@ import UserList from '../../users/UserList.vue';
 import ProfileItem from '../../base/ProfileItem.vue';
 import PageTitle from '../../base/PageTitle.vue';
 import PostList from '../../posts/PostList.vue';
+import ChangeEmailModal from '../../modals/ChangeEmailModal.vue';
 
 export default {
-    components: { UserList, ProfileItem, PageTitle, PostList },
+    components: { UserList, ProfileItem, PageTitle, PostList, ChangeEmailModal },
     data() {
         return {
             followers: [],
@@ -341,23 +328,14 @@ export default {
                 }
             })
         },
-        didClickProfilePhoto() {
-            if (this.userIsLoggedInUser) {
-                this.shouldShowProfilePhotoModal = true;
-            }
-        },
-        openFileSelector() {
-            this.shouldShowProfilePhotoModal = false;
-            document.getElementById('profile-photo-input').click();
-        },
-        handleProfilePhoto(event) {
+        handleNewProfilePhoto(event) {
             this.shouldShowProfilePhotoModal = false;
             let file = event.target.files[0];
             if (file) {
-                this.uploadProfilePhoto(file)
+                this.uploadNewProfilePhoto(file)
             }
         },
-        uploadProfilePhoto(file) {
+        uploadNewProfilePhoto(file) {
             network.uploadProfilePhoto({
                 body: {
                     file: file
@@ -478,16 +456,6 @@ export default {
     display: flex;
     column-gap: var(--default-spacing);
 }
-.initials {
-    font-size: calc(var(--default-font-size)*3);
-    font-weight: bold;
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    transform: translate(0, -50%);
-    margin: 0;
-}
 @media only screen and (max-width: 768px) {
     .follows {
         flex-direction: column;
@@ -496,38 +464,6 @@ export default {
         flex-direction: column;
         row-gap: var(--default-spacing);
     }
-}
-img[src=""] {
-    display: none;
-}
-img[src] {
-    display: block;
-}
-.image-container {
-    width: 120px;
-    height: 120px;
-    position: relative;
-}
-.clickable {
-    cursor: pointer;
-}
-input {
-    opacity: 0;
-    pointer-events: none;
-}
-.profile-photo, input, .image-placeholder {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: var(--default-corner-radius);
-}
-.profile-photo {
-    object-fit: cover;
-}
-.image-placeholder {
-    background-color: var(--light-gray-color);
 }
 @media only screen and (max-width: 480px) {
     .profile-page-container {

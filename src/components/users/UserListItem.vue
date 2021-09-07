@@ -1,7 +1,11 @@
 <template>
     <div class="container col-12" :class="classes" @click="account">
         <div class="left-container">
-            <img :src="user.profilePhotoUrl">
+            <profile-photo
+                :profilePhotoUrl="user.profilePhotoUrl"
+                :user="user"
+                size="small">
+            </profile-photo>
             <user-list-item-text :user="user"></user-list-item-text>
         </div>
         <user-list-item-buttons
