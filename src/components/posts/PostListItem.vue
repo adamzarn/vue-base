@@ -38,13 +38,20 @@ export default {
                 ampm = "PM"
                 hours -= 12 
             }
-            return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${hours}:${date.getMinutes()} ${ampm}`;
+            return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${hours}:${this.getMinutes(date)} ${ampm}`;
         },
         userName() {
             return `${this.user.firstName} ${this.user.lastName}`
         }
     },
     methods: {
+        getMinutes(date) {
+            let minutes = date.getMinutes()
+            if (minutes.toString().length == 1) {
+                return `0${minutes}`
+            }
+            return minutes
+        }
     }
 }
 </script>
@@ -61,12 +68,6 @@ export default {
 }
 p {
     margin: 0;
-}
-img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
 }
 .header {
     display: flex;

@@ -119,7 +119,9 @@ export default {
                     file: file
                 },
                 onSuccess: (data) => {
-                    localStorage.user().profilePhotoUrl = this.getUniqueUrl(data.url);
+                    let updatedUser = localStorage.user()
+                    updatedUser.profilePhotoUrl = this.getUniqueUrl(data.url);
+                    this.$emit('change', updatedUser)
                 },
                 onFailure: error => {
                     alert(error.description);
@@ -162,9 +164,6 @@ export default {
     display: flex;
     column-gap: var(--default-spacing);
     align-items: center;
-}
-.title {
-    margin-bottom: var(--default-spacing);
 }
 .badge {
     font-weight: bold;

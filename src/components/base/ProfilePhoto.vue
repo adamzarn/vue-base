@@ -1,18 +1,20 @@
 <template>
-    <input v-if="editable" class="profile-photo-input" type="file" id="profile-photo-input" @change="$emit('change', $event)"/>
-    <div class="image-container" :class="{ clickable: userIsLoggedInUser && editable, small: small, medium: medium }" @click="didClick">
-        <div class="image-placeholder">
-            <p v-if="profilePhotoUrl==null && user != null" class="initials">{{ user.firstName[0] + user.lastName[0] }}</p>
+    <div v-if="user">
+        <input v-if="editable" class="profile-photo-input" type="file" id="profile-photo-input" @change="$emit('change', $event)"/>
+        <div class="image-container" :class="{ clickable: userIsLoggedInUser && editable, small: small, medium: medium }" @click="didClick">
+            <div class="image-placeholder">
+                <p v-if="profilePhotoUrl==null && user != null" class="initials">{{ user.firstName[0] + user.lastName[0] }}</p>
+            </div>
+            <img v-if="profilePhotoUrl" class="profile-photo" :src="profilePhotoUrl">
         </div>
-        <img v-if="profilePhotoUrl" class="profile-photo" :src="profilePhotoUrl">
-    </div>
-    <profile-photo-modal
-        :shouldShow="shouldShowModal" 
-        :profilePhotoUrl="profilePhotoUrl"
-        :dismiss="didSelectCancel"
-        :didSelectChooseNewPhoto="openFileSelector"
-        :didSelectDeletePhoto="deleteProfilePhoto">
+        <profile-photo-modal
+            :shouldShow="shouldShowModal" 
+            :profilePhotoUrl="profilePhotoUrl"
+            :dismiss="didSelectCancel"
+            :didSelectChooseNewPhoto="openFileSelector"
+            :didSelectDeletePhoto="deleteProfilePhoto">
     </profile-photo-modal>
+    </div>
 </template>
 
 <script>
@@ -58,7 +60,6 @@ export default {
     },
     computed: {
         userIsLoggedInUser() {
-            if (this.user == null) { return false; }
             return this.user.id == localStorage.user().id;
         },
         small() {
@@ -91,11 +92,15 @@ img[src] {
 .small {
     width: 50px;
     height: 50px;
+    min-width: 50px;
+    min-height: 50px;
     font-size: calc(var(--default-font-size)*1.5);
 }
 .medium {
     width: 120px;
     height: 120px;
+    min-width: 120px;
+    min-height: 120px;
     font-size: calc(var(--default-font-size)*3);
 }
 input {
