@@ -66,6 +66,7 @@ export default {
 .centered-link {
     margin: calc(var(--default-spacing)*3) auto;
     text-align: center;
+    font-size: var(--default-font-size);
 }
 .buttons-container {
     display: flex;

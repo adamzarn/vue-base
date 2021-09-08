@@ -6,8 +6,8 @@
                 :user="passedInUser"
                 size="medium"
                 :editable="true"
-                :deleteProfilePhoto="deleteProfilePhoto"
-                @change="handleNewProfilePhoto($event)">
+                @change="handleNewProfilePhoto($event)"
+                @didDeletePhoto="didDeletePhoto">
             </profile-photo>
             <div>
                 <page-title :text="fullName"></page-title>
@@ -148,15 +148,10 @@ export default {
                 }
             })
         },
-        deleteProfilePhoto() {
-            this.shouldShowProfilePhotoModal = false;
-            network.deleteProfilePhoto({
-                onSuccess: () => {
-                    localStorage.user().profilePhotoUrl = null
-                }, onFailure: error => {
-                    alert(error.description);
-                }
-            })
+        didDeletePhoto() {
+            let updatedUser = localStorage.user();
+            updatedUser.profilePhotoUrl = null;
+            this.$emit('didUpdateUser', updatedUser);
         },
         getUniqueUrl(url) {
             if (url) {
@@ -212,6 +207,7 @@ export default {
     font-weight: bold;
     color: var(--theme-dark-color);
     margin: 0;
+    font-size: var(--default-font-size);
 }
 .delete-button {
     cursor: pointer;

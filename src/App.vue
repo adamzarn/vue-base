@@ -22,7 +22,7 @@ export default {
   --theme-light-color: #5c0556;
   --invalid-color: red;
   --light-gray-color: #d3d3d3;
-  --default-font-size: 1rem;
+  --default-font-size: .8rem;
   --default-spacing: 1rem;
   --default-corner-radius: 1rem;
 }

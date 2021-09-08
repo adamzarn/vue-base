@@ -43,6 +43,7 @@ export default {
     methods: {
         didUpdateUser(updatedUser) {
             this.profilePhotoUrl = this.getUniqueUrl(updatedUser.profilePhotoUrl);
+            this.postsKey = new Date().getTime();
         },
         didUpdateFollowingStatus() {
             this.followsKey = new Date().getTime();

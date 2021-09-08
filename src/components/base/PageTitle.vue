@@ -1,5 +1,5 @@
 <template>
-    <h1 class="page-title">{{ text }}</h1>
+    <p class="page-title">{{ text }}</p>
 </template>
 
 <script>
@@ -12,5 +12,6 @@ export default {
 .page-title {
     font-weight: bold;
     margin: 0;
+    font-size: calc(var(--default-font-size)*2);
 }
 </style>

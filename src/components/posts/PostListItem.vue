@@ -7,7 +7,7 @@
                 size="small">
             </profile-photo>
             <div class="header-text">
-                <p class="name">{{ userName }}</p>
+                <p class="name bold">{{ userName }}</p>
                 <p class="time">{{ time }}</p>
             </div>
         </div>
@@ -62,6 +62,7 @@ export default {
 }
 .name {
     font-weight: bold;
+    font-size: var(--default-font-size);
 }
 .time {
     font-size: calc(var(--default-font-size)*.8);
@@ -77,5 +78,6 @@ p {
 }
 .text {
     margin-top: var(--default-spacing);
+    font-size: var(--default-font-size);
 }
 </style>

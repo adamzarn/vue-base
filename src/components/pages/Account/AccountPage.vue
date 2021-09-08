@@ -62,6 +62,7 @@ export default {
     height: calc(var(--default-spacing)*4);
     padding: auto var(--default-spacing);
     position: relative;
+    font-size: var(--default-font-size);
 }
 .selected {
     background-color: var(--theme-dark-color);

@@ -52,6 +52,9 @@ export default {
 .form-control {
     margin-top: calc(var(--default-spacing)/2);
 }
+label {
+    font-size: var(--default-font-size);
+}
 input {
     width: 100%;
     border-width: calc(var(--default-spacing)/16);

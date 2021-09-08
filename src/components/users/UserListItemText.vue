@@ -1,6 +1,6 @@
 <template>
     <div class="text-container">
-        <h3 class="text">{{ fullName }} <span class="username">{{ username }}</span></h3>
+        <p class="text bold">{{ fullName }} <span class="username">{{ username }}</span></p>
         <p class="text">{{ user.email }}</p>
     </div>
 </template>
@@ -30,7 +30,11 @@ export default {
 }
 .text {
     margin: 0;
-    text-align: 'center'
+    text-align: 'center';
+    font-size: var(--default-font-size);
+}
+.bold {
+    font-weight: bold;
 }
 .username {
     font-size: calc(var(--default-font-size)*3/4);

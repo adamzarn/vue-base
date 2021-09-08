@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import network from '../../network/network.js';
 import ProfilePhotoModal from '../modals/ProfilePhotoModal.vue';
 
 export default {
@@ -32,13 +33,9 @@ export default {
         editable: {
             type: Boolean,
             default: false
-        },
-        deleteProfilePhoto: {
-            type: Function,
-            default: () => {},
-        },
+        }
     },
-    emits: ['change'],
+    emits: ['change', 'didDeletePhoto'],
     data() {
         return {
             shouldShowModal: false
@@ -56,6 +53,17 @@ export default {
         openFileSelector() {
             this.shouldShowModal = false;
             document.getElementById('profile-photo-input').click();
+        },
+        deleteProfilePhoto() {
+            this.shouldShowModal = false;
+            network.deleteProfilePhoto({
+                onSuccess: () => {
+                    localStorage.user().profilePhotoUrl = null
+                    this.$emit('didDeletePhoto');
+                }, onFailure: error => {
+                    alert(error.description);
+                }
+            })
         }
     },
     computed: {

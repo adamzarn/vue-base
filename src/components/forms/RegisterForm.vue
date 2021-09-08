@@ -1,7 +1,7 @@
 <template>
     <base-card class="centered-horizontally">
         <form @submit.prevent="register">
-            <h2>Register</h2>
+            <page-title class="title" text="Register"></page-title>
             <base-input
                 type="text"
                 name="first-name"
@@ -62,8 +62,10 @@
 <script>
 import network from '../../network/network.js';
 import exceptions from '../../network/exceptions.js';
+import PageTitle from '../base/PageTitle.vue';
 
 export default {
+    components: { PageTitle }, 
     data() {
         return {
             enteredFirstName: '',
@@ -164,12 +166,13 @@ export default {
 form {
     padding: var(--default-spacing);
 }
-h2 {
+.title {
     margin: 0;
     margin-bottom: calc(var(--default-spacing)*2);
 }
 .login-button {
     padding: calc(var(--default-spacing)/2) var(--default-spacing);
+    font-size: var(--default-font-size);
 }
 .buttons {
     margin-top: calc(var(--default-spacing)*2);

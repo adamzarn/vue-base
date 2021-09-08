@@ -3,6 +3,7 @@
         <div class="col-8">
             <page-title class="title" text="Post"></page-title>
             <div>
+                <user-list-item :user="user"></user-list-item>
                 <div>
                     <textarea :placeholder="textAreaPlaceholder" v-model.trim="enteredPostText"></textarea>
                 </div>
@@ -24,12 +25,14 @@
 import PageTitle from '../base/PageTitle.vue';
 import network from '../../network/network.js';
 import UserList from '../../components/users/UserList.vue';
+import UserListItem from '../../components/users/UserListItem.vue';
 import PostList from '../posts/PostList.vue';
 
 export default {
     components: {
         PageTitle,
         UserList,
+        UserListItem,
         PostList
     },
     data() {
@@ -41,8 +44,11 @@ export default {
         }
     },
     computed: {
+        user() {
+            return localStorage.user();
+        },
         firstName() {
-            return localStorage.user().firstName;
+            return this.user.firstName;
         },
         textAreaPlaceholder() {
             return `${this.firstName}, what's on your mind?`;
@@ -128,5 +134,10 @@ textarea {
     resize: none;
     padding: var(--default-spacing);
     font-size: calc(var(--default-font-size)*1.25);
+}
+.input-header {
+    display: flex;
+    column-gap: calc(var(--default-spacing));
+    margin: calc(var(--default-spacing));
 }
 </style>

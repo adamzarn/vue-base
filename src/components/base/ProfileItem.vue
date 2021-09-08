@@ -1,13 +1,13 @@
 <template>
     <div class="parent-container">
         <div class="text-container">
-            <p class="content light">{{ getLabel }}</p>
+            <p class="content light">{{ labelText }}</p>
             <base-input v-if="beingChanged" class="content" :type="type" v-model="newValue"></base-input>
-            <p v-else class="content bold">{{ getValue }}</p>
+            <p v-else class="content bold">{{ value }}</p>
         </div>
         <div v-if="editable" class="buttons-container">
             <base-button v-if="beingChanged" class="change-button" @click="toggleBeingChanged(field)">Cancel</base-button>
-            <base-button v-if="beingChanged" class="change-button" @click="update(field, newValue); newValue = originalValue">Submit</base-button>
+            <base-button v-if="beingChanged" class="change-button" @click="update(field, newValue)">Submit</base-button>
             <base-button v-if="!beingChanged" class="change-button" @click="toggleBeingChanged(field)">Change</base-button>
         </div>
     </div>
@@ -44,10 +44,10 @@ export default {
         }
     },
     computed: {
-        getLabel() {
+        labelText() {
             return this.beingChanged ? `New ${this.label}` : this.label;
         },
-        getValue() {
+        value() {
             return this.type == 'password' ? "*************" : this.currentValue;
         }
     }
@@ -81,6 +81,7 @@ export default {
 }
 .content {
     margin: 0;
+    font-size: var(--default-font-size);
 }
 .separator {
 

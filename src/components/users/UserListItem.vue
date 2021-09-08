@@ -56,6 +56,7 @@ export default {
 .left-container {
     display: flex;
     column-gap: var(--default-spacing);
+    align-items: center;
 }
 .container:hover {
     background-color: var(--light-gray-color);

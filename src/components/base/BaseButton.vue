@@ -34,6 +34,7 @@ button {
     text-align: center;
     cursor: pointer;
     border-radius: var(--default-corner-radius);
+    font-size: var(--default-font-size);
 }
 .button-dark {
     border: calc(var(--default-spacing)/16) solid var(--theme-dark-color);

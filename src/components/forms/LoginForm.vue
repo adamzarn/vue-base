@@ -1,7 +1,7 @@
 <template>
     <base-card>
         <form @submit.prevent="login">
-            <h2>Login</h2>
+            <page-title text="Login"></page-title>
             <base-input
                 type="text"
                 name="email"
@@ -35,9 +35,10 @@
 import network from '../../network/network.js';
 import exceptions from '../../network/exceptions.js';
 import EmailVerificationModal from '../modals/EmailVerificationModal.vue';
+import PageTitle from '../base/PageTitle.vue';
 
 export default {
-    components: { EmailVerificationModal },
+    components: { EmailVerificationModal, PageTitle },
     emits: ['change'],
     data() {
         return {
@@ -96,12 +97,13 @@ export default {
 form {
     padding: var(--default-spacing);
 }
-h2 {
+.title {
     margin: 0;
     margin-bottom: calc(var(--default-spacing)*2);
 }
 .register-button {
     padding: calc(var(--default-spacing)/2) var(--default-spacing);
+    font-size: var(--default-font-size);
 }
 .buttons {
     margin-top: calc(var(--default-spacing)*2);
