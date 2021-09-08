@@ -119,6 +119,12 @@ const endpoints = {
         method: () => { return 'GET' },
         headers: () => { return getBearerHeaders() }
     },
+    getFollowStatus: {
+        name: 'getFollowStatus',
+        url: (params) => { return `${usersUrl}/${params.urlParams.userId}/followStatus` },
+        method: () => { return 'GET' },
+        headers: () => { return getBearerHeaders() }
+    },
     deleteUser: {
         name: 'deleteUser',
         url: (params) => { return `${usersUrl}/${params.urlParams.userId}` },

@@ -1,6 +1,6 @@
 <template>
     <div class="account-container col-12">
-        <div v-if="userIsLoggedInUser" class="col-3 menu-container">
+        <div v-if="userIsLoggedInUser" class="col-2 menu-container">
             <base-card>
                 <div class="menu-item dark first" :class="{ selected: selectedPage == 'profile'}" @click="account('profile')">
                     <p class="text">Profile</p>
@@ -34,7 +34,7 @@ export default {
             return localStorage.user().id == this.$route.params.userId;
         },
         contentClass() {
-            return this.userIsLoggedInUser ? "col-9" : "col-12"
+            return this.userIsLoggedInUser ? "col-10" : "col-12"
         }
     },
     methods: {

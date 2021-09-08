@@ -169,6 +169,10 @@ function getFollows(params) {
     makeRequest(api.endpoints.getFollows, params)
 }
 
+function getFollowStatus(params) {
+    makeRequest(api.endpoints.getFollowStatus, params)
+}
+
 function deleteUser(params) {
     makeRequest(api.endpoints.deleteUser, params)
 }
@@ -217,7 +221,8 @@ export default {
     getUserStatus,
     searchUsers,
     toggleFollowingStatus,
-    getFollows, 
+    getFollows,
+    getFollowStatus,
     deleteUser,
     updateUser,
     uploadProfilePhoto,

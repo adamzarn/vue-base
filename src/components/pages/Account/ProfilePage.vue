@@ -4,16 +4,10 @@
             <profile-header
                 :profilePhotoUrl="profilePhotoUrl"
                 :user="user"
-                :loggedInUser="loggedInUser"
-                @change="didUpdateUser">
-            </profile-header>
-            <profile-body 
-                :user="user"
-                :refresh="getUser">
-            </profile-body>
-            <profile-follows
-                :user="user">
-            </profile-follows>
+                @didUpdateUser="didUpdateUser"
+                @didUpdateFollowingStatus="didUpdateFollowingStatus"></profile-header>
+            <profile-body :user="user" :refresh="getUser"></profile-body>
+            <profile-follows :key="followsKey" :user="user"></profile-follows>
         </div>
         <div class="col-4 posts-container">
             <profile-posts :key="postsKey"></profile-posts>
@@ -35,7 +29,7 @@ export default {
             user: null,
             profilePhotoUrl: null,
             postsKey: '',
-            headerKey: ''
+            followsKey: ''
         }
     },
     computed: {
@@ -49,7 +43,9 @@ export default {
     methods: {
         didUpdateUser(updatedUser) {
             this.profilePhotoUrl = this.getUniqueUrl(updatedUser.profilePhotoUrl);
-            this.postsKey = new Date().getTime();
+        },
+        didUpdateFollowingStatus() {
+            this.followsKey = new Date().getTime();
         },
         async getData() {
             this.getUser()

@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="title-buttons-container">
-            <base-button v-if="userIsLoggedInUser == false" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
+            <base-button v-if="userIsLoggedInUser == false && followStatus != null" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
             <base-button v-if="loggedInUserIsAdmin" mode="light" @click="toggleAdminStatus()">{{ toggleAdminButtonText }}</base-button>
             <img v-if="loggedInUserIsAdmin || userIsLoggedInUser" class="svg delete-button" src="/delete.svg" @click="deleteUser()">
         </div>
@@ -28,8 +28,13 @@ import PageTitle from '../base/PageTitle.vue';
 
 export default {
     components: { PageTitle },
-    props: ['profilePhotoUrl', 'user', 'loggedInUser'],
-    emits: ['change'],
+    props: ['profilePhotoUrl', 'user'],
+    emits: ['didUpdateUser', 'didUpdateFollowingStatus'],
+    data() {
+        return {
+            followStatus: null
+        }
+    },
     computed: {
         passedInUser() {
             return this.user
@@ -47,10 +52,22 @@ export default {
             return this.user.id == localStorage.user().id;
         },
         loggedInUserIsAdmin() {
-            return this.loggedInUser.isAdmin;
+            return localStorage.user().isAdmin;
         },
         adminBadgeText() {
             return this.user.isAdmin ? 'ADMIN' : 'USER';
+        },
+        isFollowing() {
+            if (this.userIsLoggedInUser) { return false; }
+            if (this.followStatus == null) { return false; }
+            return this.followStatus.loggedInUserIsFollowingOtherUser;
+        },
+        toggleFollowButtonText() {
+            if (this.followStatus == null) { return '' }
+            return this.isFollowing ? 'Unfollow' : 'Follow';
+        },
+        toggleAdminButtonText() {
+            return this.user.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access';
         }
     },
     methods: {
@@ -60,7 +77,10 @@ export default {
                     action: this.isFollowing ? 'unfollow' : 'follow',
                     userId: this.user.id
                 },
-                onSuccess: this.getData,
+                onSuccess: () => {
+                    this.getFollowStatus()
+                    this.$emit('didUpdateFollowingStatus');
+                },
                 onFailure: error => { alert(error.description); }
             })
         },
@@ -73,16 +93,16 @@ export default {
                     isAdmin: !this.user.isAdmin
                 },
                 onSuccess: () => {
-                    if (this.user.id == this.loggedInUser.id) {
-                        let updatedUser = this.loggedInUser;
+                    if (this.userIsLoggedInUser) {
+                        let updatedUser = localStorage.user();
                         updatedUser.isAdmin = !updatedUser.isAdmin;
                         localStorage.setObject('user', updatedUser);
-                        this.$emit('change', updatedUser)
+                        this.$emit('didUpdateUser', updatedUser)
                         this.$router.go()
                     } else {
                         let updatedUser = this.user;
                         updatedUser.isAdmin = !updatedUser.isAdmin;
-                        this.$emit('change', updatedUser)
+                        this.$emit('didUpdateUser', updatedUser)
                     }
                 },
                 onFailure: error => { 
@@ -121,7 +141,7 @@ export default {
                 onSuccess: (data) => {
                     let updatedUser = localStorage.user()
                     updatedUser.profilePhotoUrl = this.getUniqueUrl(data.url);
-                    this.$emit('change', updatedUser)
+                    this.$emit('didUpdateUser', updatedUser)
                 },
                 onFailure: error => {
                     alert(error.description);
@@ -145,6 +165,29 @@ export default {
                 return null;
             }
         },
+        getFollowStatus() {
+            if (this.userIsLoggedInUser) {
+                this.followStatus = null;
+                return;
+            }
+            network.getFollowStatus({
+                urlParams: {
+                    userId: this.user.id
+                },
+                onSuccess: (followStatus) => {
+                    this.followStatus = followStatus;
+                },
+                onFailure: error => { alert(error.description); }
+            });
+        },
+    },
+    mounted() {
+        this.getFollowStatus();
+    },
+    watch: {
+        user() {
+            this.getFollowStatus();
+        }
     }
 }
 </script>
