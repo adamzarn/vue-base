@@ -3,11 +3,12 @@
         <div class="header">
             <profile-photo
                 :profilePhotoUrl="user.profilePhotoUrl"
+                :navigatesToProfile="true"
                 :user="user"
                 size="small">
             </profile-photo>
-            <div class="header-text">
-                <p class="name bold">{{ userName }}</p>
+            <div class="header-text clickable" @click="navigateToProfile">
+                <p class="name bold">{{ name }} <span class="username">{{ username }}</span></p>                
                 <p class="time">{{ time }}</p>
             </div>
         </div>
@@ -40,9 +41,13 @@ export default {
             }
             return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${hours}:${this.getMinutes(date)} ${ampm}`;
         },
-        userName() {
+        name() {
             return `${this.user.firstName} ${this.user.lastName}`
+        },
+        username() {
+            return `@${this.user.username}`;
         }
+
     },
     methods: {
         getMinutes(date) {
@@ -51,6 +56,9 @@ export default {
                 return `0${minutes}`
             }
             return minutes
+        },
+        navigateToProfile() {
+            this.$router.push({ name: "profile", params: { userId: this.user.id }})
         }
     }
 }
@@ -79,5 +87,8 @@ p {
 .text {
     margin-top: var(--default-spacing);
     font-size: var(--default-font-size);
+}
+.username {
+    font-size: calc(var(--default-font-size)*3/4);
 }
 </style>

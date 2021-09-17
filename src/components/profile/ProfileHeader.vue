@@ -131,7 +131,7 @@ export default {
                 },
                 onSuccess: (data) => {
                     let updatedUser = localStorage.user()
-                    updatedUser.profilePhotoUrl = this.getUniqueUrl(data.url);
+                    updatedUser.profilePhotoUrl = data.url;
                     this.$emit('didUpdateUser', updatedUser);
                 },
                 onFailure: error => {
@@ -143,13 +143,6 @@ export default {
             let updatedUser = localStorage.user();
             updatedUser.profilePhotoUrl = null;
             this.$emit('didUpdateUser', updatedUser);
-        },
-        getUniqueUrl(url) {
-            if (url) {
-                return `${url}#${new Date().getTime()}`
-            } else {
-                return null;
-            }
         },
         getFollowStatus() {
             if (this.userIsLoggedInUser) {

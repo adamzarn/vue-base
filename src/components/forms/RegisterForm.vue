@@ -1,5 +1,5 @@
 <template>
-    <base-card class="centered-horizontally">
+    <base-card>
         <form @submit.prevent="register">
             <page-title class="title" text="Register"></page-title>
             <base-input

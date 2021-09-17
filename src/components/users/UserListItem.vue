@@ -1,12 +1,13 @@
 <template>
-    <div class="container col-12" :class="classes" @click="account">
+    <div class="container col-12" :class="classes" @click="navigateToProfile">
         <div class="left-container">
             <profile-photo
                 :profilePhotoUrl="user.profilePhotoUrl"
+                :navigatesToProfile="true"
                 :user="user"
                 size="small">
             </profile-photo>
-            <user-list-item-text :user="user"></user-list-item-text>
+            <user-list-item-text :user="user" :navigatesToProfile="true"></user-list-item-text>
         </div>
         <user-list-item-buttons
             :user="user"
@@ -25,18 +26,21 @@ import UserListItemButtons from '../users/UserListItemButtons';
 
 export default {
     components: { UserListItemText, UserListItemButtons },
-    props: ['user', 'isFirst', 'isLast', 'refresh', 'showToggleFollowButton', 'showToggleAdminButton', 'showDeleteButton'],
+    props: ['user', 'isFirst', 'isLast', 'selectable', 'refresh', 'showToggleFollowButton', 'showToggleAdminButton', 'showDeleteButton'],
     computed: {
         classes() {
             return {
                 'first': this.isFirst,
-                'last': this.isLast
+                'last': this.isLast,
+                'selectable': this.selectable
             }
         }
     },
     methods: {
-        account() {
-            this.$router.push({ name: "profile", params: { userId: this.user.id }})
+        navigateToProfile() {
+            if (this.selectable) {
+                this.$router.push({ name: "profile", params: { userId: this.user.id }})
+            }
         }
     }
 }
@@ -50,15 +54,17 @@ export default {
     justify-content: space-between;
     column-gap: var(--default-spacing);
     row-gap: var(--default-spacing);
-    cursor: pointer;
     padding: var(--default-spacing);
+}
+.container.selectable {
+    cursor: pointer;
 }
 .left-container {
     display: flex;
     column-gap: var(--default-spacing);
     align-items: center;
 }
-.container:hover {
+.container.selectable:hover {
     background-color: var(--light-gray-color);
 }
 img {

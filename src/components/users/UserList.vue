@@ -1,11 +1,12 @@
 <template>
-    <base-card v-if="users.length > 0" class="centered-horizontally">
+    <base-card v-if="users.length > 0">
         <user-list-item
             v-for="(user, index) in users"
             :key="user.id"
             :user="user"
             :isFirst="index==0"
             :isLast="index==users.length-1"
+            :selectable="true"
             :refresh="refresh"
             :showToggleFollowButton="showToggleFollowButton"
             :showToggleAdminButton="showToggleAdminButton"

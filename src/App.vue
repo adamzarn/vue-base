@@ -42,10 +42,6 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.centered-horizontally {
-  margin-left: auto;
-  margin-right: auto;
-}
 a:link {
   color: var(--theme-dark-color);
   background-color: transparent;
@@ -76,6 +72,10 @@ a:active {
 .separator {
     height: calc(var(--default-spacing)/16);
     background-color: var(--light-gray-color);
+}
+
+.clickable {
+    cursor: pointer;
 }
 
 /* For desktop: */

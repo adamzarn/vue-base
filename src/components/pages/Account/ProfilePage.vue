@@ -1,6 +1,6 @@
 <template>
     <div class="col-12 profile-page-container">
-        <div v-if="user" class="col-6 profile-container">
+        <div v-if="user" class="col-9 profile-container">
             <profile-header
                 :profilePhotoUrl="profilePhotoUrl"
                 :user="user"
@@ -9,7 +9,7 @@
             <profile-body :user="user" :refresh="getUser"></profile-body>
             <profile-follows :key="followsKey" :user="user"></profile-follows>
         </div>
-        <div class="col-6 posts-container">
+        <div class="col-3 posts-container">
             <profile-posts :key="postsKey"></profile-posts>
         </div>
     </div>
@@ -42,8 +42,7 @@ export default {
     },
     methods: {
         didUpdateUser(updatedUser) {
-            this.profilePhotoUrl = this.getUniqueUrl(updatedUser.profilePhotoUrl);
-            console.log(this.profilePhotoUrl);
+            this.profilePhotoUrl = updatedUser.profilePhotoUrl;
             this.postsKey = new Date().getTime();
         },
         didUpdateFollowingStatus() {

@@ -1,5 +1,5 @@
 <template>
-    <div class="text-container">
+    <div class="text-container" :class="classes" @click="navigateToProfile">
         <p class="text bold">{{ fullName }} <span class="username">{{ username }}</span></p>
         <p class="text">{{ user.email }}</p>
     </div>
@@ -7,17 +7,25 @@
 
 <script>
 export default {
-    props: ['user'],
+    props: ['user', 'navigatesToProfile'],
     computed: {
         fullName() {
-            let name = `${this.user.firstName} ${this.user.lastName}`
-            if (localStorage.user().id == this.user.id) {
-                return `${name} (You)`
-            }
-            return name
+            return `${this.user.firstName} ${this.user.lastName}`
         },
         username() {
             return `@${this.user.username}`
+        },
+        classes() {
+            return {
+                'clickable': this.navigatesToProfile
+            }
+        }
+    },
+    methods: {
+        navigateToProfile() {
+            if (this.navigatesToProfile) {
+                this.$router.push({ name: "profile", params: { userId: this.user.id }})
+            }
         }
     }
 }
