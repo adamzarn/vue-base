@@ -1,10 +1,10 @@
 <template>
     <div v-if="user" class="follows">
-        <div class="col-6">
+        <div class="col-12" v-if="followers.length > 0">
             <page-title class="title" text=Followers></page-title>
             <user-list :users="followers" :refresh="getFollowers" :showToggleFollowButton="false"></user-list>
         </div>
-        <div class="col-6">
+        <div class="col-12" v-if="following.length > 0">
             <page-title class="title" text="Following"></page-title>
             <user-list :users="following" :refresh="getFollowing" :showToggleFollowButton="userIsLoggedInUser"></user-list>
         </div>
@@ -89,6 +89,7 @@ export default {
     display: flex;
     column-gap: calc(var(--default-spacing)*2);
     row-gap: var(--default-spacing);
+    flex-direction: column;
 }
 .title {
     margin-bottom: var(--default-spacing);

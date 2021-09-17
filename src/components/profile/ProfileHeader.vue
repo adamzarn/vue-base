@@ -17,22 +17,29 @@
         <div class="title-buttons-container">
             <base-button v-if="userIsLoggedInUser == false && followStatus != null" @click="toggleFollowingStatus()">{{ toggleFollowButtonText }}</base-button>
             <base-button v-if="loggedInUserIsAdmin" mode="light" @click="toggleAdminStatus()">{{ toggleAdminButtonText }}</base-button>
-            <img v-if="loggedInUserIsAdmin || userIsLoggedInUser" class="svg delete-button" src="/delete.svg" @click="deleteUser()">
+            <img v-if="loggedInUserIsAdmin || userIsLoggedInUser" class="svg delete-button" src="/delete.svg" @click="showDeleteUserConfirmationModal">
         </div>
     </div>
+    <delete-user-confirmation-modal
+        :shouldShow="shouldShowDeleteUserConfirmationModal"
+        :user="passedInUser"
+        :dismiss="dismissDeleteUserConfirmationModal">
+    </delete-user-confirmation-modal>
 </template>
 
 <script>
 import network from '../../network/network.js';
 import PageTitle from '../base/PageTitle.vue';
+import DeleteUserConfirmationModal from '../modals/DeleteUserConfirmationModal.vue';
 
 export default {
-    components: { PageTitle },
+    components: { PageTitle, DeleteUserConfirmationModal },
     props: ['profilePhotoUrl', 'user'],
     emits: ['didUpdateUser', 'didUpdateFollowingStatus'],
     data() {
         return {
-            followStatus: null
+            followStatus: null,
+            shouldShowDeleteUserConfirmationModal: false
         }
     },
     computed: {
@@ -110,22 +117,6 @@ export default {
                 }
             });
         },
-        deleteUser() {
-            network.deleteUser({
-                urlParams: {
-                    userId: this.user.id
-                },
-                onSuccess: () => {
-                    if (this.userIsLoggedInUser) {
-                        localStorage.clear();
-                        this.$router.push({ name: 'login' });
-                    } else {
-                        this.$router.push({ name: 'home' });
-                    }
-                },
-                onFailure: error => { alert(error.description); }
-            });
-        },
         handleNewProfilePhoto(event) {
             this.shouldShowProfilePhotoModal = false;
             let file = event.target.files[0];
@@ -141,7 +132,7 @@ export default {
                 onSuccess: (data) => {
                     let updatedUser = localStorage.user()
                     updatedUser.profilePhotoUrl = this.getUniqueUrl(data.url);
-                    this.$emit('didUpdateUser', updatedUser)
+                    this.$emit('didUpdateUser', updatedUser);
                 },
                 onFailure: error => {
                     alert(error.description);
@@ -175,6 +166,12 @@ export default {
                 onFailure: error => { alert(error.description); }
             });
         },
+        showDeleteUserConfirmationModal() {
+            this.shouldShowDeleteUserConfirmationModal = true;
+        },
+        dismissDeleteUserConfirmationModal() {
+            this.shouldShowDeleteUserConfirmationModal = false;
+        }
     },
     mounted() {
         this.getFollowStatus();

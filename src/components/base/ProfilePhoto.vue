@@ -121,7 +121,7 @@ input {
     position: absolute;
     top: 0;
     left: 0;
-    border-radius: var(--default-corner-radius);
+    border-radius: 15%;
 }
 .profile-photo {
     object-fit: cover;
