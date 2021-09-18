@@ -83,10 +83,12 @@ export default {
     transform: translate(0, -50%);
     margin: 0 var(--default-spacing);
 }
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 1000px) {
     .account-container {
         flex-flow: column;
-        row-gap: var(--default-spacing);
+    }
+    [class*="col-"] {
+        width: 100%;
     }
 }
 </style>

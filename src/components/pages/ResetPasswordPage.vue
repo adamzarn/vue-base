@@ -9,10 +9,3 @@ export default {
     components: { ResetPasswordForm }
 }
 </script>
-
-<style scoped>
-.centered-card {
-    margin: calc(var(--default-spacing)*3) auto;
-    max-width: calc(var(--default-spacing)*24);
-}
-</style>

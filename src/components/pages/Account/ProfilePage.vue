@@ -59,20 +59,13 @@ export default {
                 onSuccess: user => {
                     this.user = user;
                     this.postsKey = new Date().getTime();
-                    this.profilePhotoUrl = this.getUniqueUrl(user.profilePhotoUrl);
+                    this.profilePhotoUrl = user.profilePhotoUrl;
                 },
                 onFailure: error => {
                     alert(error.description);
                 }
             })
-        },
-        getUniqueUrl(url) {
-            if (url) {
-                return `${url}#${new Date().getTime()}`
-            } else {
-                return null;
-            }
-        },
+        }
     },
     mounted() {
         if (localStorage.token != null) {
@@ -110,16 +103,16 @@ export default {
     row-gap: var(--default-spacing);
     padding: var(--default-spacing);
 }
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1000px) {
     .container, .title-container, .buttons-container {
         flex-direction: column;
         row-gap: var(--default-spacing);
     }
-}
-@media only screen and (max-width: 480px) {
     .profile-page-container {
         flex-flow: column;
-        row-gap: var(--default-spacing);
+    }
+    [class*="col-"] {
+        width: 100%;
     }
 }
 </style>

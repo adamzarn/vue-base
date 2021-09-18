@@ -1,10 +1,10 @@
 <template>
     <div class="container">
-        <div class="col-6">
+        <div class="col-8">
             <page-title class="title" text="Admins"></page-title>
             <user-list :users="admins" :refresh="getData" :showToggleAdminButton="true"></user-list>
         </div>
-        <div class="col-6">
+        <div class="col-4">
             <base-input label="Search Users" class="search-bar" v-model="enteredQuery" :onChange="getUsers"></base-input>
             <user-list :users="users" :refresh="getData" :showToggleAdminButton="true"></user-list>
         </div>

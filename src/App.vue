@@ -78,6 +78,11 @@ a:active {
     cursor: pointer;
 }
 
+.centered-card {
+    margin: calc(var(--default-spacing)*3) auto;
+    max-width: calc(var(--default-spacing)*24);
+}
+
 /* For desktop: */
 .col-1 {width: 8.33%;}
 .col-2 {width: 16.66%;}
