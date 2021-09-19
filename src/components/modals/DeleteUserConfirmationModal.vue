@@ -14,6 +14,7 @@
 
 <script>
 import network from '../../network/network.js';
+import './../../local-storage-helper.js';
 
 export default {
     props: ['shouldShow', 'user', 'dismiss'],

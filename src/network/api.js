@@ -1,3 +1,5 @@
+import './../local-storage-helper.js';
+
 const baseUrl = process.env.VUE_APP_API_BASE_URL;
 const authUrl = `${baseUrl}/auth`
 const usersUrl = `${baseUrl}/users`

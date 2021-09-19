@@ -20,6 +20,7 @@
 <script>
 import network from '../../network/network.js';
 import ProfilePhotoModal from '../modals/ProfilePhotoModal.vue';
+import './../../local-storage-helper.js';
 
 export default {
     components: { ProfilePhotoModal },

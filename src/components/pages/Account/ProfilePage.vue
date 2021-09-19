@@ -17,6 +17,7 @@
 
 <script>
 import network from '../../../network/network.js';
+import './../../../local-storage-helper.js';
 import ProfileHeader from '../../profile/ProfileHeader.vue';
 import ProfileBody from '../../profile/ProfileBody.vue';
 import ProfileFollows from '../../profile/ProfileFollows.vue';
@@ -68,7 +69,7 @@ export default {
         }
     },
     mounted() {
-        if (localStorage.token != null) {
+        if (localStorage.isLoggedIn()) {
             this.getData();
         } else {
             this.$router.push({ name: 'login' });
@@ -76,7 +77,7 @@ export default {
     },
     watch: {
         $route(to) {
-            if (localStorage.token != null && to.name == "profile") {
+            if (localStorage.isLoggedIn() && to.name == "profile") {
                 this.getData();
             }
         }

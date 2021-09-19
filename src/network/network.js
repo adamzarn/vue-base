@@ -1,16 +1,5 @@
 import api from './api.js';
-
-Storage.prototype.setObject = function(key, value) {
-    this.setItem(key, JSON.stringify(value));
-}
-
-Storage.prototype.getObject = function(key) {
-    return JSON.parse(this.getItem(key));
-}
-
-Storage.prototype.user = function() {
-    return this.getObject('user');
-}
+import './../local-storage-helper.js';
 
 function frontendBaseUrl() {
     let loc = window.location;
@@ -43,10 +32,7 @@ function createBasicError(source, error, endpoint) {
 }
 
 function handleAuthenticationResult(data, params) {
-    localStorage.tokenId = data.id;
-    localStorage.token = data.token;
-    localStorage.emailVerificationIsRequired = data.emailVerificationIsRequired;
-    localStorage.setObject('user', data.user);
+    localStorage.login(data);
     params.onSuccess(data)
 }
 
@@ -113,7 +99,7 @@ function handleData(endpoint, response, data, params) {
             handleAuthenticationResult(data, params)
         } else {
             if (endpoint.name == 'getUser' && data.id == localStorage.user().id) {
-                localStorage.setObject('user', data);
+                localStorage.setUser(data);
             }
             params.onSuccess(data);
         }

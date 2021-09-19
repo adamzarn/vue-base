@@ -15,6 +15,7 @@
 
 <script>
 import network from '../../network/network.js';
+import './../../local-storage-helper';
 
 export default {
     data() {
@@ -69,11 +70,11 @@ export default {
         $route(to) {
             const userRequiredRoutes = ['home', 'account', 'profile', 'manageUsers']
             if (userRequiredRoutes.includes(to.name)) {
-                if (localStorage.user() == null) {
-                    this.$router.push({ name: 'login' })
-                    return
+                if (localStorage.isLoggedIn()) {
+                    this.getUpdatedUser();
+                } else {
+                    this.$router.push({ name: 'login' });
                 }
-                this.getUpdatedUser();
             }
         }
     }

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" v-if="user">
         <div class="col-8">
             <page-title class="title" text="Post"></page-title>
             <div>
@@ -24,6 +24,7 @@
 <script>
 import PageTitle from '../base/PageTitle.vue';
 import network from '../../network/network.js';
+import './../../local-storage-helper.js';
 import UserList from '../../components/users/UserList.vue';
 import UserListItem from '../../components/users/UserListItem.vue';
 import PostList from '../posts/PostList.vue';
@@ -105,7 +106,9 @@ export default {
         }
     },
     mounted() {
-        this.getFeed();
+        if (localStorage.isLoggedIn()) {
+            this.getFeed();
+        }
     }
 }
 </script>

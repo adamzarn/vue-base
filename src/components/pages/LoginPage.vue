@@ -14,6 +14,7 @@
 <script>
 import LoginForm from '../forms/LoginForm.vue';
 import network from '../../network/network.js';
+import './../../local-storage-helper.js';
 import ForgotPasswordModal from '../modals/ForgotPasswordModal.vue';
 
 export default {
@@ -51,7 +52,7 @@ export default {
         }
     }, 
     mounted() {
-        if (localStorage.token != null) {
+        if (localStorage.isLoggedIn()) {
             this.$router.push({ name: 'home' });
         }
     }

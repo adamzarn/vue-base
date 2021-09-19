@@ -35,6 +35,7 @@
 
 <script>
 import network from '../../network/network.js';
+import './../../local-storage-helper.js';
 import ProfileItem from '../base/ProfileItem.vue';
 import ChangeEmailModal from '../modals/ChangeEmailModal.vue';
 

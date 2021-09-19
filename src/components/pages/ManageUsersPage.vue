@@ -14,6 +14,7 @@
 <script>
 import UserList from '../users/UserList.vue';
 import network from '../../network/network.js';
+import './../../local-storage-helper.js';
 import PageTitle from '../base/PageTitle.vue';
 
 export default {

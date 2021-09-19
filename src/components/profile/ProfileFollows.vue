@@ -13,6 +13,7 @@
 
 <script>
 import network from '../../network/network.js';
+import './../../local-storage-helper.js';
 import UserList from '../users/UserList.vue';
 import PageTitle from '../base/PageTitle.vue';
 
@@ -76,7 +77,7 @@ export default {
             this.getData();
         },
         $route(to) {
-            if (localStorage.token != null && to.name == "profile") {
+            if (localStorage.isLoggedIn() && to.name == "profile") {
                 this.getData();
             }
         }

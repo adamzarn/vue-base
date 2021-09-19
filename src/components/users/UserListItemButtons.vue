@@ -10,6 +10,7 @@
 
 <script>
 import network from '../../network/network.js';
+import './../../local-storage-helper.js';
 
 export default {
     props: {
@@ -65,7 +66,7 @@ export default {
                     if (this.user.id == localStorage.user().id) {
                         let updatedUser = localStorage.user();
                         updatedUser.isAdmin = !updatedUser.isAdmin;
-                        localStorage.setObject('user', updatedUser);
+                        localStorage.setUser(updatedUser);
                     }
                     this.refresh()
                 },

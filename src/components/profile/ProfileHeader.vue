@@ -29,6 +29,7 @@
 
 <script>
 import network from '../../network/network.js';
+import './../../local-storage-helper.js';
 import PageTitle from '../base/PageTitle.vue';
 import DeleteUserConfirmationModal from '../modals/DeleteUserConfirmationModal.vue';
 
@@ -103,7 +104,7 @@ export default {
                     if (this.userIsLoggedInUser) {
                         let updatedUser = localStorage.user();
                         updatedUser.isAdmin = !updatedUser.isAdmin;
-                        localStorage.setObject('user', updatedUser);
+                        localStorage.setUser(updatedUser);
                         this.$emit('didUpdateUser', updatedUser)
                         this.$router.go()
                     } else {
