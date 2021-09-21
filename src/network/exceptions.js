@@ -19,7 +19,7 @@ const exceptions = {
     invalidPost: "invalidPost",
     couldNotCreateProfilePhotoUrl: "couldNotCreateProfilePhotoUrl",
     couldNotCreateUser: "couldNotCreateUser",
-    couldNotSaveToken: "couldNotSaveToken",
+    couldNotGenerateTokenId: "couldNotGenerateTokenId",
     unknown: "unknown"
 }
 
