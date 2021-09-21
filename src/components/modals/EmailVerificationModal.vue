@@ -16,15 +16,33 @@
 </template>
 
 <script>
+import network from '../../network/network.js';
 import ModalButtons from '../modals/ModalButtons.vue';
 
 export default {
     components: { ModalButtons },
-    props: ['shouldShow', 'modelValue', 'dismiss', 'sendEmail'],
+    props: ['shouldShow', 'modelValue', 'dismiss', 'onSuccess', 'onFailure'],
     computed: {
         email() {
             return this.modelValue;
         }
+    },
+    methods: {
+        sendEmail() {
+            this.dismiss()
+            network.sendEmailVerificationEmail({
+                body: {
+                    email: this.email,
+                    frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
+                },
+                onSuccess: () => {
+                    this.onSuccess(this.email);
+                },
+                onFailure: error => {
+                    this.onFailure(error);
+                }
+            })
+        },
     }
 }
 </script>

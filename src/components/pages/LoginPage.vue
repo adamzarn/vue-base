@@ -1,54 +1,67 @@
 <template>
-    <login-form @change="emailDidChange" class="centered-card"></login-form>
+    <login-form :email="enteredEmail" @change="didUpdateEmail" class="centered-card"></login-form>
     <div class="centered-link">
         <a @click="showForgotPasswordModal">Forgot Password?</a>
     </div>
     <forgot-password-modal
         :shouldShow="shouldShowForgotPasswordModal"
-        v-model="passwordResetEmail"
+        v-model="enteredEmail"
         :dismiss="dismissForgotPasswordModal"
-        :sendEmail="sendForgotPasswordEmail">
+        :onSuccess="onSendForgotPasswordEmailSuccess"
+        :onFailure="onSendForgotPasswordEmailFailure"
+        :didUpdateEmail="didUpdateEmail">
     </forgot-password-modal>
+    <alert-modal
+        :shouldShow="shouldShowAlertModal"
+        :title="alertTitle"
+        :message="alertMessage"
+        :dismiss="dismissAlertModal">
+    </alert-modal>
 </template>
 
 <script>
 import LoginForm from '../forms/LoginForm.vue';
-import network from '../../network/network.js';
 import './../../local-storage-helper.js';
 import ForgotPasswordModal from '../modals/ForgotPasswordModal.vue';
+import AlertModal from '../modals/AlertModal.vue';
+import exceptions from '../../network/exceptions.js';
 
 export default {
-    components: { LoginForm, ForgotPasswordModal },
+    components: { LoginForm, ForgotPasswordModal, AlertModal },
     data() {
         return {
-            passwordResetEmail: '',
-            shouldShowForgotPasswordModal: false
+            enteredEmail: '',
+            shouldShowForgotPasswordModal: false,
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: ''
         }
     },
     methods: {
+        didUpdateEmail(email) {
+            this.enteredEmail = email;
+        },
         showForgotPasswordModal() {
             this.shouldShowForgotPasswordModal = true;
         },
         dismissForgotPasswordModal() {
             this.shouldShowForgotPasswordModal = false;
         },
-        sendForgotPasswordEmail() {
-            this.shouldShowForgotPasswordModal = false;
-            network.sendPasswordResetEmail({
-                body: {
-                    email: this.passwordResetEmail,
-                    url: `${network.frontendBaseUrl()}/resetPassword`
-                },
-                onSuccess: () => {
-                    alert(`A password reset email was sent to ${this.passwordResetEmail}.`);
-                },
-                onFailure: error => {
-                    alert(error.description);
-                }
-            })
+        onSendForgotPasswordEmailSuccess(email) {
+            this.alertTitle = "Success"
+            this.alertMessage = `A password reset email was sent to ${email}`
+            this.shouldShowAlertModal = true;
         },
-        emailDidChange(newEmail) {
-            this.passwordResetEmail = newEmail;
+        onSendForgotPasswordEmailFailure(error) {
+            this.alertTitle = "Oops..."
+            this.alertMessage = "Something went wrong"
+            if (error.exception == exceptions.userDoesNotExist) {
+                this.alertMessage = "A user with that email does not exist.";
+            }
+            this.shouldShowAlertModal = true;
+        },
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
         }
     }, 
     mounted() {

@@ -56,12 +56,12 @@
                 <base-button class="register-button" type="submit">Register</base-button>
             </div>
         </form>
-        <error-modal
-            :shouldShow="shouldShowErrorModal"
-            :title="errorTitle"
-            :message="errorMessage"
-            :dismiss="dismissErrorModal">
-        </error-modal>
+        <alert-modal
+            :shouldShow="shouldShowAlertModal"
+            :title="alertTitle"
+            :message="alertMessage"
+            :dismiss="dismissAlertModal">
+        </alert-modal>
     </base-card>
 </template>
 
@@ -69,10 +69,10 @@
 import network from '../../network/network.js';
 import exceptions from '../../network/exceptions.js';
 import PageTitle from '../base/PageTitle.vue';
-import ErrorModal from '../modals/ErrorModal.vue';
+import AlertModal from '../modals/AlertModal.vue';
 
 export default {
-    components: { PageTitle, ErrorModal }, 
+    components: { PageTitle, AlertModal }, 
     data() {
         return {
             enteredFirstName: '',
@@ -88,9 +88,9 @@ export default {
             confirmedPasswordIsInvalid: false,
             minPasswordLength: 6,
             emailAlreadyExists: false,
-            shouldShowErrorModal: false,
-            errorTitle: '',
-            errorMessage: ''
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: ''
         }
     },
     computed: {
@@ -118,11 +118,9 @@ export default {
                     if (error.exception === exceptions.emailIsNotVerified) {
                         this.sendEmailVerificationEmail();
                     } else if (error.status === 400) {
-                        this.errorTitle = 'Oops...';
-                        this.errorMessage = error.reason;
-                        this.shouldShowErrorModal = true;
+                        this.showAlertModal('Oops...', error.reason);
                     } else {
-                        alert(error.description);
+                        this.showGenericAlertModal();
                     }
                 }
             })
@@ -134,10 +132,10 @@ export default {
                     frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
                 },
                 onSuccess: () => {
-                    alert(`An email verification email was sent to ${this.enteredEmail}.`)
+                    this.showAlertModal('Email Verification Required', `An email verification email was sent to ${this.enteredEmail}.`);
                 },
-                onFailure: error => {
-                    alert(error.description);
+                onFailure: () => {
+                    this.showGenericAlertModal();
                 }
             })
         },
@@ -167,13 +165,21 @@ export default {
                 onSuccess: userStatus => {
                     viewModel.emailAlreadyExists = userStatus.exists;
                 },
-                onFailure: error => {
-                    alert(error.description);
+                onFailure: () => {
+                    this.showGenericAlertModal();
                 }
             })    
         },
-        dismissErrorModal() {
-            this.shouldShowErrorModal = false;
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
+        },
+        showAlertModal(title, message) {
+            this.alertTitle = title;
+            this.alertMessage = message;
+            this.shouldShowAlertModal = true;
+        },
+        showGenericAlertModal() {
+            this.showAlertModal('Oops...', 'Something went wrong');
         }
     }
 }

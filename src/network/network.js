@@ -12,6 +12,9 @@ function createError(source, response, data, endpoint) {
     let exception = (components.length == 2) ? components[0] : 'Unknown'
     let reason = (components.length == 2) ? components[1].trim() : data.reason
     let description = `${endpoint}\n${source}\n${status}\n${exception}\n${reason}`
+    if (process.env.NODE_ENV === 'development') {
+        console.log(description);
+    }
     return {
         'endpoint': endpoint,
         'source': source,
@@ -23,11 +26,15 @@ function createError(source, response, data, endpoint) {
 }
 
 function createBasicError(source, error, endpoint) {
+    let description = `${endpoint}\n${source}\n${error}`
+    if (process.env.NODE_ENV === 'development') {
+        console.log(description);
+    }
     return {
         'endpoint': endpoint,
         'source': source,
         'error': error,
-        'description': `${endpoint}\n${source}\n${error}`
+        'description': description
     }
 }
 
@@ -191,10 +198,6 @@ function getFeed(params) {
     makeRequest(api.endpoints.getFeed, params)
 }
 
-function debugDescription(errorObject) {
-    return `Endpoint:\n${errorObject.endpoint}\n\nDescription:\n${errorObject.error.description}`;
-}
-
 export default {
     register,
     login,
@@ -218,6 +221,5 @@ export default {
     getPosts,
     getFeed,
 
-    debugDescription,
     frontendBaseUrl
 };

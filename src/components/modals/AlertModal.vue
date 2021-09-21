@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import ModalButtons from '../modals/ModalButtons.vue';
+import ModalButtons from './ModalButtons.vue';
 
 export default {
     components: { ModalButtons },

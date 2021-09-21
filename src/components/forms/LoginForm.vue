@@ -26,14 +26,15 @@
             :shouldShow="shouldShowEmailVerificationModal"
             v-model="enteredEmail"
             :dismiss="dismissEmailVerificationModal"
-            :sendEmail="sendEmailVerificationEmail">
+            :onSuccess="onSendEmailVerificationEmailSuccess"
+            :onFailure="onSendEmailVerificationEmailFailure">
         </email-verification-modal>
-        <error-modal
-            :shouldShow="shouldShowErrorModal"
-            :title="errorTitle"
-            :message="errorMessage"
-            :dismiss="dismissErrorModal">
-        </error-modal>
+        <alert-modal
+            :shouldShow="shouldShowAlertModal"
+            :title="alertTitle"
+            :message="alertMessage"
+            :dismiss="dismissAlertModal">
+        </alert-modal>
     </base-card>
 </template>
 
@@ -41,21 +42,22 @@
 import network from '../../network/network.js';
 import exceptions from '../../network/exceptions.js';
 import EmailVerificationModal from '../modals/EmailVerificationModal.vue';
-import ErrorModal from '../modals/ErrorModal.vue';
+import AlertModal from '../modals/AlertModal.vue';
 import PageTitle from '../base/PageTitle.vue';
 
 export default {
-    components: { EmailVerificationModal, ErrorModal, PageTitle },
+    components: { EmailVerificationModal, AlertModal, PageTitle },
+    props: ['email'],
     emits: ['change'],
     data() {
         return {
-            enteredEmail: '',
+            enteredEmail: this.email,
             enteredPassword: '',
             emailIsInvalid: false,
             shouldShowEmailVerificationModal: false,
-            shouldShowErrorModal: false,
-            errorTitle: '',
-            errorMessage: ''
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: ''
         }
     },
     methods: {
@@ -72,9 +74,9 @@ export default {
                     if (error.exception === exceptions.emailIsNotVerified) {
                         this.shouldShowEmailVerificationModal = true
                     } else if (error.status === 401) {
-                        this.errorTitle = "Oops..."
-                        this.errorMessage = "Your email or password was incorrect."
-                        this.shouldShowErrorModal = true;
+                        this.alertTitle = "Oops..."
+                        this.alertMessage = "Your email or password was incorrect."
+                        this.shouldShowAlertModal = true;
                     } else {
                         alert(error.description);
                     }
@@ -84,27 +86,30 @@ export default {
         dismissEmailVerificationModal() {
             this.shouldShowEmailVerificationModal = false;
         },
-        sendEmailVerificationEmail() {
-            this.shouldShowEmailVerificationModal = false;
-            network.sendEmailVerificationEmail({
-                body: {
-                    email: this.enteredEmail,
-                    frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
-                },
-                onSuccess: () => {
-                    alert(`An email verification email was sent to ${this.enteredEmail}.`)
-                },
-                onFailure: error => {
-                    alert(error.description);
-                }
-            })
-        },
         validateEmail() {
             const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
             this.emailIsInvalid = !regex.test(this.enteredEmail)
         },
-        dismissErrorModal() {
-            this.shouldShowErrorModal = false;
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
+        },
+        onSendEmailVerificationEmailSuccess(email) {
+            this.alertTitle = "Success";
+            this.alertMessage = `An email verification email has been sent to ${email}.`
+            this.shouldShowAlertModal = true;
+        },
+        onSendEmailVerificationEmailFailure(error) {
+            this.alertTitle = "Oops..."
+            this.alertMessage = "Something went wrong"
+            if (error.exception == exceptions.userDoesNotExist) {
+                this.alertMessage = "A user with that email does not exist.";
+            }
+            this.shouldShowAlertModal = true;
+        }
+    },
+    watch: {
+        email() {
+            this.enteredEmail = this.email;
         }
     }
 }

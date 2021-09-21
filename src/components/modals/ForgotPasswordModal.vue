@@ -16,14 +16,40 @@
 </template>
 
 <script>
+import network from '../../network/network.js';
 import ModalButtons from '../modals/ModalButtons.vue';
 
 export default {
     components: { ModalButtons },
-    props: ['shouldShow', 'modelValue', 'dismiss', 'sendEmail'],
-    computed: {
+    props: ['shouldShow', 'modelValue', 'dismiss', 'onSuccess', 'onFailure', 'didUpdateEmail'],
+    data() {
+        return {
+            email: this.modelValue
+        }
+    },
+    watch: {
         email() {
-            return this.modelValue;
+            this.didUpdateEmail(this.email);
+        },
+        modelValue() {
+            this.email = this.modelValue;
+        }
+    },
+    methods: {
+        sendEmail() {
+            this.dismiss();
+            network.sendPasswordResetEmail({
+                body: {
+                    email: this.email,
+                    frontendBaseUrl: `${network.frontendBaseUrl()}/resetPassword`
+                },
+                onSuccess: () => {
+                    this.onSuccess(this.email);
+                },
+                onFailure: error => {
+                    this.onFailure(error);
+                }
+            })
         }
     }
 }
