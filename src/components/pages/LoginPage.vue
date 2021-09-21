@@ -65,8 +65,4 @@ export default {
     text-align: center;
     font-size: var(--default-font-size);
 }
-.buttons-container {
-    display: flex;
-    column-gap: var(--default-spacing);
-}
 </style>

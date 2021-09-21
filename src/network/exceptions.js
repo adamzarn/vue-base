@@ -1,10 +1,8 @@
 const exceptions = {
     userAlreadyExists: "userAlreadyExists",
-    missingUserId: "missingUserId",
+    invalidUserId: "invalidUserId",
     missingTokenId: "missingTokenId",
     userDoesNotExist: "userDoesNotExist",
-    missingAdminStatus: "missingAdminStatus",
-    missingFollowingStatus: "missingFollowingStatus",
     cannotFollowSelf: "cannotFollowSelf",
     emailIsNotVerified: "emailIsNotVerified",
     userIsNotAdmin: "userIsNotAdmin",
@@ -16,8 +14,11 @@ const exceptions = {
     couldNotCreateToken: "couldNotCreateToken",
     couldNotCreatePasswordHash: "couldNotCreatePasswordHash",
     missingUserUpdate: "missingUserUpdate",
-    missingFollowType: "missingFollowType",
     invalidFollowType: "invalidFollowType",
+    invalidImageType: "invalidImageType",
+    invalidPost: "invalidPost",
+    couldNotCreateProfilePhotoUrl: "couldNotCreateProfilePhotoUrl",
+    couldNotCreateUser: "couldNotCreateUser",
     unknown: "unknown"
 }
 

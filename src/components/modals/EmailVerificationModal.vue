@@ -7,16 +7,19 @@
             ></base-input>
         </template>
         <template #actions>
-            <div class="buttons-container">
+            <modal-buttons>
                 <base-button @click="dismiss">Cancel</base-button>
                 <base-button @click="sendEmail">Send</base-button>
-            </div>
+            </modal-buttons>
         </template>
     </base-modal>
 </template>
 
 <script>
+import ModalButtons from '../modals/ModalButtons.vue';
+
 export default {
+    components: { ModalButtons },
     props: ['shouldShow', 'modelValue', 'dismiss', 'sendEmail'],
     computed: {
         email() {
@@ -27,8 +30,4 @@ export default {
 </script>
 
 <style scoped>
-.buttons-container {
-    display: flex;
-    column-gap: var(--default-spacing);
-}
 </style>

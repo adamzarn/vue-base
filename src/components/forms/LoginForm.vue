@@ -28,6 +28,12 @@
             :dismiss="dismissEmailVerificationModal"
             :sendEmail="sendEmailVerificationEmail">
         </email-verification-modal>
+        <error-modal
+            :shouldShow="shouldShowErrorModal"
+            :title="errorTitle"
+            :message="errorMessage"
+            :dismiss="dismissErrorModal">
+        </error-modal>
     </base-card>
 </template>
 
@@ -35,17 +41,21 @@
 import network from '../../network/network.js';
 import exceptions from '../../network/exceptions.js';
 import EmailVerificationModal from '../modals/EmailVerificationModal.vue';
+import ErrorModal from '../modals/ErrorModal.vue';
 import PageTitle from '../base/PageTitle.vue';
 
 export default {
-    components: { EmailVerificationModal, PageTitle },
+    components: { EmailVerificationModal, ErrorModal, PageTitle },
     emits: ['change'],
     data() {
         return {
             enteredEmail: '',
             enteredPassword: '',
             emailIsInvalid: false,
-            shouldShowEmailVerificationModal: false
+            shouldShowEmailVerificationModal: false,
+            shouldShowErrorModal: false,
+            errorTitle: '',
+            errorMessage: ''
         }
     },
     methods: {
@@ -61,6 +71,10 @@ export default {
                 onFailure: error => {
                     if (error.exception === exceptions.emailIsNotVerified) {
                         this.shouldShowEmailVerificationModal = true
+                    } else if (error.status === 401) {
+                        this.errorTitle = "Oops..."
+                        this.errorMessage = "Your email or password was incorrect."
+                        this.shouldShowErrorModal = true;
                     } else {
                         alert(error.description);
                     }
@@ -88,6 +102,9 @@ export default {
         validateEmail() {
             const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
             this.emailIsInvalid = !regex.test(this.enteredEmail)
+        },
+        dismissErrorModal() {
+            this.shouldShowErrorModal = false;
         }
     }
 }
@@ -113,9 +130,4 @@ form {
     align-items: center;
     column-gap: calc(var(--default-spacing)/2);
 }
-.buttons-container {
-    display: flex;
-    column-gap: var(--default-spacing);
-}
 </style>
-        EmailVerificationModal

@@ -56,6 +56,12 @@
                 <base-button class="register-button" type="submit">Register</base-button>
             </div>
         </form>
+        <error-modal
+            :shouldShow="shouldShowErrorModal"
+            :title="errorTitle"
+            :message="errorMessage"
+            :dismiss="dismissErrorModal">
+        </error-modal>
     </base-card>
 </template>
 
@@ -63,9 +69,10 @@
 import network from '../../network/network.js';
 import exceptions from '../../network/exceptions.js';
 import PageTitle from '../base/PageTitle.vue';
+import ErrorModal from '../modals/ErrorModal.vue';
 
 export default {
-    components: { PageTitle }, 
+    components: { PageTitle, ErrorModal }, 
     data() {
         return {
             enteredFirstName: '',
@@ -80,7 +87,10 @@ export default {
             passwordIsInvalid: false,
             confirmedPasswordIsInvalid: false,
             minPasswordLength: 6,
-            emailAlreadyExists: false
+            emailAlreadyExists: false,
+            shouldShowErrorModal: false,
+            errorTitle: '',
+            errorMessage: ''
         }
     },
     computed: {
@@ -107,6 +117,10 @@ export default {
                 onFailure: error => {
                     if (error.exception === exceptions.emailIsNotVerified) {
                         this.sendEmailVerificationEmail();
+                    } else if (error.status === 400) {
+                        this.errorTitle = 'Oops...';
+                        this.errorMessage = error.reason;
+                        this.shouldShowErrorModal = true;
                     } else {
                         alert(error.description);
                     }
@@ -157,6 +171,9 @@ export default {
                     alert(error.description);
                 }
             })    
+        },
+        dismissErrorModal() {
+            this.shouldShowErrorModal = false;
         }
     }
 }

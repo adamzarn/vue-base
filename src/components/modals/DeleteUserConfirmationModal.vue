@@ -4,10 +4,10 @@
             <p>{{ message }}</p>
         </template>
         <template #actions>
-            <div class="buttons-container">
+            <modal-buttons>
                 <base-button @click="dismiss">Cancel</base-button>
                 <base-button @click="deleteUser">Continue</base-button>
-            </div>
+            </modal-buttons>
         </template>
     </base-modal>
 </template>
@@ -15,8 +15,10 @@
 <script>
 import network from '../../network/network.js';
 import './../../local-storage-helper.js';
+import ModalButtons from '../modals/ModalButtons.vue';
 
 export default {
+    components: { ModalButtons },
     props: ['shouldShow', 'user', 'dismiss'],
     computed: {
         userIsLoggedInUser() {
@@ -59,8 +61,4 @@ export default {
 </script>
 
 <style scoped>
-.buttons-container {
-    display: flex;
-    column-gap: var(--default-spacing);
-}
 </style>
