@@ -69,10 +69,9 @@
 import network from '../../network/network.js';
 import exceptions from '../../network/exceptions.js';
 import PageTitle from '../base/PageTitle.vue';
-import AlertModal from '../modals/AlertModal.vue';
 
 export default {
-    components: { PageTitle, AlertModal }, 
+    components: { PageTitle }, 
     data() {
         return {
             enteredFirstName: '',
@@ -132,7 +131,7 @@ export default {
                     frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
                 },
                 onSuccess: () => {
-                    this.showAlertModal('Email Verification Required', `An email verification email was sent to ${this.enteredEmail}.`);
+                    this.showAlertModal('Email Verification Required', `An email verification email has been sent to ${this.enteredEmail}.`);
                 },
                 onFailure: () => {
                     this.showGenericAlertModal();

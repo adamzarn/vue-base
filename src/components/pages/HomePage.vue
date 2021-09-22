@@ -12,13 +12,32 @@
                 </div>
             </div>
             <page-title class="title" text="Feed"></page-title>
-            <post-list :posts="posts"></post-list>
+            <post-list 
+                :posts="posts"
+                :style="noPostResultsStyle"
+                :noResultsMessage="noPostResultsMessage"
+                :shouldShowNoResultsMessage="true">
+            </post-list>
         </div>
         <div class="col-4">
             <base-input label="Find People to Follow" class="search-bar" v-model="enteredQuery" :onChange="findPeopleToFollow"></base-input>
-            <user-list :users="users" :refresh="getData" :showToggleAdminButton="false" :showToggleFollowButton="true"></user-list>
+            <user-list
+                :users="users"
+                :refresh="getData"
+                :showToggleAdminButton="false"
+                :showToggleFollowButton="true"
+                :style="noUserResultsStyle"
+                :noResultsMessage="noUserResultsMessage"
+                :shouldShowNoResultsMessage="enteredQuery.length > 0">
+            </user-list>
         </div>
     </div>
+    <alert-modal
+        :shouldShow="shouldShowAlertModal"
+        :title="alertTitle"
+        :message="alertMessage"
+        :dismiss="dismissAlertModal">
+    </alert-modal>
 </template>
 
 <script>
@@ -41,7 +60,14 @@ export default {
             posts: [],
             users: [],
             enteredQuery: '',
-            enteredPostText: ''
+            enteredPostText: '',
+            noUserResultsMessage: '',
+            noUserResultsError: false,
+            noPostResultsMessage: '',
+            noPostResultsError: false,
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: ''
         }
     },
     computed: {
@@ -53,12 +79,19 @@ export default {
         },
         textAreaPlaceholder() {
             return `${this.firstName}, what's on your mind?`;
+        },
+        noUserResultsStyle() {
+            return this.noUserResultsError ? "error" : ""
+        },
+        noPostResultsStyle() {
+            return this.noPostResultsError ? "error" : ""
         }
     },
     methods: {
         findPeopleToFollow() {
             if (this.enteredQuery === '') {
                 this.users = [];
+                this.noUserResultsError = false;
                 return
             }
             network.searchUsers({
@@ -71,9 +104,13 @@ export default {
                 },
                 onSuccess: users => {
                     this.users = users
+                    this.noUserResultsError = false;
+                    this.noUserResultsMessage = "No users you aren't currently following match your search."
                 },
-                onFailure: error => {
-                    alert(error.description);
+                onFailure: () => {
+                    this.users = [];
+                    this.noUserResultsError = true;
+                    this.noUserResultsMessage = "There was a problem finding people to follow. Please try again later.";
                 }
             })
         },
@@ -81,8 +118,12 @@ export default {
             network.getFeed({
                 onSuccess: posts => {
                     this.posts = posts;
-                }, onFailure: error => {
-                    alert(error.description);
+                    this.noPostResultsError = false;
+                    this.noPostResultsMessage = "Neither you nor anyone you're following has posted anything yet."
+                }, onFailure: () => {
+                    this.posts = [];
+                    this.noPostResultsError = true;
+                    this.noPostResultsMessage = "There was a problem fetching your feed. Please try again later."
                 }
             })
         },
@@ -95,10 +136,15 @@ export default {
                 onSuccess: () => {
                     this.enteredPostText = '';
                     this.getFeed()
-                }, onFailure: error => {
-                    alert(error.description)
+                }, onFailure: () => {
+                    this.alertTitle = "Oops..."
+                    this.alertMessage = "There was a problem submitting your post. Please try again later.";
+                    this.shouldShowAlertModal = true;
                 }
             })
+        },
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
         },
         getData() {
             this.findPeopleToFollow()

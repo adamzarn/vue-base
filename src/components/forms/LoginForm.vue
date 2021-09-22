@@ -42,11 +42,10 @@
 import network from '../../network/network.js';
 import exceptions from '../../network/exceptions.js';
 import EmailVerificationModal from '../modals/EmailVerificationModal.vue';
-import AlertModal from '../modals/AlertModal.vue';
 import PageTitle from '../base/PageTitle.vue';
 
 export default {
-    components: { EmailVerificationModal, AlertModal, PageTitle },
+    components: { EmailVerificationModal, PageTitle },
     props: ['email'],
     emits: ['change'],
     data() {
@@ -78,7 +77,9 @@ export default {
                         this.alertMessage = "Your email or password was incorrect."
                         this.shouldShowAlertModal = true;
                     } else {
-                        alert(error.description);
+                        this.alertTitle = "Oops..."
+                        this.alertMessage = "Something went wrong."
+                        this.shouldShowAlertModal = true;
                     }
                 }
             })
@@ -100,7 +101,7 @@ export default {
         },
         onSendEmailVerificationEmailFailure(error) {
             this.alertTitle = "Oops..."
-            this.alertMessage = "Something went wrong"
+            this.alertMessage = "Something went wrong."
             if (error.exception == exceptions.userDoesNotExist) {
                 this.alertMessage = "A user with that email does not exist.";
             }

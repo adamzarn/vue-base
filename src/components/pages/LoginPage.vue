@@ -23,11 +23,10 @@
 import LoginForm from '../forms/LoginForm.vue';
 import './../../local-storage-helper.js';
 import ForgotPasswordModal from '../modals/ForgotPasswordModal.vue';
-import AlertModal from '../modals/AlertModal.vue';
 import exceptions from '../../network/exceptions.js';
 
 export default {
-    components: { LoginForm, ForgotPasswordModal, AlertModal },
+    components: { LoginForm, ForgotPasswordModal },
     data() {
         return {
             enteredEmail: '',
@@ -49,7 +48,7 @@ export default {
         },
         onSendForgotPasswordEmailSuccess(email) {
             this.alertTitle = "Success"
-            this.alertMessage = `A password reset email was sent to ${email}`
+            this.alertMessage = `A password reset email has been sent to ${email}`
             this.shouldShowAlertModal = true;
         },
         onSendForgotPasswordEmailFailure(error) {

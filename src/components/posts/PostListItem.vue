@@ -35,10 +35,8 @@ export default {
             let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             let hours = date.getHours();
             let ampm = "AM"
-            if (hours > 12) { 
-                ampm = "PM"
-                hours -= 12 
-            }
+            if (hours > 11) { ampm = "PM" }
+            if (hours > 12) { hours -= 12 }
             return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${hours}:${this.getMinutes(date)} ${ampm}`;
         },
         name() {

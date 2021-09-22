@@ -96,7 +96,7 @@ export default {
         logout(email) {
             network.logout({
                 onSuccess: () => {
-                    alert(`You will now be logged out. An email verification email was sent to ${email}.`)
+                    alert(`You will now be logged out. An email verification email has been sent to ${email}.`)
                     this.$router.push({ name: 'login' });
                 },
                 onFailure: error => {

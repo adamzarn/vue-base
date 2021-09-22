@@ -13,6 +13,7 @@
             :showDeleteButton="showDeleteButton">
         </user-list-item>
     </base-card>
+    <p v-if="users.length == 0 && shouldShowNoResultsMessage" :class="style">{{ noResultsMessage }}</p>
 </template>
 
 <script>
@@ -45,10 +46,23 @@ export default {
             type: Boolean,
             required: false,
             default: false
-        }
+        },
+        style: String,
+        noResultsMessage: String,
+        shouldShowNoResultsMessage: Boolean
     }
 }
 </script>
 
 <style scoped>
+p {
+    margin-top: var(--default-spacing);
+    margin-left: calc(var(--default-spacing)*2);
+    margin-right: calc(var(--default-spacing)*2);
+    font-size: var(--default-font-size);
+    font-weight: lighter;
+}
+.error {
+    color: var(--invalid-color);
+}
 </style>

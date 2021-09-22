@@ -1,5 +1,5 @@
 <template>
-    <reset-password-form class="centered-card"></reset-password-form>
+    <reset-password-form></reset-password-form>
 </template>
 
 <script>

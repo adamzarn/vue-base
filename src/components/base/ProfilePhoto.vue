@@ -8,12 +8,18 @@
             <img v-if="profilePhotoUrl" class="profile-photo" :src="profilePhotoUrl">
         </div>
         <profile-photo-modal
-            :shouldShow="shouldShowModal" 
+            :shouldShow="shouldShowProfilePhotoModal" 
             :profilePhotoUrl="profilePhotoUrl"
             :dismiss="didSelectCancel"
             :didSelectChooseNewPhoto="openFileSelector"
             :didSelectDeletePhoto="deleteProfilePhoto">
-    </profile-photo-modal>
+        </profile-photo-modal>
+        <alert-modal
+            :shouldShow="shouldShowAlertModal"
+            :title="alertTitle"
+            :message="alertMessage"
+            :dismiss="dismissAlertModal">
+        </alert-modal>
     </div>
 </template>
 
@@ -40,30 +46,35 @@ export default {
     emits: ['change', 'didDeletePhoto'],
     data() {
         return {
-            shouldShowModal: false
+            shouldShowProfilePhotoModal: false,
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: ''
         }
     },
     methods: {
         didClick() {
             if (this.userIsLoggedInUser && this.editable) {
-                this.shouldShowModal = true;
+                this.shouldShowProfilePhotoModal = true;
             }
         },
         didSelectCancel() {
-            this.shouldShowModal = false;
+            this.shouldShowProfilePhotoModal = false;
         },
         openFileSelector() {
-            this.shouldShowModal = false;
+            this.shouldShowProfilePhotoModal = false;
             document.getElementById('profile-photo-input').click();
         },
         deleteProfilePhoto() {
-            this.shouldShowModal = false;
+            this.shouldShowProfilePhotoModal = false;
             network.deleteProfilePhoto({
                 onSuccess: () => {
                     localStorage.user().profilePhotoUrl = null
                     this.$emit('didDeletePhoto');
-                }, onFailure: error => {
-                    alert(error.description);
+                }, onFailure: () => {
+                    this.alertTitle = "Oops...";
+                    this.alertMessage = "There was a problem deleting your profile photo."
+                    this.shouldShowAlertModal = true;
                 }
             })
         },
@@ -71,6 +82,9 @@ export default {
             if (this.navigatesToProfile) {
                 this.$router.push({ name: "profile", params: { userId: this.user.id }})
             }
+        },
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
         }
     },
     computed: {

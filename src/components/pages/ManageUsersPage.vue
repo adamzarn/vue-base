@@ -2,11 +2,25 @@
     <div class="container">
         <div class="col-8">
             <page-title class="title" text="Admins"></page-title>
-            <user-list :users="admins" :refresh="getData" :showToggleAdminButton="true"></user-list>
+            <user-list
+                :users="admins"
+                :refresh="getData" 
+                :showToggleAdminButton="true"
+                :style="noAdminResultsStyle"
+                :noResultsMessage="noAdminResultsMessage"
+                :shouldShowNoResultsMessage="true">
+            </user-list>
         </div>
         <div class="col-4">
             <base-input label="Search Users" class="search-bar" v-model="enteredQuery" :onChange="getUsers"></base-input>
-            <user-list :users="users" :refresh="getData" :showToggleAdminButton="true"></user-list>
+            <user-list
+                :users="users"
+                :refresh="getData" 
+                showToggleAdminButton="true"
+                :style="noUserResultsStyle"
+                :noResultsMessage="noUserResultsMessage"
+                :shouldShowNoResultsMessage="enteredQuery.length > 0">
+            </user-list>
         </div>
     </div>
 </template>
@@ -26,8 +40,20 @@ export default {
         return {
             admins: [],
             users: [],
-            enteredQuery: ''
+            enteredQuery: '',
+            noAdminResultsMessage: '',
+            noAdminResultsError: false,
+            noUserResultsMessage: '',
+            noUserResultsError: false,
         }
+    },
+    computed: {
+        noAdminResultsStyle() {
+            return this.noAdminResultsError ? "error" : ""
+        },
+        noUserResultsStyle() {
+            return this.noUserResultsError ? "error" : ""
+        },
     },
     methods: {
         getAdmins() {
@@ -44,10 +70,14 @@ export default {
                         this.$router.push({ name: 'home' });
                     } else {
                         this.admins = admins
+                        this.noAdminResultsMessage = "There are no admins yet.";
+                        this.noAdminResultsError = false;
                     }
                 },
-                onFailure: error => {
-                    alert(error.description);
+                onFailure: () => {
+                    this.admins = [];
+                    this.noAdminResultsMessage = "There was a problem fetching admins.";
+                    this.noAdminResultsError = true;
                 }
             })
         },
@@ -65,10 +95,14 @@ export default {
                     excludeMe: "no"
                 },
                 onSuccess: users => {
-                    this.users = users
+                    this.users = users;
+                    this.noUserResultsMessage = "No users who are not currently admins match your search.";
+                    this.noUserResultsError = false;
                 },
-                onFailure: error => {
-                    alert(error.description);
+                onFailure: () => {
+                    this.users = [];
+                    this.noUserResultsMessage = "There was a problem fetching users.";
+                    this.noUserResultsError = true;
                 }
             })
         },
@@ -78,7 +112,7 @@ export default {
         }
     },
     mounted() {
-        if (localStorage.user() != null) {
+        if (localStorage.isLoggedIn()) {
             this.getData();
         } else {
             this.$router.push({ name: 'login' });

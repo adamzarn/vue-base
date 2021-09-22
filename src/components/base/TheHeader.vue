@@ -11,6 +11,12 @@
         </div>
         <div class="separator"></div>
     </header>
+    <alert-modal
+        :shouldShow="shouldShowAlertModal"
+        :title="alertTitle"
+        :message="alertMessage"
+        :dismiss="dismissAlertModal">
+    </alert-modal>
 </template>
 
 <script>
@@ -20,7 +26,10 @@ import './../../local-storage-helper';
 export default {
     data() {
         return {
-            loggedInUserIsAdmin: false
+            loggedInUserIsAdmin: false,
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: ''
         }
     },
     computed: {
@@ -43,8 +52,10 @@ export default {
                 onSuccess: () => {
                     this.$router.push({ name: 'login' });
                 },
-                onFailure: error => {
-                    alert(error.description);
+                onFailure: () => {
+                    this.alertTitle = "Oops...";
+                    this.alertMessage = "There was a problem logging you out.";
+                    this.shouldShowAlertModal = true;
                 }
             })
         },
@@ -60,10 +71,11 @@ export default {
                 onSuccess: user => {
                     this.loggedInUserIsAdmin = user.isAdmin;
                 },
-                onFailure: error => {
-                    alert(error.description);
-                }
+                onFailure: () => {}
             })
+        },
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
         }
     },
     watch: {

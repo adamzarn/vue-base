@@ -9,6 +9,7 @@ import BaseButton from './components/base/BaseButton.vue';
 import TheHeader from './components/base/TheHeader.vue';
 import BaseModal from './components/base/BaseModal.vue';
 import ProfilePhoto from './components/base/ProfilePhoto.vue';
+import AlertModal from './components/modals/AlertModal.vue';
 
 const app = createApp(App);
 
@@ -18,6 +19,7 @@ app.component('base-button', BaseButton);
 app.component('the-header', TheHeader);
 app.component('base-modal', BaseModal);
 app.component('profile-photo', ProfilePhoto);
+app.component('alert-modal', AlertModal);
 
 app.use(router);
 

@@ -1,5 +1,5 @@
 <template>
-    <base-card>
+    <base-card class="centered-card">
         <form @submit.prevent="resetPassword">
             <h2>Reset Password</h2>
             <base-input 
@@ -25,10 +25,17 @@
             </div>
         </form>
     </base-card>
+    <alert-modal
+        :shouldShow="shouldShowAlertModal"
+        :title="alertTitle"
+        :message="alertMessage"
+        :dismiss="dismissAlertModal">
+    </alert-modal>
 </template>
 
 <script>
 import network from '../../network/network.js';
+import exceptions from '../../network/exceptions.js';
 
 export default {
     data() {
@@ -37,7 +44,11 @@ export default {
             enteredConfirmedPassword: '',
             passwordIsInvalid: false,
             confirmedPasswordIsInvalid: false,
-            minPasswordLength: 6
+            minPasswordLength: 6,
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: '',
+            shouldNavigateBackToLogin: false
         }
     },
     computed: {
@@ -54,7 +65,9 @@ export default {
     methods: {
         resetPassword() {
             if (this.formIsInvalid) {
-                alert("Please enter and confirm a valid password.")
+                this.alertTitle = "Oops..."
+                this.alertMessage = "Please enter and confirm a valid password.";
+                this.shouldShowAlertModal = true;
                 return
             }
             network.resetPassword({
@@ -65,11 +78,20 @@ export default {
                     value: this.enteredPassword
                 },
                 onSuccess: () => {
-                    alert("Your password was successfully reset. You will now be redirected to the login page.")
-                    this.$router.push({ name: 'login' });
+                    this.alertTitle = "Success"
+                    this.alertMessage = "Your password was successfully reset. You will now be redirected to the login page.";
+                    this.shouldNavigateBackToLogin = true;
+                    this.shouldShowAlertModal = true;
                 },
                 onFailure: error => {
-                    alert(error.description);
+                    this.alertTitle = "Oops..."
+                    this.alertMessage = "There was a problem resetting your password.";
+                    this.shouldNavigateBackToLogin = false;
+                    if (error.exception == exceptions.invalidToken) {
+                        this.shouldNavigateBackToLogin = true;
+                        this.alertMessage = "Your password reset request has expired. Please try again.";
+                    }
+                    this.shouldShowAlertModal = true;
                 }
             })
         },
@@ -79,6 +101,12 @@ export default {
         validateConfirmedPassword() {
             this.confirmedPasswordIsInvalid = this.enteredConfirmedPassword.length < this.minPasswordLength
         },
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
+            if (this.shouldNavigateBackToLogin) { 
+                this.$router.push({ name: 'login' });
+            }
+        }
     }
 }
 </script>

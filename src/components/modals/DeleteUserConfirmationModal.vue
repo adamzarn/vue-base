@@ -10,6 +10,12 @@
             </modal-buttons>
         </template>
     </base-modal>
+    <alert-modal
+        :shouldShow="shouldShowAlertModal"
+        :title="alertTitle"
+        :message="alertMessage"
+        :dismiss="dismissAlertModal">
+    </alert-modal>
 </template>
 
 <script>
@@ -20,6 +26,13 @@ import ModalButtons from '../modals/ModalButtons.vue';
 export default {
     components: { ModalButtons },
     props: ['shouldShow', 'user', 'dismiss'],
+    data() {
+        return {
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: ''
+        }
+    },
     computed: {
         userIsLoggedInUser() {
             return this.user.id == localStorage.user().id;
@@ -31,16 +44,27 @@ export default {
             var lastChar = this.user.lastName[this.user.lastName.length - 1];
             return (lastChar === 's') ? `${this.fullName}'` : `${this.fullName}'s`
         },
+        account() {
+            if (this.userIsLoggedInUser) {
+                return "your account";
+            } else {
+                return `${this.possessiveFullName} account`
+            }
+        },
+        areYouSure() {
+            return `Are you sure you want to delete ${this.account}?`
+        },
         message() {
             if (this.userIsLoggedInUser) {
-                return `Are you sure you want to delete your account? You will be logged out and all of your data will be deleted.`
+                return `${this.areYouSure} You will be logged out and all of your data will be deleted.`
             } else {
-                return `Are you sure you want to delete ${this.possessiveFullName} account? This will delete all of his or her data and you will be returned to the home page.`
+                return `${this.areYouSure} This will delete all of his or her data and you will be returned to the home page.`
             }
         }
     },
     methods: {
         deleteUser() {
+            this.dismiss();
             network.deleteUser({
                 urlParams: {
                     userId: this.user.id
@@ -53,8 +77,19 @@ export default {
                         this.$router.push({ name: 'home' });
                     }
                 },
-                onFailure: error => { alert(error.description); }
+                onFailure: error => { 
+                    this.alertTitle = "Oops..."
+                    if (error.status === 401) {
+                        this.alertMessage = `You are not authorized to delete ${this.account}.`
+                    } else  {
+                        this.alertMessage = `There was a problem deleting ${this.account}.`; 
+                    }
+                    this.shouldShowAlertModal = true;
+                }
             });
+        },
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
         }
     }
 }
