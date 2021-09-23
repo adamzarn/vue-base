@@ -7,7 +7,10 @@
                 @didUpdateUser="didUpdateUser"
                 @didUpdateFollowingStatus="didUpdateFollowingStatus"></profile-header>
             <profile-body :user="user" :refresh="getUser"></profile-body>
-            <profile-follows :key="followsKey" :user="user"></profile-follows>
+            <profile-follows :user="user"></profile-follows>
+        </div>
+        <div v-else class="col-9 profile-container">
+            We're having trouble fetching your profile right now.
         </div>
         <div class="col-3 posts-container">
             <profile-posts :key="postsKey"></profile-posts>
@@ -29,8 +32,7 @@ export default {
         return {
             user: null,
             profilePhotoUrl: null,
-            postsKey: '',
-            followsKey: ''
+            postsKey: ''
         }
     },
     computed: {
@@ -62,9 +64,7 @@ export default {
                     this.postsKey = new Date().getTime();
                     this.profilePhotoUrl = user.profilePhotoUrl;
                 },
-                onFailure: error => {
-                    alert(error.description);
-                }
+                onFailure: () => {}
             })
         }
     },

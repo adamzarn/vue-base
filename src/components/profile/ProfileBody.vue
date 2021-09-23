@@ -31,10 +31,17 @@
         :allowEmailUpdate="allowEmailUpdate"
         :dismiss="dismissChangeEmailNotificationModal">
     </change-email-modal>
+    <alert-modal
+        :shouldShow="shouldShowAlertModal"
+        :title="alertTitle"
+        :message="alertMessage"
+        :dismiss="dismissAlertModal">
+    </alert-modal>
 </template>
 
 <script>
 import network from '../../network/network.js';
+import exceptions from '../../network/exceptions.js';
 import './../../local-storage-helper.js';
 import ProfileItem from '../base/ProfileItem.vue';
 import ChangeEmailModal from '../modals/ChangeEmailModal.vue';
@@ -51,7 +58,11 @@ export default {
                 'username': false,
                 'email': false,
                 'password': false
-            }
+            },
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: '',
+            shouldNavigateBackToLogin: false
         }
     },
     computed: {
@@ -75,7 +86,13 @@ export default {
                 },
                 onFailure: error => {
                     this.changeStatuses[field] = false;
-                    alert(error.description);
+                    this.alertTitle = "Oops...";
+                    this.alertMessage = "There was a problem updating your profile. Please try again later.";
+                    if (error.exception == exceptions.userAlreadyExists) {
+                        this.alertMessage = "A user with that email already exists.";
+                    }
+                    this.shouldNavigateBackToLogin = false;
+                    this.shouldShowAlertModal = true;
                 }
             })
         },
@@ -88,19 +105,27 @@ export default {
                 onSuccess: () => {
                     this.logout(email)
                 },
-                onFailure: error => {
-                    alert(error.description);
+                onFailure: () => {
+                    this.alertTitle = "Oops...";
+                    this.alertMessage = "There was a problem sending the email verification email. Please contact support.";
+                    this.shouldNavigateBackToLogin = false;
+                    this.shouldShowAlertModal = true;
                 }
             })
         },
         logout(email) {
             network.logout({
                 onSuccess: () => {
-                    alert(`You will now be logged out. An email verification email has been sent to ${email}.`)
-                    this.$router.push({ name: 'login' });
+                    this.alertTitle = "Success";
+                    this.alertMessage = `An email verification email has been sent to ${email}. You will now be logged out.`
+                    this.shouldNavigateBackToLogin = true;
+                    this.shouldShowAlertModal = true;
                 },
-                onFailure: error => {
-                    alert(error.description);
+                onFailure: () => {
+                    this.alertTitle = "Oops...";
+                    this.alertMessage = "There was a problem logging you out.";
+                    this.shouldNavigateBackToLogin = false;
+                    this.shouldShowAlertModal = true;
                 }
             })
         },
@@ -114,13 +139,19 @@ export default {
                 },
                 onSuccess: () => {
                     this.changeStatuses[field] = false;
-                    alert("Your password was changed successfully!")
-                    this.passwordBeingChanged = false
+                    this.alertTitle = "Success";
+                    this.alertMessage = "Your password was changed successfully.";
+                    this.shouldNavigateBackToLogin = false;
+                    this.shouldShowAlertModal = true;
+                    this.passwordBeingChanged = false;
                     this.refresh()
                 },
-                onFailure: error => {
+                onFailure: () => {
                     this.changeStatuses[field] = false;
-                    alert(error.description);
+                    this.alertTitle = "Oops...";
+                    this.alertMessage = "There was a problem updating your password. Please try again later.";
+                    this.shouldNavigateBackToLogin = false;
+                    this.shouldShowAlertModal = true;
                 }
             })
         },
@@ -152,6 +183,12 @@ export default {
             this.shouldShowChangeEmailNotificationModal = false
             this.changeStatuses['email'] = true
         },
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
+            if (this.shouldNavigateBackToLogin) {
+                this.$router.push({ name: 'login' });
+            }
+        }
     }
 }
 </script>

@@ -101,7 +101,7 @@ export default {
         },
         onSendEmailVerificationEmailFailure(error) {
             this.alertTitle = "Oops..."
-            this.alertMessage = "Something went wrong."
+            this.alertMessage = "There was a problem sending the email verification email. Please contact support.";
             if (error.exception == exceptions.userDoesNotExist) {
                 this.alertMessage = "A user with that email does not exist.";
             }

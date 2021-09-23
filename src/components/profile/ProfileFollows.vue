@@ -1,12 +1,26 @@
 <template>
     <div v-if="user" class="follows">
-        <div class="col-12" v-if="followers.length > 0">
+        <div class="col-12">
             <page-title class="title" text=Followers></page-title>
-            <user-list :users="followers" :refresh="getFollowers" :showToggleFollowButton="false"></user-list>
+            <user-list
+                :users="followers"
+                :refresh="getFollowers"
+                :showToggleFollowButton="false"
+                :style="noFollowersStyle"
+                :noResultsMessage="noFollowersMessage"
+                :shouldShowNoResultsMessage="true">
+            </user-list>
         </div>
-        <div class="col-12" v-if="following.length > 0">
+        <div class="col-12">
             <page-title class="title" text="Following"></page-title>
-            <user-list :users="following" :refresh="getFollowing" :showToggleFollowButton="userIsLoggedInUser"></user-list>
+            <user-list
+                :users="following"
+                :refresh="getFollowing"
+                :showToggleFollowButton="userIsLoggedInUser"
+                :style="noFollowingStyle"
+                :noResultsMessage="noFollowingMessage"
+                :shouldShowNoResultsMessage="true">
+            </user-list>
         </div>
     </div>
 </template>
@@ -19,67 +33,97 @@ import PageTitle from '../base/PageTitle.vue';
 
 export default {
     components: { UserList, PageTitle },
-    props: ['key', 'user'],
+    props: ['user'],
     data() {
         return {
             followers: [],
             following: [],
+            noFollowersMessage: '',
+            noFollowersError: false,
+            noFollowingMessage: '',
+            noFollowingError: false
         }
     },
     computed: {
         userIsLoggedInUser() {
             return this.user.id == localStorage.user().id;
+        },
+        noFollowersSubject() {
+            return this.userIsLoggedInUser ? "You don't" : `${this.user.firstName} doesn't`;
+        },
+        noFollowingSubject() {
+            return this.userIsLoggedInUser ? "You aren't" : `${this.user.firstName} isn't`;
+        },
+        noFollowersErrorSubject() {
+            if (this.userIsLoggedInUser) {
+                return  "your"
+            } else {
+                var lastChar = this.user.firstName[this.user.firstName.length - 1];
+                return lastChar == "s" ? `${this.user.firstName}'` : `${this.user.firstName}'s`
+            }
+        },
+        noFollowingErrorSubject() {
+            return this.userIsLoggedInUser ? "you're" : `${this.user.firstName} is`;
+        },
+        noFollowersStyle() {
+            return this.noFollowersError ? "error" : "";
+        },
+        noFollowingStyle() {
+            return this.noFollowingError ? "error" : "";
         }
     },
     methods: {
-        async getFollowers() {
+        async getFollows(followType) {
             network.getFollows({
                 urlParams: {
                     userId: this.$route.params.userId,
-                    followType: "followers"
+                    followType: followType
                 },
                 onSuccess: users => { 
-                    this.followers = users
+                    if (followType == "followers") {
+                        this.followers = users;
+                        this.noFollowersMessage = `${this.noFollowersSubject} have any followers yet.`;
+                        this.noFollowersError = false;
+                    } else {
+                        this.following = users.map((user) => {
+                            let updatedUser = user
+                            user.following = true
+                            return updatedUser
+                        })
+                        this.noFollowingMessage = `${this.noFollowingSubject} following anyone yet.`;
+                        this.noFollowingError = false;
+                    }
                 },
-                onFailure: error => { 
-                    alert(error.description);
+                onFailure: () => { 
+                    if (followType == "followers") {
+                        this.followers = [];
+                        this.noFollowersMessage = `There was a problem fetching ${this.noFollowersErrorSubject} followers.`;
+                        this.noFollowersError = true;
+                    } else {
+                        this.following = [];
+                        this.noFollowingMessage = `There was a problem fetching the users ${this.noFollowingErrorSubject} following.`;
+                        this.noFollowingError = true;
+                    }
                 }
             })
+        },
+        async getFollowers() {
+            this.getFollows("followers");
         },
         async getFollowing() {
-            network.getFollows({
-                urlParams: {
-                    userId: this.$route.params.userId,
-                    followType: "following"
-                },
-                onSuccess: users => {
-                    this.following = users.map((user) => {
-                        let updatedUser = user
-                        user.following = true
-                        return updatedUser
-                    })
-                },
-                onFailure: error => { 
-                    alert(error.description); 
-                }
-            })
+            this.getFollows("following");
         },
         async getData() {
-            this.getFollowers()
-            this.getFollowing()
+            this.getFollows("followers")
+            this.getFollows("following")
         }
     },
     mounted() {
         this.getData();
     },
     watch: {
-        key() {
+        user() {
             this.getData();
-        },
-        $route(to) {
-            if (localStorage.isLoggedIn() && to.name == "profile") {
-                this.getData();
-            }
         }
     }
 }
