@@ -8,9 +8,7 @@
             :isLast="index==users.length-1"
             :selectable="true"
             :refresh="refresh"
-            :showToggleFollowButton="showToggleFollowButton"
-            :showToggleAdminButton="showToggleAdminButton"
-            :showDeleteButton="showDeleteButton">
+            :showToggleFollowButton="showToggleFollowButton">
         </user-list-item>
     </base-card>
     <p v-if="users.length == 0 && shouldShowNoResultsMessage" :class="style">{{ noResultsMessage }}</p>
@@ -33,16 +31,6 @@ export default {
             required: true
         },
         showToggleFollowButton: {
-            type: Boolean,
-            required: false,
-            default: false
-        },
-        showToggleAdminButton: {
-            type: Boolean,
-            required: false,
-            default: false
-        },
-        showDeleteButton: {
             type: Boolean,
             required: false,
             default: false

@@ -1,11 +1,13 @@
 <template>
     <div class="buttons-container">
         <base-button v-if="showToggleFollowButton" class="follow-button" @click.stop="toggleFollowingStatus()">{{ toggleFollowingStatusButtonText }}</base-button>
-        <div v-if="loggedInUserIsAdmin && (showToggleAdminButton || showDeleteButton)" class="admin-buttons">
-            <base-button v-if="showToggleAdminButton" mode="light" class="admin-button" @click.stop="toggleAdminStatus()">{{ toggleAdminStatusButtonText }}</base-button>
-            <img v-if="showDeleteButton" class="svg delete-button" src="/delete.svg" @click.stop="deleteUser()">
-        </div>
     </div>
+    <alert-modal
+        :shouldShow="shouldShowAlertModal"
+        :title="alertTitle"
+        :message="alertMessage"
+        :dismiss="dismissAlertModal">
+    </alert-modal>
 </template>
 
 <script>
@@ -20,28 +22,22 @@ export default {
             type: Boolean,
             required: false,
             default: false
-        },
-        showToggleAdminButton: {
-            type: Boolean,
-            required: false,
-            default: false
-        },
-        showDeleteButton: {
-            type: Boolean,
-            required: false,
-            default: false
+        }
+    },
+    data() {
+        return {
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: ''
         }
     },
     computed: {
-        loggedInUserIsAdmin() {
-            return localStorage.user().isAdmin;
-        },
-        toggleAdminStatusButtonText() {
-            return this.user.isAdmin ? "Revoke Admin Access" : "Give Admin Access"
-        },
         toggleFollowingStatusButtonText() {
             return this.user.following ? "Unfollow" : "Follow"
-        }
+        },
+        toggleFollowingAction() {
+            return this.isFollowing ? 'unfollowing' : 'following';
+        },
     },
     methods: {
         toggleFollowingStatus() {
@@ -51,38 +47,17 @@ export default {
                     userId: this.user.id
                 },
                 onSuccess: this.refresh,
-                onFailure: error => { alert(error.description); }
+                onFailure: () => {
+                    this.alertTitle = "Oops...";
+                    this.alertMessage = `There was a problem ${this.toggleFollowingAction} ${this.user.firstName}.`;
+                    this.shouldShowAlertModal = true;
+                }
             })
         },
-        toggleAdminStatus() {
-            network.updateUser({
-                urlParams: {
-                    userId: this.user.id
-                },
-                body: {
-                    isAdmin: !this.user.isAdmin
-                },
-                onSuccess: () => {
-                    if (this.user.id == localStorage.user().id) {
-                        let updatedUser = localStorage.user();
-                        updatedUser.isAdmin = !updatedUser.isAdmin;
-                        localStorage.setUser(updatedUser);
-                    }
-                    this.refresh()
-                },
-                onFailure: error => { alert(error.description); }
-            });
-        },
-        deleteUser() {
-            network.deleteUser({
-                urlParams: {
-                    userId: this.user.id
-                },
-                onSuccess: this.refresh,
-                onFailure: error => { alert(error.description); }
-            });
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
         }
-    }
+    },
 }
 </script>
 

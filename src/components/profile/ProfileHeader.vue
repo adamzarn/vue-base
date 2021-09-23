@@ -25,6 +25,12 @@
         :user="passedInUser"
         :dismiss="dismissDeleteUserConfirmationModal">
     </delete-user-confirmation-modal>
+    <alert-modal
+        :shouldShow="shouldShowAlertModal"
+        :title="alertTitle"
+        :message="alertMessage"
+        :dismiss="dismissAlertModal">
+    </alert-modal>
 </template>
 
 <script>
@@ -40,7 +46,10 @@ export default {
     data() {
         return {
             followStatus: null,
-            shouldShowDeleteUserConfirmationModal: false
+            shouldShowDeleteUserConfirmationModal: false,
+            shouldShowAlertModal: false,
+            alertTitle: '',
+            alertMessage: ''
         }
     },
     computed: {
@@ -76,6 +85,13 @@ export default {
         },
         toggleAdminButtonText() {
             return this.user.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access';
+        },
+        toggleFollowingAction() {
+            return this.isFollowing ? 'unfollowing' : 'following';
+        },
+        possessiveFirstName() {
+            var lastChar = this.user.firstName[this.user.firstName.length - 1];
+            return lastChar == "s" ? `${this.user.firstName}'` : `${this.user.firstName}'s`
         }
     },
     methods: {
@@ -89,7 +105,11 @@ export default {
                     this.getFollowStatus()
                     this.$emit('didUpdateFollowingStatus');
                 },
-                onFailure: error => { alert(error.description); }
+                onFailure: () => {
+                    this.alertTitle = "Oops...";
+                    this.alertMessage = `There was a problem ${this.toggleFollowingAction} ${this.user.firstName}.`;
+                    this.shouldShowAlertModal = true;
+                }
             })
         },
         toggleAdminStatus() {
@@ -113,8 +133,10 @@ export default {
                         this.$emit('didUpdateUser', updatedUser)
                     }
                 },
-                onFailure: error => { 
-                    alert(error.description); 
+                onFailure: () => { 
+                    this.alertTitle = "Oops...";
+                    this.alertMessage = `There was a problem updating ${this.possessiveFirstName} admin access.`;
+                    this.shouldShowAlertModal = true;
                 }
             });
         },
@@ -135,8 +157,10 @@ export default {
                     updatedUser.profilePhotoUrl = data.url;
                     this.$emit('didUpdateUser', updatedUser);
                 },
-                onFailure: error => {
-                    alert(error.description);
+                onFailure: () => {
+                    this.alertTitle = "Oops...";
+                    this.alertMessage = `There was a problem uploading the photo. Please try again later.`;
+                    this.shouldShowAlertModal = true;
                 }
             })
         },
@@ -157,7 +181,9 @@ export default {
                 onSuccess: (followStatus) => {
                     this.followStatus = followStatus;
                 },
-                onFailure: error => { alert(error.description); }
+                onFailure: () => {
+                    this.followStatus = null;
+                }
             });
         },
         showDeleteUserConfirmationModal() {
@@ -165,6 +191,9 @@ export default {
         },
         dismissDeleteUserConfirmationModal() {
             this.shouldShowDeleteUserConfirmationModal = false;
+        },
+        dismissAlertModal() {
+            this.shouldShowAlertModal = false;
         }
     },
     mounted() {

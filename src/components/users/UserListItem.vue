@@ -12,9 +12,7 @@
         <user-list-item-buttons
             :user="user"
             :refresh="refresh"
-            :showToggleFollowButton="showToggleFollowButton"
-            :showToggleAdminButton="showToggleAdminButton"
-            :showDeleteButton="showDeleteButton">
+            :showToggleFollowButton="showToggleFollowButton">
         </user-list-item-buttons>
     </div>
     <div v-if="isLast==false" class="separator"></div>
@@ -26,7 +24,7 @@ import UserListItemButtons from '../users/UserListItemButtons';
 
 export default {
     components: { UserListItemText, UserListItemButtons },
-    props: ['user', 'isFirst', 'isLast', 'selectable', 'refresh', 'showToggleFollowButton', 'showToggleAdminButton', 'showDeleteButton'],
+    props: ['user', 'isFirst', 'isLast', 'selectable', 'refresh', 'showToggleFollowButton'],
     computed: {
         classes() {
             return {
