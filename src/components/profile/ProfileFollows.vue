@@ -122,6 +122,9 @@ export default {
         this.getData();
     },
     watch: {
+        key() {
+            this.getData();
+        },
         user() {
             this.getData();
         }

@@ -7,8 +7,7 @@
                 @didUpdateUser="didUpdateUser"
                 @didUpdateFollowingStatus="didUpdateFollowingStatus"></profile-header>
             <profile-body :user="user" :refresh="getUser"></profile-body>
-            <profile-follows :user="user"></profile-follows>
-        </div>
+            <profile-follows :key="followsKey" :user="user"></profile-follows>        </div>
         <div v-else class="col-9 profile-container">
             We're having trouble fetching your profile right now.
         </div>
@@ -32,6 +31,7 @@ export default {
         return {
             user: null,
             profilePhotoUrl: null,
+            followsKey: '',
             postsKey: ''
         }
     },
