@@ -2,22 +2,22 @@
     <base-card v-if="user">
         <profile-item v-if="userIsLoggedInUser" 
             field="firstName" label="First Name" 
-            :currentValue="user.firstName" :update="updateUser" :editable="userIsLoggedInUser" 
+            :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" 
             :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item v-if="userIsLoggedInUser"
             field="lastName" label="Last Name"
-            :currentValue="user.lastName" :update="updateUser" :editable="userIsLoggedInUser"
+            :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser"
             :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item
             field="username" label="Username"
-            :currentValue="user.username" :update="updateUser" :editable="userIsLoggedInUser"
+            :currentValue="username" :update="updateUser" :editable="userIsLoggedInUser"
             :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item
             field="email" label="Email"
-            :showSeparator="userIsLoggedInUser" :currentValue="user.email" :update="updateUser" :editable="userIsLoggedInUser"
+            :showSeparator="userIsLoggedInUser" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser"
             :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item v-if="userIsLoggedInUser"
@@ -68,6 +68,18 @@ export default {
     computed: {
         userIsLoggedInUser() {
             return this.user.id == localStorage.user().id;
+        },
+        firstName() {
+            return this.user.firstName;
+        },
+        lastName() {
+            return this.user.lastName;
+        },
+        username() {
+            return this.user.username;
+        },
+        email() {
+            return this.user.email;
         }
     },
     methods: {

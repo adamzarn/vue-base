@@ -1,5 +1,5 @@
 <template>
-    <register-form class="centered-card"></register-form>
+    <register-form></register-form>
 </template>
 
 <script>

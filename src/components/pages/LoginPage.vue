@@ -1,5 +1,5 @@
 <template>
-    <login-form :email="enteredEmail" @change="didUpdateEmail" class="centered-card"></login-form>
+    <login-form :email="enteredEmail" @change="didUpdateEmail"></login-form>
     <div class="centered-link">
         <a @click="showForgotPasswordModal">Forgot Password?</a>
     </div>

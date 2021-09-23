@@ -1,5 +1,5 @@
 <template>
-    <base-card>
+    <base-card class="centered-card">        
         <form @submit.prevent="register">
             <page-title class="title" text="Register"></page-title>
             <base-input
@@ -190,7 +190,7 @@ form {
 }
 .title {
     margin: 0;
-    margin-bottom: calc(var(--default-spacing)*2);
+    margin-bottom: var(--default-spacing);
 }
 .login-button {
     padding: calc(var(--default-spacing)/2) var(--default-spacing);
