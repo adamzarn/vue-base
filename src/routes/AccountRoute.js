@@ -1,21 +1,21 @@
-import AccountPage from '../components/pages/Account/AccountPage.vue';
-import ProfilePage from '../components/pages/Account/ProfilePage.vue';
-import HistoryPage from '../components/pages/Account/HistoryPage.vue';
+import AccountPage from "../components/pages/Account/AccountPage.vue";
+import ProfilePage from "../components/pages/Account/ProfilePage.vue";
+import ActivityPage from "../components/pages/Account/ActivityPage.vue";
 
 const AccountRoute = {
-    name: 'account',
-    path: '/account/:userId',
+    name: "account",
+    path: "/account/:userId",
     component: AccountPage,
     children: [
         {
-            name: 'profile',
-            path: '/account/:userId/profile',
+            name: "profile",
+            path: "/account/:userId/profile",
             component: ProfilePage
         },
         {
-            name: 'history',
-            path: '/account/:userId/history',
-            component: HistoryPage
+            name: "activity",
+            path: "/account/:userId/activity",
+            component: ActivityPage
         }
     ]
 }

@@ -7,7 +7,7 @@
 
 <script>
 export default {
-    props: ['user', 'navigatesToProfile'],
+    props: ["user", "navigatesToProfile"],
     computed: {
         fullName() {
             return `${this.user.firstName} ${this.user.lastName}`
@@ -17,7 +17,7 @@ export default {
         },
         classes() {
             return {
-                'clickable': this.navigatesToProfile
+                "clickable": this.navigatesToProfile
             }
         }
     },
@@ -38,7 +38,7 @@ export default {
 }
 .text {
     margin: 0;
-    text-align: 'center';
+    text-align: "center";
     font-size: var(--default-font-size);
 }
 .bold {

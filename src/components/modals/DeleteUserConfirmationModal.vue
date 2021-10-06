@@ -19,18 +19,18 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import './../../local-storage-helper.js';
-import ModalButtons from '../modals/ModalButtons.vue';
+import network from "../../network/network.js";
+import "./../../local-storage-helper.js";
+import ModalButtons from "../modals/ModalButtons.vue";
 
 export default {
     components: { ModalButtons },
-    props: ['shouldShow', 'user', 'dismiss'],
+    props: ["shouldShow", "user", "dismiss"],
     data() {
         return {
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: ''
+            alertTitle: "",
+            alertMessage: ""
         }
     },
     computed: {
@@ -42,7 +42,7 @@ export default {
         },
         possessiveFullName() {
             var lastChar = this.user.lastName[this.user.lastName.length - 1];
-            return (lastChar === 's') ? `${this.fullName}'` : `${this.fullName}'s`
+            return (lastChar === "s") ? `${this.fullName}"` : `${this.fullName}"s`
         },
         account() {
             if (this.userIsLoggedInUser) {
@@ -72,9 +72,9 @@ export default {
                 onSuccess: () => {
                     if (this.userIsLoggedInUser) {
                         localStorage.clear();
-                        this.$router.push({ name: 'login' });
+                        this.$router.push({ name: "login" });
                     } else {
-                        this.$router.push({ name: 'home' });
+                        this.$router.push({ name: "home" });
                     }
                 },
                 onFailure: error => { 

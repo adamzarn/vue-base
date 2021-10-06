@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import './../../local-storage-helper.js';
+import network from "../../network/network.js";
+import "./../../local-storage-helper.js";
 
 export default {
     props: {
@@ -27,8 +27,8 @@ export default {
     data() {
         return {
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: ''
+            alertTitle: "",
+            alertMessage: ""
         }
     },
     computed: {
@@ -36,14 +36,14 @@ export default {
             return this.user.following ? "Unfollow" : "Follow"
         },
         toggleFollowingAction() {
-            return this.isFollowing ? 'unfollowing' : 'following';
+            return this.isFollowing ? "unfollowing" : "following";
         },
     },
     methods: {
         toggleFollowingStatus() {
             network.toggleFollowingStatus({
                 urlParams: {
-                    action: this.user.following ? 'unfollow' : 'follow',
+                    action: this.user.following ? "unfollow" : "follow",
                     userId: this.user.id
                 },
                 onSuccess: this.refresh,

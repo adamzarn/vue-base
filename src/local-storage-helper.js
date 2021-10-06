@@ -7,11 +7,11 @@ Storage.prototype.getObject = function(key) {
 }
 
 Storage.prototype.user = function() {
-    return this.getObject('user');
+    return this.getObject("user");
 }
 
 Storage.prototype.setUser = function(data) {
-    this.setObject('user', data);
+    this.setObject("user", data);
 }
 
 Storage.prototype.login = function(data) {

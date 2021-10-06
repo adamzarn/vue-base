@@ -20,7 +20,7 @@
             <p class="validation" v-if="confirmedPasswordIsInvalid">{{ invalidPasswordMessage }}</p>
             <p class="validation" v-if="!passwordsMatch">Passwords don't match</p>
             <div class="buttons">
-                <router-link class="login-button" to='/login'>Login</router-link>
+                <router-link class="login-button" to="/login">Login</router-link>
                 <base-button type="submit">Submit</base-button>
             </div>
         </form>
@@ -34,22 +34,22 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import exceptions from '../../network/exceptions.js';
-import PageTitle from '../base/PageTitle.vue';
+import network from "../../network/network.js";
+import exceptions from "../../network/exceptions.js";
+import PageTitle from "../base/PageTitle.vue";
 
 export default {
     components: { PageTitle },
     data() {
         return {
-            enteredPassword: '',
-            enteredConfirmedPassword: '',
+            enteredPassword: "",
+            enteredConfirmedPassword: "",
             passwordIsInvalid: false,
             confirmedPasswordIsInvalid: false,
             minPasswordLength: 6,
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: '',
+            alertTitle: "",
+            alertMessage: "",
             shouldNavigateBackToLogin: false
         }
     },
@@ -61,7 +61,7 @@ export default {
             return `Your password must have at least ${this.minPasswordLength} characters`;
         },
         formIsInvalid() {
-            return this.passwordIsInvalid || this.confirmedPasswordIsInvalid || this.enteredPassword == '' || this.enteredConfirmedPassword === '';
+            return this.passwordIsInvalid || this.confirmedPasswordIsInvalid || this.enteredPassword == "" || this.enteredConfirmedPassword === "";
         }
     },
     methods: {
@@ -106,7 +106,7 @@ export default {
         dismissAlertModal() {
             this.shouldShowAlertModal = false;
             if (this.shouldNavigateBackToLogin) { 
-                this.$router.push({ name: 'login' });
+                this.$router.push({ name: "login" });
             }
         }
     }

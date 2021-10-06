@@ -1,6 +1,6 @@
 <template>
     <div v-if="user" @click="navigateToProfile">
-        <input v-if="editable" class="profile-photo-input" type="file" id="profile-photo-input" @change="$emit('change', $event)"/>
+        <input v-if="editable" class="profile-photo-input" type="file" id="profile-photo-input" @change="$emit("change", $event)"/>
         <div class="image-container" :class="{ clickable: userIsLoggedInUser && editable || navigatesToProfile, small: small, medium: medium }" @click="didClick">
             <div class="image-placeholder">
                 <p v-if="profilePhotoUrl==null && user != null" class="initials">{{ user.firstName[0] + user.lastName[0] }}</p>
@@ -24,9 +24,9 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import ProfilePhotoModal from '../modals/ProfilePhotoModal.vue';
-import './../../local-storage-helper.js';
+import network from "../../network/network.js";
+import ProfilePhotoModal from "../modals/ProfilePhotoModal.vue";
+import "./../../local-storage-helper.js";
 
 export default {
     components: { ProfilePhotoModal },
@@ -43,13 +43,13 @@ export default {
         },
         navigatesToProfile: Boolean
     },
-    emits: ['change', 'didDeletePhoto'],
+    emits: ["change", "didDeletePhoto"],
     data() {
         return {
             shouldShowProfilePhotoModal: false,
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: ''
+            alertTitle: "",
+            alertMessage: ""
         }
     },
     methods: {
@@ -63,16 +63,16 @@ export default {
         },
         openFileSelector() {
             this.shouldShowProfilePhotoModal = false;
-            document.getElementById('profile-photo-input').click();
+            document.getElementById("profile-photo-input").click();
         },
         deleteProfilePhoto() {
             this.shouldShowProfilePhotoModal = false;
             network.deleteProfilePhoto({
                 onSuccess: () => {
                     localStorage.user().profilePhotoUrl = null
-                    this.$emit('didDeletePhoto');
+                    this.$emit("didDeletePhoto");
                 }, onFailure: () => {
-                    this.alertTitle = "Oops...";
+                    this.alertTitle = this.$t("hello");
                     this.alertMessage = "There was a problem deleting your profile photo."
                     this.shouldShowAlertModal = true;
                 }

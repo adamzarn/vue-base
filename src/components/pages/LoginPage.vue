@@ -20,20 +20,20 @@
 </template>
 
 <script>
-import LoginForm from '../forms/LoginForm.vue';
-import './../../local-storage-helper.js';
-import ForgotPasswordModal from '../modals/ForgotPasswordModal.vue';
-import exceptions from '../../network/exceptions.js';
+import LoginForm from "../forms/LoginForm.vue";
+import "./../../local-storage-helper.js";
+import ForgotPasswordModal from "../modals/ForgotPasswordModal.vue";
+import exceptions from "../../network/exceptions.js";
 
 export default {
     components: { LoginForm, ForgotPasswordModal },
     data() {
         return {
-            enteredEmail: '',
+            enteredEmail: "",
             shouldShowForgotPasswordModal: false,
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: ''
+            alertTitle: "",
+            alertMessage: ""
         }
     },
     methods: {
@@ -65,7 +65,7 @@ export default {
     }, 
     mounted() {
         if (localStorage.isLoggedIn()) {
-            this.$router.push({ name: 'home' });
+            this.$router.push({ name: "home" });
         }
     }
 }

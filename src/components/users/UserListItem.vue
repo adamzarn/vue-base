@@ -19,18 +19,18 @@
 </template>
 
 <script>
-import UserListItemText from '../users/UserListItemText.vue';
-import UserListItemButtons from '../users/UserListItemButtons';
+import UserListItemText from "../users/UserListItemText.vue";
+import UserListItemButtons from "../users/UserListItemButtons";
 
 export default {
     components: { UserListItemText, UserListItemButtons },
-    props: ['user', 'isFirst', 'isLast', 'selectable', 'refresh', 'showToggleFollowButton'],
+    props: ["user", "isFirst", "isLast", "selectable", "refresh", "showToggleFollowButton"],
     computed: {
         classes() {
             return {
-                'first': this.isFirst,
-                'last': this.isLast,
-                'selectable': this.selectable
+                "first": this.isFirst,
+                "last": this.isLast,
+                "selectable": this.selectable
             }
         }
     },

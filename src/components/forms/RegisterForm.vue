@@ -52,7 +52,7 @@
             <p class="validation" v-if="confirmedPasswordIsInvalid">{{ invalidPasswordMessage }}</p>
             <p class="validation" v-if="!passwordsMatch">Passwords don't match</p>
             <div class="buttons">
-                <router-link class="login-button" to='/login'>Login</router-link>
+                <router-link class="login-button" to="/login">Login</router-link>
                 <base-button class="register-button" type="submit">Register</base-button>
             </div>
         </form>
@@ -66,20 +66,20 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import exceptions from '../../network/exceptions.js';
-import PageTitle from '../base/PageTitle.vue';
+import network from "../../network/network.js";
+import exceptions from "../../network/exceptions.js";
+import PageTitle from "../base/PageTitle.vue";
 
 export default {
     components: { PageTitle }, 
     data() {
         return {
-            enteredFirstName: '',
-            enteredLastName: '',
-            enteredUsername: '',
-            enteredEmail: '',
-            enteredPassword: '',
-            enteredConfirmedPassword: '',
+            enteredFirstName: "",
+            enteredLastName: "",
+            enteredUsername: "",
+            enteredEmail: "",
+            enteredPassword: "",
+            enteredConfirmedPassword: "",
             firstNameIsInvalid: false,
             lastNameIsInvalid: false,
             emailIsInvalid: false,
@@ -88,8 +88,8 @@ export default {
             minPasswordLength: 6,
             emailAlreadyExists: false,
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: ''
+            alertTitle: "",
+            alertMessage: ""
         }
     },
     computed: {
@@ -111,13 +111,13 @@ export default {
                     password: this.enteredPassword
                 },
                 onSuccess: () => {
-                    this.$router.push({ name: 'home' });
+                    this.$router.push({ name: "home" });
                 },
                 onFailure: error => {
                     if (error.exception === exceptions.emailIsNotVerified) {
                         this.sendEmailVerificationEmail();
                     } else if (error.status === 400) {
-                        this.showAlertModal('Oops...', error.reason);
+                        this.showAlertModal("Oops...", error.reason);
                     } else {
                         this.showGenericAlertModal();
                     }
@@ -131,7 +131,7 @@ export default {
                     frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
                 },
                 onSuccess: () => {
-                    this.showAlertModal('Email Verification Required', `An email verification email has been sent to ${this.enteredEmail}.`);
+                    this.showAlertModal("Email Verification Required", `An email verification email has been sent to ${this.enteredEmail}.`);
                 },
                 onFailure: () => {
                     this.showGenericAlertModal();
@@ -139,10 +139,10 @@ export default {
             })
         },
         validateFirstName() {
-            this.firstNameIsInvalid = this.enteredFirstName === '';
+            this.firstNameIsInvalid = this.enteredFirstName === "";
         },
         validateLastName() {
-            this.lastNameIsInvalid = this.enteredLastName === '';
+            this.lastNameIsInvalid = this.enteredLastName === "";
         },
         validateEmail() {
             const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -178,7 +178,7 @@ export default {
             this.shouldShowAlertModal = true;
         },
         showGenericAlertModal() {
-            this.showAlertModal('Oops...', 'Something went wrong');
+            this.showAlertModal("Oops...", "Something went wrong");
         }
     }
 }

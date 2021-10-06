@@ -29,7 +29,7 @@ export default {
         },
         type: {
             type: String,
-            default: 'text'
+            default: "text"
         },
         showSeparator: {
             type: Boolean,
@@ -48,7 +48,7 @@ export default {
             return this.beingChanged ? `New ${this.label}` : this.label;
         },
         value() {
-            return this.type == 'password' ? "*************" : this.currentValue;
+            return this.type == "password" ? "*************" : this.currentValue;
         }
     }
 }

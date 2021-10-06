@@ -26,10 +26,10 @@
 </template>
 
 <script>
-import UserList from '../users/UserList.vue';
-import network from '../../network/network.js';
-import './../../local-storage-helper.js';
-import PageTitle from '../base/PageTitle.vue';
+import UserList from "../users/UserList.vue";
+import network from "../../network/network.js";
+import "./../../local-storage-helper.js";
+import PageTitle from "../base/PageTitle.vue";
 
 export default {
     components: {
@@ -40,10 +40,10 @@ export default {
         return {
             admins: [],
             users: [],
-            enteredQuery: '',
-            noAdminResultsMessage: '',
+            enteredQuery: "",
+            noAdminResultsMessage: "",
             noAdminResultsError: false,
-            noUserResultsMessage: '',
+            noUserResultsMessage: "",
             noUserResultsError: false,
         }
     },
@@ -67,7 +67,7 @@ export default {
                         return admin.id;
                     });
                     if (adminIds.includes(localStorage.user().id) == false) {
-                        this.$router.push({ name: 'home' });
+                        this.$router.push({ name: "home" });
                     } else {
                         this.admins = admins
                         this.noAdminResultsMessage = "There are no admins yet.";
@@ -82,7 +82,7 @@ export default {
             })
         },
         getUsers() {
-            if (this.enteredQuery === '') {
+            if (this.enteredQuery === "") {
                 this.users = [];
                 return
             }
@@ -115,7 +115,7 @@ export default {
         if (localStorage.isLoggedIn()) {
             this.getData();
         } else {
-            this.$router.push({ name: 'login' });
+            this.$router.push({ name: "login" });
         }
     }
 }

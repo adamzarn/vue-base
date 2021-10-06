@@ -1,5 +1,5 @@
 <template>
-    <h1>History</h1>
+    <h1>Activity</h1>
 </template>
 
 <script>

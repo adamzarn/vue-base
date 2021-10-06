@@ -1,8 +1,8 @@
-import VerifyEmailPage from '../components/pages/VerifyEmailPage.vue';
+import VerifyEmailPage from "../components/pages/VerifyEmailPage.vue";
 
 const VerifyEmailRoute = {
-    name: 'verifyEmail',
-    path: '/verifyEmail/:tokenId',
+    name: "verifyEmail",
+    path: "/verifyEmail/:tokenId",
     component: VerifyEmailPage
 }
 

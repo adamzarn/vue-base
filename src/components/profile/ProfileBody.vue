@@ -3,27 +3,27 @@
         <profile-item v-if="userIsLoggedInUser" 
             field="firstName" label="First Name" 
             :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" 
-            :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged">
+            :beingChanged="changeStatuses["firstName"]" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item v-if="userIsLoggedInUser"
             field="lastName" label="Last Name"
             :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser"
-            :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged">
+            :beingChanged="changeStatuses["lastName"]" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item
             field="username" label="Username"
             :currentValue="username" :update="updateUser" :editable="userIsLoggedInUser"
-            :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged">
+            :beingChanged="changeStatuses["username"]" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item
             field="email" label="Email"
             :showSeparator="userIsLoggedInUser" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser"
-            :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged">
+            :beingChanged="changeStatuses["email"]" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item v-if="userIsLoggedInUser"
             field="password" label="Password" type="password"
             :showSeparator="false" :update="changePassword" :editable="userIsLoggedInUser"
-            :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged">
+            :beingChanged="changeStatuses["password"]" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
     </base-card>
     <change-email-modal
@@ -40,28 +40,28 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import exceptions from '../../network/exceptions.js';
-import './../../local-storage-helper.js';
-import ProfileItem from '../base/ProfileItem.vue';
-import ChangeEmailModal from '../modals/ChangeEmailModal.vue';
+import network from "../../network/network.js";
+import exceptions from "../../network/exceptions.js";
+import "./../../local-storage-helper.js";
+import ProfileItem from "../base/ProfileItem.vue";
+import ChangeEmailModal from "../modals/ChangeEmailModal.vue";
 
 export default {
     components: { ProfileItem, ChangeEmailModal },
-    props: ['user', 'refresh'],
+    props: ["user", "refresh"],
     data() {
         return {
             shouldShowChangeEmailNotificationModal: false,
             changeStatuses: {
-                'firstName': false,
-                'lastName': false,
-                'username': false,
-                'email': false,
-                'password': false
+                "firstName": false,
+                "lastName": false,
+                "username": false,
+                "email": false,
+                "password": false
             },
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: '',
+            alertTitle: "",
+            alertMessage: "",
             shouldNavigateBackToLogin: false
         }
     },
@@ -89,7 +89,7 @@ export default {
                     [field]: value
                 },
                 onSuccess: (updatedUser) => {
-                    if (field === 'email' && updatedUser.isEmailVerified == false) {
+                    if (field === "email" && updatedUser.isEmailVerified == false) {
                         this.sendEmailVerificationEmail(value)
                     } else {
                         this.changeStatuses[field] = false;
@@ -168,7 +168,7 @@ export default {
             })
         },
         toggleBeingChanged(field) {
-            if (field === 'email' && this.changeStatuses['email'] === false) {
+            if (field === "email" && this.changeStatuses["email"] === false) {
                 // Check if email verification is required before allowing email change
                 network.getSettings({
                     onSuccess: (settings) => {
@@ -193,12 +193,12 @@ export default {
         },
         allowEmailUpdate() {
             this.shouldShowChangeEmailNotificationModal = false
-            this.changeStatuses['email'] = true
+            this.changeStatuses["email"] = true
         },
         dismissAlertModal() {
             this.shouldShowAlertModal = false;
             if (this.shouldNavigateBackToLogin) {
-                this.$router.push({ name: 'login' });
+                this.$router.push({ name: "login" });
             }
         }
     }

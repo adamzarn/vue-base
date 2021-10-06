@@ -16,12 +16,12 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import ModalButtons from '../modals/ModalButtons.vue';
+import network from "../../network/network.js";
+import ModalButtons from "../modals/ModalButtons.vue";
 
 export default {
     components: { ModalButtons },
-    props: ['shouldShow', 'modelValue', 'dismiss', 'onSuccess', 'onFailure'],
+    props: ["shouldShow", "modelValue", "dismiss", "onSuccess", "onFailure"],
     computed: {
         email() {
             return this.modelValue;

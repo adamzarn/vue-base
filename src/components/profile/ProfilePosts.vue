@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import PageTitle from '../base/PageTitle.vue';
-import PostList from '../posts/PostList.vue';
+import network from "../../network/network.js";
+import PageTitle from "../base/PageTitle.vue";
+import PostList from "../posts/PostList.vue";
 
 export default {
     components: { PageTitle, PostList },
@@ -19,7 +19,7 @@ export default {
     data() {
         return {
             posts: [],
-            noPostResultsMessage: '',
+            noPostResultsMessage: "",
             noPostResultsError: false
         }
     },

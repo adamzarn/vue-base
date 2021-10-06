@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import network from '../../../network/network.js';
-import './../../../local-storage-helper.js';
-import ProfileHeader from '../../profile/ProfileHeader.vue';
-import ProfileBody from '../../profile/ProfileBody.vue';
-import ProfileFollows from '../../profile/ProfileFollows.vue';
-import ProfilePosts from '../../profile/ProfilePosts.vue'
+import network from "../../../network/network.js";
+import "./../../../local-storage-helper.js";
+import ProfileHeader from "../../profile/ProfileHeader.vue";
+import ProfileBody from "../../profile/ProfileBody.vue";
+import ProfileFollows from "../../profile/ProfileFollows.vue";
+import ProfilePosts from "../../profile/ProfilePosts.vue"
 
 export default {
     components: { ProfileHeader, ProfileBody, ProfileFollows, ProfilePosts },
@@ -31,8 +31,8 @@ export default {
         return {
             user: null,
             profilePhotoUrl: null,
-            followsKey: '',
-            postsKey: ''
+            followsKey: "",
+            postsKey: ""
         }
     },
     computed: {
@@ -72,7 +72,7 @@ export default {
         if (localStorage.isLoggedIn()) {
             this.getData();
         } else {
-            this.$router.push({ name: 'login' });
+            this.$router.push({ name: "login" });
         }
     },
     watch: {

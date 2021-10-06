@@ -1,5 +1,5 @@
-import api from './api.js';
-import './../local-storage-helper.js';
+import api from "./api.js";
+import "./../local-storage-helper.js";
 
 function frontendBaseUrl() {
     let loc = window.location;
@@ -7,34 +7,34 @@ function frontendBaseUrl() {
 }
 
 function createError(source, response, data, endpoint) {
-    let components = data.reason.split(':');
+    let components = data.reason.split(":");
     let status = response.status;
-    let exception = (components.length == 2) ? components[0] : 'Unknown'
+    let exception = (components.length == 2) ? components[0] : "Unknown"
     let reason = (components.length == 2) ? components[1].trim() : data.reason
     let description = `${endpoint}\n${source}\n${status}\n${exception}\n${reason}`
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
         console.log(description);
     }
     return {
-        'endpoint': endpoint,
-        'source': source,
-        'status': status,
-        'exception': exception,
-        'reason': reason,
-        'description': description
+        "endpoint": endpoint,
+        "source": source,
+        "status": status,
+        "exception": exception,
+        "reason": reason,
+        "description": description
     }
 }
 
 function createBasicError(source, error, endpoint) {
     let description = `${endpoint}\n${source}\n${error}`
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
         console.log(description);
     }
     return {
-        'endpoint': endpoint,
-        'source': source,
-        'error': error,
-        'description': description
+        "endpoint": endpoint,
+        "source": source,
+        "error": error,
+        "description": description
     }
 }
 
@@ -69,20 +69,20 @@ function makeRequest(endpoint, params) {
                     const data = JSON.parse(text);
                     handleData(endpoint, response, data, params);
                 } catch(error) {
-                    params.onFailure(createBasicError('JSON Parsing', error, endpoint.name));
+                    params.onFailure(createBasicError("JSON Parsing", error, endpoint.name));
                 }
             } else {
                 handleResponse(endpoint, response, params);
             }
         })
     }).catch(error => {
-        params.onFailure(createBasicError('No Response', error, endpoint.name));
+        params.onFailure(createBasicError("No Response", error, endpoint.name));
     })
 }
 
 function handleResponse(endpoint, response, params) {
     if (response.ok) {
-        if (endpoint.name == 'logout') { localStorage.clear(); }
+        if (endpoint.name == "logout") { localStorage.clear(); }
         return params.onSuccess();  
     } else {
         return response.json().then(data => {
@@ -95,17 +95,17 @@ function handleResponse(endpoint, response, params) {
 
 function handleData(endpoint, response, data, params) {
     if (data.error) {
-        if (endpoint.name == 'logout' && response.status == 401) {
+        if (endpoint.name == "logout" && response.status == 401) {
             localStorage.clear();
             return params.onSuccess();
         } else {
-            params.onFailure(createError('handleData', response, data, endpoint.name));
+            params.onFailure(createError("handleData", response, data, endpoint.name));
         }
     } else {
-        if (['login', 'register'].includes(endpoint.name)) {
+        if (["login", "register"].includes(endpoint.name)) {
             handleAuthenticationResult(data, params)
         } else {
-            if (endpoint.name == 'getUser' && data.id == localStorage.user().id) {
+            if (endpoint.name == "getUser" && data.id == localStorage.user().id) {
                 localStorage.setUser(data);
             }
             params.onSuccess(data);

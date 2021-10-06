@@ -1,8 +1,8 @@
-import ManageUsersPage from '../components/pages/ManageUsersPage.vue';
+import ManageUsersPage from "../components/pages/ManageUsersPage.vue";
 
 const ManageUsersRoute = {
-    name: 'manageUsers',
-    path: '/manageUsers',
+    name: "manageUsers",
+    path: "/manageUsers",
     component: ManageUsersPage
 }
 

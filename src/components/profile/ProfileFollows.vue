@@ -26,21 +26,21 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import './../../local-storage-helper.js';
-import UserList from '../users/UserList.vue';
-import PageTitle from '../base/PageTitle.vue';
+import network from "../../network/network.js";
+import "./../../local-storage-helper.js";
+import UserList from "../users/UserList.vue";
+import PageTitle from "../base/PageTitle.vue";
 
 export default {
     components: { UserList, PageTitle },
-    props: ['user'],
+    props: ["user"],
     data() {
         return {
             followers: [],
             following: [],
-            noFollowersMessage: '',
+            noFollowersMessage: "",
             noFollowersError: false,
-            noFollowingMessage: '',
+            noFollowingMessage: "",
             noFollowingError: false
         }
     },

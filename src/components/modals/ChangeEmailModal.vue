@@ -13,11 +13,11 @@
 </template>
 
 <script>
-import ModalButtons from '../modals/ModalButtons.vue';
+import ModalButtons from "../modals/ModalButtons.vue";
 
 export default {
     components: { ModalButtons },
-    props: ['shouldShow', 'allowEmailUpdate', 'dismiss']
+    props: ["shouldShow", "allowEmailUpdate", "dismiss"]
 }
 </script>
 

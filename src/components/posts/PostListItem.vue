@@ -25,7 +25,7 @@ Date.prototype.subtractHours = function(h) {
 
 export default {
     components: { },
-    props: ['post'],
+    props: ["post"],
     computed: {
         user() {
             return this.post.user

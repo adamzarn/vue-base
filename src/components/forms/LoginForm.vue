@@ -8,7 +8,7 @@
                 label="Email"
                 :validate="validateEmail"
                 v-model.trim="enteredEmail"
-                @change="$emit('change', enteredEmail)">
+                @change="$emit("change", enteredEmail)">
             </base-input>
             <p class="validation" v-if="emailIsInvalid">You must provide a valid email</p>
             <base-input 
@@ -18,7 +18,7 @@
                 v-model="enteredPassword">
             </base-input>
             <div class="buttons">
-                <router-link class="register-button" to='/register'>Register</router-link>
+                <router-link class="register-button" to="/register">Register</router-link>
                 <base-button class="login-button" type="submit">Login</base-button>
             </div>
         </form>
@@ -39,24 +39,24 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import exceptions from '../../network/exceptions.js';
-import EmailVerificationModal from '../modals/EmailVerificationModal.vue';
-import PageTitle from '../base/PageTitle.vue';
+import network from "../../network/network.js";
+import exceptions from "../../network/exceptions.js";
+import EmailVerificationModal from "../modals/EmailVerificationModal.vue";
+import PageTitle from "../base/PageTitle.vue";
 
 export default {
     components: { EmailVerificationModal, PageTitle },
-    props: ['email'],
-    emits: ['change'],
+    props: ["email"],
+    emits: ["change"],
     data() {
         return {
             enteredEmail: this.email,
-            enteredPassword: '',
+            enteredPassword: "",
             emailIsInvalid: false,
             shouldShowEmailVerificationModal: false,
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: ''
+            alertTitle: "",
+            alertMessage: ""
         }
     },
     methods: {
@@ -67,7 +67,7 @@ export default {
                     password: this.enteredPassword
                 },
                 onSuccess: () => {
-                    this.$router.push({ name: 'home' });
+                    this.$router.push({ name: "home" });
                 },
                 onFailure: error => {
                     if (error.exception === exceptions.emailIsNotVerified) {

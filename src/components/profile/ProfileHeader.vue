@@ -34,22 +34,22 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import './../../local-storage-helper.js';
-import PageTitle from '../base/PageTitle.vue';
-import DeleteUserConfirmationModal from '../modals/DeleteUserConfirmationModal.vue';
+import network from "../../network/network.js";
+import "./../../local-storage-helper.js";
+import PageTitle from "../base/PageTitle.vue";
+import DeleteUserConfirmationModal from "../modals/DeleteUserConfirmationModal.vue";
 
 export default {
     components: { PageTitle, DeleteUserConfirmationModal },
-    props: ['profilePhotoUrl', 'user'],
-    emits: ['didUpdateUser', 'didUpdateFollowingStatus'],
+    props: ["profilePhotoUrl", "user"],
+    emits: ["didUpdateUser", "didUpdateFollowingStatus"],
     data() {
         return {
             followStatus: null,
             shouldShowDeleteUserConfirmationModal: false,
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: ''
+            alertTitle: "",
+            alertMessage: ""
         }
     },
     computed: {
@@ -72,7 +72,7 @@ export default {
             return localStorage.user().isAdmin;
         },
         adminBadgeText() {
-            return this.user.isAdmin ? 'ADMIN' : 'USER';
+            return this.user.isAdmin ? "ADMIN" : "USER";
         },
         isFollowing() {
             if (this.userIsLoggedInUser) { return false; }
@@ -80,30 +80,30 @@ export default {
             return this.followStatus.loggedInUserIsFollowingOtherUser;
         },
         toggleFollowButtonText() {
-            if (this.followStatus == null) { return '' }
-            return this.isFollowing ? 'Unfollow' : 'Follow';
+            if (this.followStatus == null) { return "" }
+            return this.isFollowing ? "Unfollow" : "Follow";
         },
         toggleAdminButtonText() {
-            return this.user.isAdmin ? 'Revoke Admin Access' : 'Give Admin Access';
+            return this.user.isAdmin ? "Revoke Admin Access" : "Give Admin Access";
         },
         toggleFollowingAction() {
-            return this.isFollowing ? 'unfollowing' : 'following';
+            return this.isFollowing ? "unfollowing" : "following";
         },
         possessiveFirstName() {
             var lastChar = this.user.firstName[this.user.firstName.length - 1];
-            return lastChar == "s" ? `${this.user.firstName}'` : `${this.user.firstName}'s`
+            return lastChar == "s" ? `${this.user.firstName}"` : `${this.user.firstName}"s`
         }
     },
     methods: {
         toggleFollowingStatus() {
             network.toggleFollowingStatus({
                 urlParams: {
-                    action: this.isFollowing ? 'unfollow' : 'follow',
+                    action: this.isFollowing ? "unfollow" : "follow",
                     userId: this.user.id
                 },
                 onSuccess: () => {
                     this.getFollowStatus()
-                    this.$emit('didUpdateFollowingStatus');
+                    this.$emit("didUpdateFollowingStatus");
                 },
                 onFailure: () => {
                     this.alertTitle = "Oops...";
@@ -125,12 +125,12 @@ export default {
                         let updatedUser = localStorage.user();
                         updatedUser.isAdmin = !updatedUser.isAdmin;
                         localStorage.setUser(updatedUser);
-                        this.$emit('didUpdateUser', updatedUser)
+                        this.$emit("didUpdateUser", updatedUser)
                         this.$router.go()
                     } else {
                         let updatedUser = this.user;
                         updatedUser.isAdmin = !updatedUser.isAdmin;
-                        this.$emit('didUpdateUser', updatedUser)
+                        this.$emit("didUpdateUser", updatedUser)
                     }
                 },
                 onFailure: () => { 
@@ -155,7 +155,7 @@ export default {
                 onSuccess: (data) => {
                     let updatedUser = localStorage.user()
                     updatedUser.profilePhotoUrl = data.url;
-                    this.$emit('didUpdateUser', updatedUser);
+                    this.$emit("didUpdateUser", updatedUser);
                 },
                 onFailure: () => {
                     this.alertTitle = "Oops...";
@@ -167,7 +167,7 @@ export default {
         didDeletePhoto() {
             let updatedUser = localStorage.user();
             updatedUser.profilePhotoUrl = null;
-            this.$emit('didUpdateUser', updatedUser);
+            this.$emit("didUpdateUser", updatedUser);
         },
         getFollowStatus() {
             if (this.userIsLoggedInUser) {

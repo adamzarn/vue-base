@@ -10,14 +10,14 @@ export default {
         mode: {
             type: String,
             required: false,
-            default: 'dark'
+            default: "dark"
         }
     },
     computed: {
         classes() {
             return {
-                'button-dark': this.mode === 'dark',
-                'button-light': this.mode === 'light',
+                "button-dark": this.mode === "dark",
+                "button-light": this.mode === "light",
             };
         },
     }

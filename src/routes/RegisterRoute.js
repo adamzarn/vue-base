@@ -1,8 +1,8 @@
-import RegisterPage from '../components/pages/RegisterPage.vue';
+import RegisterPage from "../components/pages/RegisterPage.vue";
 
 const RegisterRoute = {
-    name: 'register',
-    path: '/register',
+    name: "register",
+    path: "/register",
     component: RegisterPage
 }
 

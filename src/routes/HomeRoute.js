@@ -1,8 +1,8 @@
-import HomePage from '../components/pages/HomePage.vue';
+import HomePage from "../components/pages/HomePage.vue";
 
 const HomeRoute = {
-    name: 'home',
-    path: '/home',
+    name: "home",
+    path: "/home",
     component: HomePage
 }
 

@@ -2,12 +2,12 @@
     <div class="account-container col-12">
         <div v-if="userIsLoggedInUser" class="col-2 menu-container">
             <base-card>
-                <div class="menu-item dark first" :class="{ selected: selectedPage == 'profile'}" @click="account('profile')">
+                <div class="menu-item dark first" :class="{ selected: selectedPage == "profile"}" @click="account("profile")">
                     <p class="text">Profile</p>
                 </div>
                 <div v-if="true" class="separator"></div>
-                <div class="menu-item light last" :class="{ selected: selectedPage == 'history'}" @click="account('history')">
-                    <p class="text">History</p>
+                <div class="menu-item light last" :class="{ selected: selectedPage == "activity"}" @click="account("activity")">
+                    <p class="text">Activity</p>
                 </div>
                 <div v-if="false" class="separator"></div>
             </base-card>
@@ -26,7 +26,7 @@
 export default {
     data() {
         return {
-            selectedPage: 'profile'
+            selectedPage: "profile"
         }
     },
     computed: {

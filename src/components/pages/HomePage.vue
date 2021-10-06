@@ -41,12 +41,12 @@
 </template>
 
 <script>
-import PageTitle from '../base/PageTitle.vue';
-import network from '../../network/network.js';
-import './../../local-storage-helper.js';
-import UserList from '../../components/users/UserList.vue';
-import UserListItem from '../../components/users/UserListItem.vue';
-import PostList from '../posts/PostList.vue';
+import PageTitle from "../base/PageTitle.vue";
+import network from "../../network/network.js";
+import "./../../local-storage-helper.js";
+import UserList from "../../components/users/UserList.vue";
+import UserListItem from "../../components/users/UserListItem.vue";
+import PostList from "../posts/PostList.vue";
 
 export default {
     components: {
@@ -59,15 +59,15 @@ export default {
         return {
             posts: [],
             users: [],
-            enteredQuery: '',
-            enteredPostText: '',
-            noUserResultsMessage: '',
+            enteredQuery: "",
+            enteredPostText: "",
+            noUserResultsMessage: "",
             noUserResultsError: false,
-            noPostResultsMessage: '',
+            noPostResultsMessage: "",
             noPostResultsError: false,
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: ''
+            alertTitle: "",
+            alertMessage: ""
         }
     },
     computed: {
@@ -89,7 +89,7 @@ export default {
     },
     methods: {
         findPeopleToFollow() {
-            if (this.enteredQuery === '') {
+            if (this.enteredQuery === "") {
                 this.users = [];
                 this.noUserResultsError = false;
                 return
@@ -134,7 +134,7 @@ export default {
                     text: this.enteredPostText
                 },
                 onSuccess: () => {
-                    this.enteredPostText = '';
+                    this.enteredPostText = "";
                     this.getFeed()
                 }, onFailure: () => {
                     this.alertTitle = "Oops..."

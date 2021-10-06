@@ -20,37 +20,37 @@
 </template>
 
 <script>
-import network from '../../network/network.js';
-import './../../local-storage-helper';
+import network from "../../network/network.js";
+import "./../../local-storage-helper";
 
 export default {
     data() {
         return {
             loggedInUserIsAdmin: false,
             shouldShowAlertModal: false,
-            alertTitle: '',
-            alertMessage: ''
+            alertTitle: "",
+            alertMessage: ""
         }
     },
     computed: {
         shouldShowButtons() {
-            return !['login', 'register', 'resetPassword', 'verifyEmail'].includes(this.$route.name);
+            return !["login", "register", "resetPassword", "verifyEmail"].includes(this.$route.name);
         }
     },
     methods: {
         home() {
-            this.$router.push({ name: 'home' });
+            this.$router.push({ name: "home" });
         },
         manageUsers() {
-            this.$router.push({ name: 'manageUsers' });
+            this.$router.push({ name: "manageUsers" });
         },
         account() {
-            this.$router.push({ name: 'profile', params: { userId: localStorage.user().id }});
+            this.$router.push({ name: "profile", params: { userId: localStorage.user().id }});
         },
         logout() {
             network.logout({
                 onSuccess: () => {
-                    this.$router.push({ name: 'login' });
+                    this.$router.push({ name: "login" });
                 },
                 onFailure: () => {
                     this.alertTitle = "Oops...";
@@ -80,12 +80,12 @@ export default {
     },
     watch: {
         $route(to) {
-            const userRequiredRoutes = ['home', 'account', 'profile', 'manageUsers']
+            const userRequiredRoutes = ["home", "account", "profile", "manageUsers"]
             if (userRequiredRoutes.includes(to.name)) {
                 if (localStorage.isLoggedIn()) {
                     this.getUpdatedUser();
                 } else {
-                    this.$router.push({ name: 'login' });
+                    this.$router.push({ name: "login" });
                 }
             }
         }
