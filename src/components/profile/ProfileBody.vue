@@ -3,27 +3,27 @@
         <profile-item v-if="userIsLoggedInUser" 
             field="firstName" label="First Name" 
             :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" 
-            :beingChanged="changeStatuses["firstName"]" :toggleBeingChanged="toggleBeingChanged">
+            :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item v-if="userIsLoggedInUser"
             field="lastName" label="Last Name"
             :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser"
-            :beingChanged="changeStatuses["lastName"]" :toggleBeingChanged="toggleBeingChanged">
+            :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item
             field="username" label="Username"
             :currentValue="username" :update="updateUser" :editable="userIsLoggedInUser"
-            :beingChanged="changeStatuses["username"]" :toggleBeingChanged="toggleBeingChanged">
+            :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item
             field="email" label="Email"
             :showSeparator="userIsLoggedInUser" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser"
-            :beingChanged="changeStatuses["email"]" :toggleBeingChanged="toggleBeingChanged">
+            :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item v-if="userIsLoggedInUser"
             field="password" label="Password" type="password"
             :showSeparator="false" :update="changePassword" :editable="userIsLoggedInUser"
-            :beingChanged="changeStatuses["password"]" :toggleBeingChanged="toggleBeingChanged">
+            :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
     </base-card>
     <change-email-modal
