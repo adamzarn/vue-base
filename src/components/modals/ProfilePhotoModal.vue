@@ -1,5 +1,5 @@
 <template>
-    <base-modal v-if="shouldShow" :title="profilePhotoUrl == null ? "Upload Profile Photo" : "Change Profile Photo"" :section="false">
+    <base-modal v-if="shouldShow" :title="profilePhotoUrl == null ? 'Upload Profile Photo' : 'Change Profile Photo'" :section="false">
         <template #actions>
             <modal-buttons>
                 <base-button mode="light" @click="dismiss">Cancel</base-button>

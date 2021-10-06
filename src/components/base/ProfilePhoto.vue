@@ -1,6 +1,6 @@
 <template>
     <div v-if="user" @click="navigateToProfile">
-        <input v-if="editable" class="profile-photo-input" type="file" id="profile-photo-input" @change="$emit("change", $event)"/>
+        <input v-if="editable" class="profile-photo-input" type="file" id="profile-photo-input" @change="$emit('change', $event)"/>
         <div class="image-container" :class="{ clickable: userIsLoggedInUser && editable || navigatesToProfile, small: small, medium: medium }" @click="didClick">
             <div class="image-placeholder">
                 <p v-if="profilePhotoUrl==null && user != null" class="initials">{{ user.firstName[0] + user.lastName[0] }}</p>

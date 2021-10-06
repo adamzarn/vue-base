@@ -8,7 +8,7 @@
                 label="Email"
                 :validate="validateEmail"
                 v-model.trim="enteredEmail"
-                @change="$emit("change", enteredEmail)">
+                @change="$emit('change', enteredEmail)">
             </base-input>
             <p class="validation" v-if="emailIsInvalid">You must provide a valid email</p>
             <base-input 
