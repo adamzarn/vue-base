@@ -1,22 +1,20 @@
 <template>
     <div class="container">
         <div class="col-8">
-            <page-title class="title" text="Admins"></page-title>
+            <page-title class="title" :text="$t('manage_users_page_admins_title')"></page-title>
             <user-list
                 :users="admins"
                 :refresh="getData" 
-                :showToggleAdminButton="true"
                 :style="noAdminResultsStyle"
                 :noResultsMessage="noAdminResultsMessage"
                 :shouldShowNoResultsMessage="true">
             </user-list>
         </div>
         <div class="col-4">
-            <base-input label="Search Users" class="search-bar" v-model="enteredQuery" :onChange="getUsers"></base-input>
+            <base-input :label="$t('manage_users_page_search_users_input_label')" class="search-bar" v-model="enteredQuery" :onChange="getUsers"></base-input>
             <user-list
                 :users="users"
                 :refresh="getData" 
-                showToggleAdminButton="true"
                 :style="noUserResultsStyle"
                 :noResultsMessage="noUserResultsMessage"
                 :shouldShowNoResultsMessage="enteredQuery.length > 0">
@@ -70,13 +68,13 @@ export default {
                         this.$router.push({ name: "home" });
                     } else {
                         this.admins = admins
-                        this.noAdminResultsMessage = "There are no admins yet.";
+                        this.noAdminResultsMessage = this.$t('manage_users_page_admins_no_results_message');
                         this.noAdminResultsError = false;
                     }
                 },
                 onFailure: () => {
                     this.admins = [];
-                    this.noAdminResultsMessage = "There was a problem fetching admins.";
+                    this.noAdminResultsMessage = this.$t('manage_users_page_admins_error_message');
                     this.noAdminResultsError = true;
                 }
             })
@@ -96,12 +94,12 @@ export default {
                 },
                 onSuccess: users => {
                     this.users = users;
-                    this.noUserResultsMessage = "No users who are not currently admins match your search.";
+                    this.noUserResultsMessage = this.$t('manage_users_page_users_no_results_message');
                     this.noUserResultsError = false;
                 },
                 onFailure: () => {
                     this.users = [];
-                    this.noUserResultsMessage = "There was a problem fetching users.";
+                    this.noUserResultsMessage =this.$t(' manage_users_page_users_error_message');
                     this.noUserResultsError = true;
                 }
             })

@@ -1,5 +1,5 @@
 <template>
-    <h1>Activity</h1>
+    <h1>{{ $t('activity_page_title') }}</h1>
 </template>
 
 <script>

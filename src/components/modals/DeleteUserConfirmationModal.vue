@@ -41,8 +41,10 @@ export default {
             return `${this.user.firstName} ${this.user.lastName}`
         },
         possessiveFullName() {
-            var lastChar = this.user.lastName[this.user.lastName.length - 1];
-            return (lastChar === "s") ? `${this.fullName}'` : `${this.fullName}'s`
+            let lastChar = this.user.lastName[this.user.lastName.length - 1];
+            return lastChar == "s" ?
+                this.$t('possessive_name_ending_with_s', { 'name': this.fullName }) :
+                this.$t('possessive_name', { 'name': this.fullName })
         },
         account() {
             if (this.userIsLoggedInUser) {

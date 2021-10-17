@@ -11,7 +11,7 @@
             </profile-photo>
             <div>
                 <page-title :text="fullName"></page-title>
-                <p v-if="loggedInUserIsAdmin" class="badge">{{ adminBadgeText }}</p>
+                <p v-if="loggedInUserIsAdmin" class="badge">{{ badgeText }}</p>
             </div>
         </div>
         <div class="title-buttons-container">
@@ -71,8 +71,10 @@ export default {
         loggedInUserIsAdmin() {
             return localStorage.user().isAdmin;
         },
-        adminBadgeText() {
-            return this.user.isAdmin ? "ADMIN" : "USER";
+        badgeText() {
+            return this.user.isAdmin ?
+                this.$t('profile_header_admin_badge_text') :
+                this.$t('profile_header_user_badge_text');
         },
         isFollowing() {
             if (this.userIsLoggedInUser) { return false; }
@@ -81,17 +83,28 @@ export default {
         },
         toggleFollowButtonText() {
             if (this.followStatus == null) { return "" }
-            return this.isFollowing ? "Unfollow" : "Follow";
+            return this.isFollowing ?
+                this.$t('profile_header_unfollow_button_text') :
+                this.$t('profile_header_follow_button_text');
         },
         toggleAdminButtonText() {
-            return this.user.isAdmin ? "Revoke Admin Access" : "Give Admin Access";
+            return this.user.isAdmin ?
+                this.$t('profile_header_revoke_admin_access') :
+                this.$t('profile_header_give_admin_access');
         },
-        toggleFollowingAction() {
-            return this.isFollowing ? "unfollowing" : "following";
+        toggleFollowErrorMessage() {
+            return this.isFollowing ?
+                this.$t('profile_header_unfollowing_error_message', { 'name': this.user.firstName }) :
+                this.$t('profile_header_following_error_message', { 'name': this.user.firstName });
+        },
+        toggleAdminErrorMessage() {
+            return this.$t('profile_header_toggle_admin_error_message', { 'possessiveName': this.possessiveFirstName });
         },
         possessiveFirstName() {
-            var lastChar = this.user.firstName[this.user.firstName.length - 1];
-            return lastChar == "s" ? `${this.user.firstName}"` : `${this.user.firstName}"s`
+            let lastChar = this.user.firstName[this.user.firstName.length - 1];
+            return lastChar == "s" ?
+                this.$t('possessive_name_ending_with_s', { 'name': this.user.firstName }) :
+                this.$t('possessive_name', { 'name': this.user.firstName })
         }
     },
     methods: {
@@ -106,8 +119,8 @@ export default {
                     this.$emit("didUpdateFollowingStatus");
                 },
                 onFailure: () => {
-                    this.alertTitle = "Oops...";
-                    this.alertMessage = `There was a problem ${this.toggleFollowingAction} ${this.user.firstName}.`;
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.toggleFollowErrorMessage;
                     this.shouldShowAlertModal = true;
                 }
             })
@@ -134,8 +147,8 @@ export default {
                     }
                 },
                 onFailure: () => { 
-                    this.alertTitle = "Oops...";
-                    this.alertMessage = `There was a problem updating ${this.possessiveFirstName} admin access.`;
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.toggleAdminErrorMessage;
                     this.shouldShowAlertModal = true;
                 }
             });
@@ -158,8 +171,8 @@ export default {
                     this.$emit("didUpdateUser", updatedUser);
                 },
                 onFailure: () => {
-                    this.alertTitle = "Oops...";
-                    this.alertMessage = `There was a problem uploading the photo. Please try again later.`;
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.$t('profile_header_upload_photo_error_message');
                     this.shouldShowAlertModal = true;
                 }
             })

@@ -6,7 +6,6 @@
                 type="text"
                 name="email"
                 :label="$t('login_form_email_input_label')"
-                :validate="validateEmail"
                 v-model.trim="enteredEmail"
                 @change="$emit('change', enteredEmail)">
             </base-input>

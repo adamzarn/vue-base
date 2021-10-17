@@ -3,11 +3,11 @@
         <div v-if="userIsLoggedInUser" class="col-2 menu-container">
             <base-card>
                 <div class="menu-item dark first" :class="{ selected: selectedPage == 'profile'}" @click="account('profile')">
-                    <p class="text">Profile</p>
+                    <p class="text">{{ $t('account_page_menu_profile_text') }}</p>
                 </div>
                 <div v-if="true" class="separator"></div>
                 <div class="menu-item light last" :class="{ selected: selectedPage == 'activity'}" @click="account('activity')">
-                    <p class="text">Activity</p>
+                    <p class="text">{{ $t('account_page_menu_activity_text') }}</p>
                 </div>
                 <div v-if="false" class="separator"></div>
             </base-card>

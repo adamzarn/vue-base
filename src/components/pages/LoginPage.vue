@@ -1,7 +1,7 @@
 <template>
     <login-form :email="enteredEmail" @change="didUpdateEmail"></login-form>
     <div class="centered-link">
-        <a @click="showForgotPasswordModal">Forgot Password?</a>
+        <a @click="showForgotPasswordModal">{{ $t('login_page_forgot_password_link_text') }}</a>
     </div>
     <password-reset-modal
         :shouldShow="shouldShowForgotPasswordModal"
@@ -47,15 +47,15 @@ export default {
             this.shouldShowForgotPasswordModal = false;
         },
         onSendForgotPasswordEmailSuccess(email) {
-            this.alertTitle = "Success"
-            this.alertMessage = `A password reset email has been sent to ${email}`
+            this.alertTitle = this.$t('alert_generic_success_title');
+            this.alertMessage = this.$t('login_page_password_reset_message', { 'email': email });
             this.shouldShowAlertModal = true;
         },
         onSendForgotPasswordEmailFailure(error) {
-            this.alertTitle = "Oops..."
-            this.alertMessage = "Something went wrong"
+            this.alertTitle = this.$t('alert_generic_error_title');
+            this.alertMessage = this.$t('alert_generic_error_message');
             if (error.exception == exceptions.userDoesNotExist) {
-                this.alertMessage = "A user with that email does not exist.";
+                this.alertMessage = this.$t('user_with_email_does_not_exist_message');
             }
             this.shouldShowAlertModal = true;
         },

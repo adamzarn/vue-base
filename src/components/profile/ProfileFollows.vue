@@ -1,7 +1,7 @@
 <template>
     <div v-if="user" class="follows">
         <div class="col-12">
-            <page-title class="title" text=Followers></page-title>
+            <page-title class="title" :text="$t('profile_follows_followers_title')"></page-title>
             <user-list
                 :users="followers"
                 :refresh="getFollowers"
@@ -12,7 +12,7 @@
             </user-list>
         </div>
         <div class="col-12">
-            <page-title class="title" text="Following"></page-title>
+            <page-title class="title" :text="$t('profile_follows_following_title')"></page-title>
             <user-list
                 :users="following"
                 :refresh="getFollowing"
@@ -48,22 +48,31 @@ export default {
         userIsLoggedInUser() {
             return this.user.id == localStorage.user().id;
         },
-        noFollowersSubject() {
-            return this.userIsLoggedInUser ? "You don't" : `${this.user.firstName} doesn't`;
+        _noFollowersMessage() {
+            return this.userIsLoggedInUser ?
+                this.$t('profile_follows_logged_in_user_no_followers_message') :
+                this.$t('profile_follows_other_user_no_followers_message', { 'subject': this.user.firstName });
         },
-        noFollowingSubject() {
-            return this.userIsLoggedInUser ? "You aren't" : `${this.user.firstName} isn't`;
+        _noFollowingMessage() {
+            return this.userIsLoggedInUser ?
+                this.$t('profile_follows_logged_in_user_no_following_message') :
+                this.$t('profile_follows_other_user_no_following_message', { 'subject': this.user.firstName });
         },
-        noFollowersErrorSubject() {
+        noFollowersErrorMessage() {
             if (this.userIsLoggedInUser) {
-                return  "your"
+                return this.$t('profile_follows_logged_in_user_followers_error_message');
             } else {
-                var lastChar = this.user.firstName[this.user.firstName.length - 1];
-                return lastChar == "s" ? `${this.user.firstName}'` : `${this.user.firstName}'s`
+                let lastChar = this.user.firstName[this.user.firstName.length - 1];
+                let subject = lastChar == "s" ?
+                    this.$t('possessive_name_ending_with_s', { 'name': this.user.firstName }) :
+                    this.$t('possessive_name', { 'name': this.user.firstName })
+                return this.$t('profile_follows_other_user_followers_error_message', { 'subject': subject });
             }
         },
-        noFollowingErrorSubject() {
-            return this.userIsLoggedInUser ? "you're" : `${this.user.firstName} is`;
+        noFollowingErrorMessage() {
+            return this.userIsLoggedInUser ? 
+                this.$t('profile_follows_logged_in_user_following_error_message') :
+                this.$t('profile_follows_other_user_following_error_message', { 'subject': this.user.firstName });
         },
         noFollowersStyle() {
             return this.noFollowersError ? "error" : "";
@@ -82,7 +91,7 @@ export default {
                 onSuccess: users => { 
                     if (followType == "followers") {
                         this.followers = users;
-                        this.noFollowersMessage = `${this.noFollowersSubject} have any followers yet.`;
+                        this.noFollowersMessage = this._noFollowersMessage;
                         this.noFollowersError = false;
                     } else {
                         this.following = users.map((user) => {
@@ -90,18 +99,18 @@ export default {
                             user.following = true
                             return updatedUser
                         })
-                        this.noFollowingMessage = `${this.noFollowingSubject} following anyone yet.`;
+                        this.noFollowingMessage = this._noFollowingMessage;
                         this.noFollowingError = false;
                     }
                 },
                 onFailure: () => { 
                     if (followType == "followers") {
                         this.followers = [];
-                        this.noFollowersMessage = `There was a problem fetching ${this.noFollowersErrorSubject} followers.`;
+                        this.noFollowersMessage = this.noFollowersErrorMessage;
                         this.noFollowersError = true;
                     } else {
                         this.following = [];
-                        this.noFollowingMessage = `There was a problem fetching the users ${this.noFollowingErrorSubject} following.`;
+                        this.noFollowingMessage = this.noFollowingErrorMessage;
                         this.noFollowingError = true;
                     }
                 }

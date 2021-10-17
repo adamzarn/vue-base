@@ -7,10 +7,9 @@
                 @didUpdateUser="didUpdateUser"
                 @didUpdateFollowingStatus="didUpdateFollowingStatus"></profile-header>
             <profile-body :user="user" :refresh="getUser"></profile-body>
-            <profile-follows :key="followsKey" :user="user"></profile-follows>        </div>
-        <div v-else class="col-9 profile-container">
-            We're having trouble fetching your profile right now.
+            <profile-follows :key="followsKey" :user="user"></profile-follows>
         </div>
+        <div v-else class="col-9 profile-container">{{ profileErrorMessage }}</div>
         <div class="col-3 posts-container">
             <profile-posts :key="postsKey"></profile-posts>
         </div>
@@ -32,7 +31,8 @@ export default {
             user: null,
             profilePhotoUrl: null,
             followsKey: "",
-            postsKey: ""
+            postsKey: "",
+            profileErrorMessage: ""
         }
     },
     computed: {
@@ -60,11 +60,14 @@ export default {
                     userId: this.$route.params.userId
                 },
                 onSuccess: user => {
+                    this.profileErrorMessage = "";
                     this.user = user;
                     this.postsKey = new Date().getTime();
                     this.profilePhotoUrl = user.profilePhotoUrl;
                 },
-                onFailure: () => {}
+                onFailure: () => {
+                    this.profileErrorMessage = this.$t('profile_page_error_message');
+                }
             })
         }
     },

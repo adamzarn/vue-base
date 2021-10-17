@@ -1,27 +1,27 @@
 <template>
     <base-card v-if="user">
         <profile-item v-if="userIsLoggedInUser" 
-            field="firstName" label="First Name" 
+            field="firstName" :label="$t('profile_body_first_name_input_label')"
             :currentValue="firstName" :update="updateUser" :editable="userIsLoggedInUser" 
             :beingChanged="changeStatuses['firstName']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item v-if="userIsLoggedInUser"
-            field="lastName" label="Last Name"
+            field="lastName" :label="$t('profile_body_last_name_input_label')"
             :currentValue="lastName" :update="updateUser" :editable="userIsLoggedInUser"
             :beingChanged="changeStatuses['lastName']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item
-            field="username" label="Username"
+            field="username" :label="$t('profile_body_username_input_label')"
             :currentValue="username" :update="updateUser" :editable="userIsLoggedInUser"
             :beingChanged="changeStatuses['username']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item
-            field="email" label="Email"
+            field="email" :label="$t('profile_body_email_input_label')"
             :showSeparator="userIsLoggedInUser" :currentValue="email" :update="updateUser" :editable="userIsLoggedInUser"
             :beingChanged="changeStatuses['email']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
         <profile-item v-if="userIsLoggedInUser"
-            field="password" label="Password" type="password"
+            field="password" :label="$t('profile_body_password_input_label')" type="password"
             :showSeparator="false" :update="changePassword" :editable="userIsLoggedInUser"
             :beingChanged="changeStatuses['password']" :toggleBeingChanged="toggleBeingChanged">
         </profile-item>
@@ -98,10 +98,10 @@ export default {
                 },
                 onFailure: error => {
                     this.changeStatuses[field] = false;
-                    this.alertTitle = "Oops...";
-                    this.alertMessage = "There was a problem updating your profile. Please try again later.";
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.$t('profile_body_update_profile_error_message');
                     if (error.exception == exceptions.userAlreadyExists) {
-                        this.alertMessage = "A user with that email already exists.";
+                        this.alertMessage = this.$t('profile_body_email_taken_error_message');
                     }
                     this.shouldNavigateBackToLogin = false;
                     this.shouldShowAlertModal = true;
@@ -118,8 +118,8 @@ export default {
                     this.logout(email)
                 },
                 onFailure: () => {
-                    this.alertTitle = "Oops...";
-                    this.alertMessage = "There was a problem sending the email verification email. Please contact support.";
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.$t('profile_body_email_verification_error_message');
                     this.shouldNavigateBackToLogin = false;
                     this.shouldShowAlertModal = true;
                 }
@@ -128,14 +128,14 @@ export default {
         logout(email) {
             network.logout({
                 onSuccess: () => {
-                    this.alertTitle = "Success";
-                    this.alertMessage = `An email verification email has been sent to ${email}. You will now be logged out.`
+                    this.alertTitle = this.$t('alert_generic_success_title');
+                    this.alertMessage = this.$t('profile_body_email_verification_message', { 'email': email });
                     this.shouldNavigateBackToLogin = true;
                     this.shouldShowAlertModal = true;
                 },
                 onFailure: () => {
-                    this.alertTitle = "Oops...";
-                    this.alertMessage = "There was a problem logging you out.";
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.$t('profile_body_logout_error_message');
                     this.shouldNavigateBackToLogin = false;
                     this.shouldShowAlertModal = true;
                 }
@@ -151,8 +151,8 @@ export default {
                 },
                 onSuccess: () => {
                     this.changeStatuses[field] = false;
-                    this.alertTitle = "Success";
-                    this.alertMessage = "Your password was changed successfully.";
+                    this.alertTitle = this.$t('alert_generic_success_title');
+                    this.alertMessage = this.$t('profile_body_change_password_success_message');
                     this.shouldNavigateBackToLogin = false;
                     this.shouldShowAlertModal = true;
                     this.passwordBeingChanged = false;
@@ -160,8 +160,8 @@ export default {
                 },
                 onFailure: () => {
                     this.changeStatuses[field] = false;
-                    this.alertTitle = "Oops...";
-                    this.alertMessage = "There was a problem updating your password. Please try again later.";
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.$t('profile_body_change_password_error_message');
                     this.shouldNavigateBackToLogin = false;
                     this.shouldShowAlertModal = true;
                 }

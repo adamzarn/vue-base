@@ -1,17 +1,17 @@
 <template>
     <div class="container" v-if="user">
         <div class="col-8">
-            <page-title class="title" text="Post"></page-title>
+            <page-title class="title" :text="$t('home_page_create_post_title')"></page-title>
             <div>
                 <user-list-item :user="user"></user-list-item>
                 <div>
                     <textarea :placeholder="textAreaPlaceholder" v-model.trim="enteredPostText"></textarea>
                 </div>
                 <div class="submit-button-container">
-                    <base-button @click="createPost">Submit</base-button>
+                    <base-button @click="createPost">{{ $t('home_page_submit_post_button_text') }}</base-button>
                 </div>
             </div>
-            <page-title class="title" text="Feed"></page-title>
+            <page-title class="title" :text="$t('home_page_feed_title')"></page-title>
             <post-list 
                 :posts="posts"
                 :style="noPostResultsStyle"
@@ -20,11 +20,10 @@
             </post-list>
         </div>
         <div class="col-4">
-            <base-input label="Find People to Follow" class="search-bar" v-model="enteredQuery" :onChange="findPeopleToFollow"></base-input>
+            <base-input :label="$t('home_page_search_users_input_label')" class="search-bar" v-model="enteredQuery" :onChange="findPeopleToFollow"></base-input>
             <user-list
                 :users="users"
                 :refresh="getData"
-                :showToggleAdminButton="false"
                 :showToggleFollowButton="true"
                 :style="noUserResultsStyle"
                 :noResultsMessage="noUserResultsMessage"
@@ -78,7 +77,7 @@ export default {
             return this.user.firstName;
         },
         textAreaPlaceholder() {
-            return `${this.firstName}, what's on your mind?`;
+            return this.$t('home_page_post_placeholder', { 'name': this.firstName });
         },
         noUserResultsStyle() {
             return this.noUserResultsError ? "error" : ""
@@ -105,12 +104,12 @@ export default {
                 onSuccess: users => {
                     this.users = users
                     this.noUserResultsError = false;
-                    this.noUserResultsMessage = "No users you aren't currently following match your search."
+                    this.noUserResultsMessage = this.$t('home_page_search_users_no_results_message');
                 },
                 onFailure: () => {
                     this.users = [];
                     this.noUserResultsError = true;
-                    this.noUserResultsMessage = "There was a problem finding people to follow. Please try again later.";
+                    this.noUserResultsMessage = this.$t('home_page_search_users_error_message');
                 }
             })
         },
@@ -119,11 +118,11 @@ export default {
                 onSuccess: posts => {
                     this.posts = posts;
                     this.noPostResultsError = false;
-                    this.noPostResultsMessage = "Neither you nor anyone you're following has posted anything yet."
+                    this.noPostResultsMessage = this.$t('home_page_posts_no_results_message');
                 }, onFailure: () => {
                     this.posts = [];
                     this.noPostResultsError = true;
-                    this.noPostResultsMessage = "There was a problem fetching your feed. Please try again later."
+                    this.noPostResultsMessage = this.$t('home_page_posts_error_message');
                 }
             })
         },
@@ -137,8 +136,8 @@ export default {
                     this.enteredPostText = "";
                     this.getFeed()
                 }, onFailure: () => {
-                    this.alertTitle = "Oops..."
-                    this.alertMessage = "There was a problem submitting your post. Please try again later.";
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.$t('home_page_submit_post_error_message');
                     this.shouldShowAlertModal = true;
                 }
             })
