@@ -1,11 +1,4 @@
 <template>
-    <ins class="adsbygoogle"
-        style="display:block"
-        :data-ad-client="googleAdsensePublisherId"
-        :data-ad-slot="googleAdsenseHomePageHeaderAdId"
-        data-ad-format="auto"
-        data-full-width-responsive="true">
-    </ins>
     <div class="container" v-if="user">
         <div class="col-8">
             <page-title class="title" :text="$t('home_page_create_post_title')"></page-title>
@@ -38,6 +31,13 @@
             </user-list>
         </div>
     </div>
+    <ins class="adsbygoogle"
+        style="display:block"
+        :data-ad-client="googleAdsensePublisherId"
+        :data-ad-slot="googleAdsenseHomePageBannerAdId"
+        data-ad-format="auto"
+        data-full-width-responsive="true">
+    </ins>
     <alert-modal
         :shouldShow="shouldShowAlertModal"
         :title="alertTitle"
@@ -95,8 +95,8 @@ export default {
         googleAdsensePublisherId() {
             return process.env.VUE_APP_GOOGLE_ADSENSE_PUBLISHER_ID;
         },
-        googleAdsenseHomePageHeaderAdId() {
-            return process.env.VUE_APP_GOOGLE_ADSENSE_HOME_PAGE_HEADER_AD_ID;
+        googleAdsenseHomePageBannerAdId() {
+            return process.env.VUE_APP_GOOGLE_ADSENSE_HOME_PAGE_BANNER_AD_ID;
         }
     },
     methods: {

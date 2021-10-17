@@ -59,7 +59,6 @@ function getRequest(endpoint, params) {
 }
 
 function makeRequest(endpoint, params) {
-    console.log(getUrl(endpoint, params));
     fetch(
         getUrl(endpoint, params),
         getRequest(endpoint, params)
