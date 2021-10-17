@@ -72,8 +72,8 @@ export default {
                     localStorage.user().profilePhotoUrl = null
                     this.$emit("didDeletePhoto");
                 }, onFailure: () => {
-                    this.alertTitle = this.$t("hello");
-                    this.alertMessage = "There was a problem deleting your profile photo."
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.$t('delete_photo_error_message');
                     this.shouldShowAlertModal = true;
                 }
             })

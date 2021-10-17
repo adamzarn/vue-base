@@ -42,7 +42,7 @@ export default {
         },
         possessiveFullName() {
             var lastChar = this.user.lastName[this.user.lastName.length - 1];
-            return (lastChar === "s") ? `${this.fullName}"` : `${this.fullName}"s`
+            return (lastChar === "s") ? `${this.fullName}'` : `${this.fullName}'s`
         },
         account() {
             if (this.userIsLoggedInUser) {

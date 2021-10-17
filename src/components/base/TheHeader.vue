@@ -3,10 +3,10 @@
         <div class="wrapper site-header__wrapper">
             <a href="/home" class="brand"><img src="/logo.svg" alt="brandy"></a>
             <nav v-if="shouldShowButtons" class="buttons-container">
-                <base-button @click="home">Home</base-button>
-                <base-button v-if="loggedInUserIsAdmin" @click="manageUsers">Manage Users</base-button>
-                <base-button @click="account">Account</base-button>
-                <base-button @click="logout">Logout</base-button>
+                <base-button @click="home">{{ $t('header_home_button_text') }}</base-button>
+                <base-button v-if="loggedInUserIsAdmin" @click="manageUsers">{{ $t('header_manage_users_button_text') }}</base-button>
+                <base-button @click="account">{{ $t('header_account_button_text') }}</base-button>
+                <base-button @click="logout">{{ $t('header_logout_button_text') }}</base-button>
             </nav>
         </div>
         <div class="separator"></div>
@@ -53,8 +53,8 @@ export default {
                     this.$router.push({ name: "login" });
                 },
                 onFailure: () => {
-                    this.alertTitle = "Oops...";
-                    this.alertMessage = "There was a problem logging you out.";
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.$t('logout_error_message');
                     this.shouldShowAlertModal = true;
                 }
             })

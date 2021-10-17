@@ -1,25 +1,24 @@
 <template>
     <base-card class="centered-card">        
         <form @submit.prevent="login">
-            <page-title class="title" text="Login"></page-title>
+            <page-title class="title" :text="$t('login_form_title')"></page-title>
             <base-input
                 type="text"
                 name="email"
-                label="Email"
+                :label="$t('login_form_email_input_label')"
                 :validate="validateEmail"
                 v-model.trim="enteredEmail"
                 @change="$emit('change', enteredEmail)">
             </base-input>
-            <p class="validation" v-if="emailIsInvalid">You must provide a valid email</p>
             <base-input 
                 type="password"
                 name="password"
-                label="Password"
+                :label="$t('login_form_password_input_label')"
                 v-model="enteredPassword">
             </base-input>
             <div class="buttons">
-                <router-link class="register-button" to="/register">Register</router-link>
-                <base-button class="login-button" type="submit">Login</base-button>
+                <router-link class="register-button" to="/register">{{ $t('login_form_register_link_text') }}</router-link>
+                <base-button class="login-button" type="submit">{{ $t('login_form_login_button_text') }}</base-button>
             </div>
         </form>
         <email-verification-modal
@@ -52,7 +51,6 @@ export default {
         return {
             enteredEmail: this.email,
             enteredPassword: "",
-            emailIsInvalid: false,
             shouldShowEmailVerificationModal: false,
             shouldShowAlertModal: false,
             alertTitle: "",
@@ -73,12 +71,12 @@ export default {
                     if (error.exception === exceptions.emailIsNotVerified) {
                         this.shouldShowEmailVerificationModal = true
                     } else if (error.status === 401) {
-                        this.alertTitle = "Oops..."
-                        this.alertMessage = "Your email or password was incorrect."
+                        this.alertTitle = this.$t('alert_generic_error_title');
+                        this.alertMessage = this.$t('incorrect_email_or_password_message');
                         this.shouldShowAlertModal = true;
                     } else {
-                        this.alertTitle = "Oops..."
-                        this.alertMessage = "Something went wrong."
+                        this.alertTitle = this.$t('alert_generic_error_title');
+                        this.alertMessage = this.$t('alert_generic_error_message');
                         this.shouldShowAlertModal = true;
                     }
                 }
@@ -87,23 +85,19 @@ export default {
         dismissEmailVerificationModal() {
             this.shouldShowEmailVerificationModal = false;
         },
-        validateEmail() {
-            const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-            this.emailIsInvalid = !regex.test(this.enteredEmail)
-        },
         dismissAlertModal() {
             this.shouldShowAlertModal = false;
         },
         onSendEmailVerificationEmailSuccess(email) {
-            this.alertTitle = "Success";
-            this.alertMessage = `An email verification email has been sent to ${email}.`
+            this.alertTitle = this.$t('alert_generic_success_title');
+            this.alertMessage = this.$t('alert_modal_email_verification_required_message', { 'email': email });
             this.shouldShowAlertModal = true;
         },
         onSendEmailVerificationEmailFailure(error) {
-            this.alertTitle = "Oops..."
-            this.alertMessage = "There was a problem sending the email verification email. Please contact support.";
+            this.alertTitle = this.$t('alert_generic_error_title');
+            this.alertMessage = this.$t('send_email_verification_error_message');
             if (error.exception == exceptions.userDoesNotExist) {
-                this.alertMessage = "A user with that email does not exist.";
+                this.alertMessage = this.$t('user_with_email_does_not_exist_message');
             }
             this.shouldShowAlertModal = true;
         }

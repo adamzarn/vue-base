@@ -6,9 +6,9 @@
             <p v-else class="content bold">{{ value }}</p>
         </div>
         <div v-if="editable" class="buttons-container">
-            <base-button v-if="beingChanged" class="change-button" @click="toggleBeingChanged(field)">Cancel</base-button>
-            <base-button v-if="beingChanged" class="change-button" @click="update(field, newValue)">Submit</base-button>
-            <base-button v-if="!beingChanged" class="change-button" @click="toggleBeingChanged(field)">Change</base-button>
+            <base-button v-if="beingChanged" class="change-button" @click="toggleBeingChanged(field)">{{ $t('profile_item_cancel_button_text') }}</base-button>
+            <base-button v-if="beingChanged" class="change-button" @click="update(field, newValue)">{{ $t('profile_item_submit_button_text') }}</base-button>
+            <base-button v-if="!beingChanged" class="change-button" @click="toggleBeingChanged(field)">{{ $t('profile_item_change_button_text') }}</base-button>
         </div>
     </div>
     <div v-show="showSeparator" class="separator"></div>
@@ -45,7 +45,7 @@ export default {
     },
     computed: {
         labelText() {
-            return this.beingChanged ? `New ${this.label}` : this.label;
+            return this.beingChanged ? this.$t('profile_item_new_field_label', { 'field': this.label }) : this.label;
         },
         value() {
             return this.type == "password" ? "*************" : this.currentValue;

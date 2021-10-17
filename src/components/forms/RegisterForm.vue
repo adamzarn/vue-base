@@ -5,35 +5,35 @@
             <base-input
                 type="text"
                 name="first-name"
-                label="First Name"
+                :label="$t('register_form_first_name_input_label')"
                 :validate="validateFirstName"
                 v-model.trim="enteredFirstName">
             </base-input>
-            <p class="validation" v-if="firstNameIsInvalid">You must provide a first name</p>
+            <p class="validation" v-if="firstNameIsInvalid">{{ $t('register_form_invalid_first_name_warning_message') }}</p>
             <base-input 
                 type="text"
                 name="last-name"
-                label="Last Name"
+                :label="$t('register_form_last_name_input_label')"
                 :validate="validateLastName"
                 v-model.trim="enteredLastName">
             </base-input>
-            <p class="validation" v-if="lastNameIsInvalid">You must provide a last name</p>
+            <p class="validation" v-if="lastNameIsInvalid">{{ $t('register_form_invalid_last_name_warning_message') }}</p>
             <base-input
                 type="text"
                 name="username"
-                label="Username"
+                :label="$t('register_form_username_input_label')"
                 v-model.trim="enteredUsername">
             </base-input>
             <base-input
                 type="text"
                 name="email"
-                label="Email"
+                :label="$t('register_form_email_input_label')"
                 :validate="validateEmail"
                 :confirm="checkIfUserAlreadyExists"
                 v-model.trim="enteredEmail">
             </base-input>
-            <p class="validation" v-if="emailIsInvalid">You must provide a valid email</p>
-            <p class="validation" v-if="emailAlreadyExists">A user with that email already exists</p>
+            <p class="validation" v-if="emailIsInvalid">{{ $t('register_form_invalid_email_warning_message') }}</p>
+            <p class="validation" v-if="emailAlreadyExists">{{ $t('register_form_email_taken_warning_message') }}</p>
             <base-input 
                 type="password"
                 name="password"
@@ -50,10 +50,10 @@
                 v-model="enteredConfirmedPassword">
             </base-input>
             <p class="validation" v-if="confirmedPasswordIsInvalid">{{ invalidPasswordMessage }}</p>
-            <p class="validation" v-if="!passwordsMatch">Passwords don't match</p>
+            <p class="validation" v-if="!passwordsMatch">{{ $t('register_form_password_mismatch_warning_message') }}</p>
             <div class="buttons">
-                <router-link class="login-button" to="/login">Login</router-link>
-                <base-button class="register-button" type="submit">Register</base-button>
+                <router-link class="login-button" to="/login">{{ $t('register_form_login_link_text') }}</router-link>
+                <base-button class="register-button" type="submit">{{ $t('register_form_register_button_text') }}</base-button>
             </div>
         </form>
         <alert-modal
@@ -97,7 +97,7 @@ export default {
             return this.enteredPassword === this.enteredConfirmedPassword;
         },
         invalidPasswordMessage() {
-            return `Your password must have at least ${this.minPasswordLength} characters`;
+            return this.$t('register_form_invalid_password_warning_message', { 'minPasswordLength': this.minPasswordLength })
         }
     },
     methods: {
@@ -117,7 +117,7 @@ export default {
                     if (error.exception === exceptions.emailIsNotVerified) {
                         this.sendEmailVerificationEmail();
                     } else if (error.status === 400) {
-                        this.showAlertModal("Oops...", error.reason);
+                        this.showAlertModal(this.$t('alert_generic_error_title'), error.reason);
                     } else {
                         this.showGenericAlertModal();
                     }
@@ -131,7 +131,10 @@ export default {
                     frontendBaseUrl: `${network.frontendBaseUrl()}/verifyEmail`
                 },
                 onSuccess: () => {
-                    this.showAlertModal("Email Verification Required", `An email verification email has been sent to ${this.enteredEmail}.`);
+                    this.showAlertModal(
+                        this.$t('alert_modal_email_verification_required_title'),
+                        this.$t('alert_modal_email_verification_required_message', { 'email': this.enteredEmail })
+                    );
                 },
                 onFailure: () => {
                     this.showGenericAlertModal();
@@ -178,7 +181,10 @@ export default {
             this.shouldShowAlertModal = true;
         },
         showGenericAlertModal() {
-            this.showAlertModal("Oops...", "Something went wrong");
+            this.showAlertModal(
+                this.$t('alert_generic_error_title'), 
+                this.$t('alert_generic_error_message')
+            );
         }
     }
 }
