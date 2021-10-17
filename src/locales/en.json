@@ -42,6 +42,7 @@
     "reset_password_form_invalid_password_warning_message": "Your password must have at least {minPasswordLength} characters",
     "reset_password_form_invalid_password_message": "Please enter and confirm a valid password.",
     "reset_password_form_success_message": "Your password was successfully reset. You will now be redirected to the login page.",
+    "reset_password_form_error_message": "There was a problem resetting your password. Please try again.",
     "reset_password_form_expiration_message": "Your password reset request has expired. Please try again.",
     "change_email_modal_title": "Change Email",
     "change_email_modal_dismiss_button_text": "Cancel",

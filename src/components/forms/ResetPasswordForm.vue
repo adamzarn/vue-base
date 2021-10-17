@@ -1,11 +1,11 @@
 <template>
     <base-card class="centered-card">
         <form @submit.prevent="resetPassword">
-            <page-title class="title" text="Reset Password"></page-title>
+            <page-title class="title" :text="$t('reset_password_form_title')"></page-title>
             <base-input 
                 type="password"
                 name="password"
-                label="Password"
+                :label="$t('reset_password_form_password_input_label')"
                 :validate="validatePassword"
                 v-model="enteredPassword">
             </base-input>
@@ -13,15 +13,15 @@
             <base-input 
                 type="password"
                 name="confirmed-password"
-                label="Confirm Password"
+                :label="$t('reset_password_form_confirm_password_input_label')"
                 :validate="validateConfirmedPassword"
                 v-model="enteredConfirmedPassword">
             </base-input>
             <p class="validation" v-if="confirmedPasswordIsInvalid">{{ invalidPasswordMessage }}</p>
-            <p class="validation" v-if="!passwordsMatch">Passwords don't match</p>
+            <p class="validation" v-if="!passwordsMatch">{{ $t('reset_password_form_password_mismatch_warning_message') }}</p>
             <div class="buttons">
-                <router-link class="login-button" to="/login">Login</router-link>
-                <base-button type="submit">Submit</base-button>
+                <router-link class="login-button" to="/login">{{ $t('reset_password_form_login_button_text') }}</router-link>
+                <base-button type="submit">{{ $t('reset_password_form_submit_button_text') }}</base-button>
             </div>
         </form>
     </base-card>
@@ -58,7 +58,7 @@ export default {
             return this.enteredPassword === this.enteredConfirmedPassword;
         },
         invalidPasswordMessage() {
-            return `Your password must have at least ${this.minPasswordLength} characters`;
+            return this.$t('reset_password_form_invalid_password_warning_message', { 'minPasswordLength': this.minPasswordLength })
         },
         formIsInvalid() {
             return this.passwordIsInvalid || this.confirmedPasswordIsInvalid || this.enteredPassword == "" || this.enteredConfirmedPassword === "";
@@ -67,8 +67,8 @@ export default {
     methods: {
         resetPassword() {
             if (this.formIsInvalid) {
-                this.alertTitle = "Oops..."
-                this.alertMessage = "Please enter and confirm a valid password.";
+                this.alertTitle = this.$t('alert_generic_error_title');
+                this.alertMessage = this.$t('reset_password_form_invalid_password_message');
                 this.shouldShowAlertModal = true;
                 return
             }
@@ -80,18 +80,18 @@ export default {
                     value: this.enteredPassword
                 },
                 onSuccess: () => {
-                    this.alertTitle = "Success"
-                    this.alertMessage = "Your password was successfully reset. You will now be redirected to the login page.";
+                    this.alertTitle = this.$t('alert_generic_success_title');
+                    this.alertMessage = this.$t('reset_password_form_success_message');
                     this.shouldNavigateBackToLogin = true;
                     this.shouldShowAlertModal = true;
                 },
                 onFailure: error => {
-                    this.alertTitle = "Oops..."
-                    this.alertMessage = "There was a problem resetting your password.";
+                    this.alertTitle = this.$t('alert_generic_error_title');
+                    this.alertMessage = this.$t('reset_password_form_error_message');
                     this.shouldNavigateBackToLogin = false;
                     if (error.exception == exceptions.invalidToken) {
                         this.shouldNavigateBackToLogin = true;
-                        this.alertMessage = "Your password reset request has expired. Please try again.";
+                        this.alertMessage = this.$t('reset_password_form_expiration_message');
                     }
                     this.shouldShowAlertModal = true;
                 }
