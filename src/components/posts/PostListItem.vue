@@ -32,11 +32,24 @@ export default {
         },
         time() {
             let date = new Date(this.post.createdAt);
-            let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            let months = [
+                this.$t('mmm_january'),
+                this.$t('mmm_february'),
+                this.$t('mmm_march'),
+                this.$t('mmm_april'),
+                this.$t('mmm_may'),
+                this.$t('mmm_june'),
+                this.$t('mmm_july'),
+                this.$t('mmm_august'),
+                this.$t('mmm_september'),
+                this.$t('mmm_october'),
+                this.$t('mmm_november'),
+                this.$t('mmm_december')
+            ];
             let hours = date.getHours();
-            let ampm = "AM"
-            if (hours > 11) { ampm = "PM" }
-            if (hours > 12) { hours -= 12 }
+            let ampm = this.$t('am');
+            if (hours > 11) { ampm = this.$t('pm'); }
+            if (hours > 12) { hours -= 12; }
             return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${hours}:${this.getMinutes(date)} ${ampm}`;
         },
         name() {

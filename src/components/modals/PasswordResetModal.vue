@@ -1,15 +1,15 @@
 <template>
-    <base-modal v-if="shouldShow" title="Password Reset">
+    <base-modal v-if="shouldShow" :title="$t('password_reset_modal_title')">
         <template #default>
-            <p>Enter your email and we'll send you a password reset link.</p>
+            <p>{{ $t('password_reset_modal_message') }}</p>
             <base-input
                 v-model.trim="email"
             ></base-input>
         </template>
         <template #actions>
             <modal-buttons>
-                <base-button @click="dismiss">Cancel</base-button>
-                <base-button @click="sendEmail">Send</base-button>
+                <base-button @click="dismiss">{{ $t('passsword_reset_modal_dismiss_button_text') }}</base-button>
+                <base-button @click="sendEmail">{{ $t('password_reset_modal_confirm_button_text') }}</base-button>
             </modal-buttons>
         </template>
     </base-modal>
@@ -17,7 +17,7 @@
 
 <script>
 import network from "../../network/network.js";
-import ModalButtons from "../modals/ModalButtons.vue";
+import ModalButtons from "./ModalButtons.vue";
 
 export default {
     components: { ModalButtons },

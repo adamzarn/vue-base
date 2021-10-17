@@ -3,14 +3,14 @@
     <div class="centered-link">
         <a @click="showForgotPasswordModal">Forgot Password?</a>
     </div>
-    <forgot-password-modal
+    <password-reset-modal
         :shouldShow="shouldShowForgotPasswordModal"
         v-model="enteredEmail"
         :dismiss="dismissForgotPasswordModal"
         :onSuccess="onSendForgotPasswordEmailSuccess"
         :onFailure="onSendForgotPasswordEmailFailure"
         :didUpdateEmail="didUpdateEmail">
-    </forgot-password-modal>
+    </password-reset-modal>
     <alert-modal
         :shouldShow="shouldShowAlertModal"
         :title="alertTitle"
@@ -22,11 +22,11 @@
 <script>
 import LoginForm from "../forms/LoginForm.vue";
 import "./../../local-storage-helper.js";
-import ForgotPasswordModal from "../modals/ForgotPasswordModal.vue";
+import PasswordResetModal from "../modals/PasswordResetModal.vue";
 import exceptions from "../../network/exceptions.js";
 
 export default {
-    components: { LoginForm, ForgotPasswordModal },
+    components: { LoginForm, PasswordResetModal },
     data() {
         return {
             enteredEmail: "",

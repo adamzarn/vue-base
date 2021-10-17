@@ -1,12 +1,12 @@
 <template>
-    <base-modal v-if="shouldShow" title="Delete User">
+    <base-modal v-if="shouldShow" :title="$t('delete_user_confirmation_modal_title')">
         <template #default>
             <p>{{ message }}</p>
         </template>
         <template #actions>
             <modal-buttons>
-                <base-button @click="dismiss">Cancel</base-button>
-                <base-button @click="deleteUser">Continue</base-button>
+                <base-button @click="dismiss">{{ $t('delete_user_confirmation_modal_dismiss_button_text') }}</base-button>
+                <base-button @click="deleteUser">{{ $t('delete_user_confirmation_modal_confirm_button_text') }}</base-button>
             </modal-buttons>
         </template>
     </base-modal>
@@ -46,19 +46,16 @@ export default {
         },
         account() {
             if (this.userIsLoggedInUser) {
-                return "your account";
+                return this.$t('delete_user_confirmation_modal_your_account');
             } else {
-                return `${this.possessiveFullName} account`
+                return this.$t('delete_user_confirmation_modal_other_account', { 'possessiveFullName': this.possessiveFullName });
             }
-        },
-        areYouSure() {
-            return `Are you sure you want to delete ${this.account}?`
         },
         message() {
             if (this.userIsLoggedInUser) {
-                return `${this.areYouSure} You will be logged out and all of your data will be deleted.`
+                return this.$t('delete_user_confirmation_modal_delete_self_message', { 'account': this.account });
             } else {
-                return `${this.areYouSure} This will delete all of his or her data and you will be returned to the home page.`
+                return this.$t('delete_user_confirmation_modal_delete_other_message', { 'account': this.account });
             }
         }
     },
@@ -78,11 +75,11 @@ export default {
                     }
                 },
                 onFailure: error => { 
-                    this.alertTitle = "Oops..."
+                    this.alertTitle = this.$t('alert_generic_error_title');
                     if (error.status === 401) {
-                        this.alertMessage = `You are not authorized to delete ${this.account}.`
+                        this.alertMessage = this.$t('delete_user_confirmation_modal_auth_error_message');
                     } else  {
-                        this.alertMessage = `There was a problem deleting ${this.account}.`; 
+                        this.alertMessage = this.$t('delete_user_confirmation_modal_error_message');
                     }
                     this.shouldShowAlertModal = true;
                 }
