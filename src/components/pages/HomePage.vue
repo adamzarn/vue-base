@@ -1,4 +1,11 @@
 <template>
+    <ins class="adsbygoogle"
+        style="display:block"
+        :data-ad-client="googleAdsensePublisherId"
+        :data-ad-slot="googleAdsenseHomePageHeaderAdId"
+        data-ad-format="auto"
+        data-full-width-responsive="true">
+    </ins>
     <div class="container" v-if="user">
         <div class="col-8">
             <page-title class="title" :text="$t('home_page_create_post_title')"></page-title>
@@ -84,6 +91,12 @@ export default {
         },
         noPostResultsStyle() {
             return this.noPostResultsError ? "error" : ""
+        },
+        googleAdsensePublisherId() {
+            return process.env.VUE_APP_GOOGLE_ADSENSE_PUBLISHER_ID;
+        },
+        googleAdsenseHomePageHeaderAdId() {
+            return process.env.VUE_APP_GOOGLE_ADSENSE_HOME_PAGE_HEADER_AD_ID;
         }
     },
     methods: {
@@ -151,6 +164,16 @@ export default {
         }
     },
     mounted() {
+        let adsenseScript1 = document.createElement('script');
+        adsenseScript1.async = true;
+        adsenseScript1.setAttribute('src', `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${this.googleAdsensePublisherId}`);
+        adsenseScript1.setAttribute('crossorigin', 'anonymous');
+        document.body.appendChild(adsenseScript1);
+
+        let adsenseScript2 = document.createElement('script');
+        adsenseScript2.innerHTML = '(adsbygoogle = window.adsbygoogle || []).push({});'
+        document.body.appendChild(adsenseScript2);
+
         if (localStorage.isLoggedIn()) {
             this.getFeed();
         }
@@ -186,6 +209,10 @@ textarea {
 .input-header {
     display: flex;
     column-gap: calc(var(--default-spacing));
+    margin: calc(var(--default-spacing));
+}
+.adsbygoogle {
+    border: 1px solid black;
     margin: calc(var(--default-spacing));
 }
 </style>
