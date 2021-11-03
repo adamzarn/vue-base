@@ -52,7 +52,7 @@ function getUrl(endpoint, params) {
 
 function getRequest(endpoint, params) {
     var headers = endpoint.headers ? endpoint.headers(params.headerParams) : {}
-    headers["deviceId"] = localStorage.deviceId();
+    headers["Device-ID"] = localStorage.deviceId();
     return { 
         method: endpoint.method(params),
         headers: headers,

@@ -32,11 +32,11 @@ function uuidv4() {
 }
 
 Storage.prototype.deviceId = function() {
-    if (this.getItem("deviceId") == null) {
+    if (this.getItem("Device-ID") == null) {
         let deviceId = uuidv4();
-        this.setItem("deviceId", deviceId);
-        return deviceId
+        this.setItem("Device-ID", deviceId);
+        return deviceId;
     } else {
-        return this.getItem("deviceId");
+        return this.getItem("Device-ID");
     }
 }
