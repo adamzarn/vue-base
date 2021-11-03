@@ -51,9 +51,11 @@ function getUrl(endpoint, params) {
 }
 
 function getRequest(endpoint, params) {
+    var headers = endpoint.headers ? endpoint.headers(params.headerParams) : {}
+    headers["deviceId"] = localStorage.deviceId();
     return { 
         method: endpoint.method(params),
-        headers: endpoint.headers ? endpoint.headers(params.headerParams) : {},
+        headers: headers,
         body: endpoint.body ? endpoint.body(params.body) : null
     }
 }

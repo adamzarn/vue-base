@@ -24,3 +24,19 @@ Storage.prototype.login = function(data) {
 Storage.prototype.isLoggedIn = function() {
     return this.token != null;
 }
+
+function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
+Storage.prototype.deviceId = function() {
+    if (this.getItem("deviceId") == null) {
+        let deviceId = uuidv4();
+        this.setItem("deviceId", deviceId);
+        return deviceId
+    } else {
+        return this.getItem("deviceId");
+    }
+}
